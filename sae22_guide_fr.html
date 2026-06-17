@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaE 22 – Guide de Révision</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--border:#1e2d45;--accent:#00d4ff;--accent2:#7c3aed;--accent3:#10b981;--warn:#f59e0b;--danger:#ef4444;--text:#e2e8f0;--text-muted:#64748b;--text-dim:#94a3b8;--glow:0 0 20px rgba(0,212,255,0.15);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;}
+#sidebar{position:fixed;left:0;top:0;bottom:0;width:265px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;z-index:100;display:flex;flex-direction:column;}
+.sidebar-logo{padding:22px 18px 14px;border-bottom:1px solid var(--border);}
+.sidebar-logo .tag{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;}
+.sidebar-logo h2{font-size:18px;font-weight:700;margin-top:4px;line-height:1.2;}
+.sidebar-logo span{color:var(--accent);}
+.sidebar-nav{padding:10px 0;flex:1;}
+.nav-section{padding:8px 18px 4px;font-size:9px;font-family:'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 18px;cursor:pointer;font-size:12px;color:var(--text-dim);transition:all 0.2s;border-left:3px solid transparent;line-height:1.3;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:rgba(0,212,255,0.08);color:var(--accent);border-left-color:var(--accent);}
+.nav-item .num{font-family:'Space Mono',monospace;font-size:9px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;min-width:22px;text-align:center;flex-shrink:0;}
+.nav-item.active .num{background:var(--accent);color:#000;border-color:var(--accent);}
+.progress-bar{margin:10px 18px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width 0.4s ease;border-radius:2px;}
+.progress-label{padding:0 18px 14px;font-size:10px;color:var(--text-muted);font-family:'Space Mono',monospace;}
+#main{margin-left:265px;min-height:100vh;}
+.topbar{position:sticky;top:0;background:rgba(10,14,26,0.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:13px 36px;display:flex;align-items:center;justify-content:space-between;z-index:50;}
+.topbar-title{font-size:12px;color:var(--text-muted);font-family:'Space Mono',monospace;}
+.topbar-title span{color:var(--accent);}
+.topbar-btns{display:flex;gap:8px;}
+.btn-mode{padding:5px 13px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-size:12px;font-family:'Space Grotesk',sans-serif;transition:all 0.2s;}
+.btn-mode:hover{border-color:var(--accent);color:var(--accent);}
+.btn-mode.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;}
+.page{display:none;}
+.page.active{display:block;}
+.hero{padding:56px 36px 36px;max-width:880px;}
+.hero .eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(26px,4vw,46px);font-weight:700;line-height:1.1;margin-bottom:18px;}
+.hero h1 .hl{color:var(--accent);}
+.hero .sub{font-size:13px;color:var(--text-dim);line-height:1.75;max-width:580px;margin-bottom:36px;}
+.chapter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:13px;padding:0 36px 56px;}
+.chapter-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:17px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;}
+.chapter-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity 0.25s;}
+.chapter-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--glow);}
+.chapter-card:hover::before{opacity:1;}
+.card-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:7px;}
+.card-title{font-size:13px;font-weight:600;margin-bottom:6px;}
+.card-desc{font-size:11px;color:var(--text-muted);line-height:1.6;}
+.card-badge{display:inline-block;margin-top:9px;padding:2px 7px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:4px;font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;}
+.card-badge.new{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:var(--accent3);}
+.chapter-content{max-width:800px;padding:44px 36px 80px;}
+.ch-header{margin-bottom:32px;padding-bottom:22px;border-bottom:1px solid var(--border);}
+.ch-eyebrow{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;}
+.ch-title{font-size:27px;font-weight:700;line-height:1.2;margin-bottom:12px;}
+.ch-summary{font-size:13px;color:var(--text-dim);line-height:1.8;padding:14px 16px;background:rgba(0,212,255,0.05);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;}
+.section{margin-bottom:34px;}
+.section-title{font-size:16px;font-weight:600;margin-bottom:13px;display:flex;align-items:center;gap:9px;}
+.section-title .icon{width:26px;height:26px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+p{font-size:13px;line-height:1.85;color:var(--text-dim);margin-bottom:12px;}
+p strong{color:var(--text);}
+.info-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 17px;margin:13px 0;font-size:12px;line-height:1.75;color:var(--text-dim);}
+.info-box.accent{border-color:rgba(0,212,255,0.3);background:rgba(0,212,255,0.05);}
+.info-box.green{border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05);}
+.info-box.warn{border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.05);}
+.info-box.purple{border-color:rgba(124,58,237,0.3);background:rgba(124,58,237,0.05);}
+.info-box.red{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.05);}
+.info-box-title{font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.info-box.accent .info-box-title{color:var(--accent);}
+.info-box.green .info-box-title{color:var(--accent3);}
+.info-box.warn .info-box-title{color:var(--warn);}
+.info-box.purple .info-box-title{color:#a78bfa;}
+.info-box.red .info-box-title{color:var(--danger);}
+.kv-table{width:100%;border-collapse:collapse;margin:13px 0;font-size:12px;}
+.kv-table th{background:var(--surface2);padding:8px 12px;text-align:left;font-weight:600;color:var(--text);border-bottom:2px solid var(--accent);font-size:11px;}
+.kv-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top;}
+.kv-table tr:last-child td{border-bottom:none;}
+.kv-table tr:hover td{background:var(--surface2);color:var(--text);}
+.code-block{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;overflow-x:auto;margin:13px 0;color:#c9d1d9;}
+.code-block .kw{color:#ff7b72;}
+.code-block .fn{color:#d2a8ff;}
+.code-block .cm{color:#8b949e;font-style:italic;}
+.code-block .str{color:#a5d6ff;}
+.code-block .num{color:#f0883e;}
+.add{display:block;background:rgba(16,185,129,0.12);margin:0 -14px;padding:0 14px;border-left:3px solid var(--accent3);}
+.del{display:block;background:rgba(239,68,68,0.1);margin:0 -14px;padding:0 14px;border-left:3px solid var(--danger);}
+.formula{background:#0d1117;border:1px solid rgba(124,58,237,0.4);border-radius:8px;padding:13px 17px;font-family:'Space Mono',monospace;font-size:12px;color:#a78bfa;margin:13px 0;text-align:center;line-height:1.8;}
+.quiz-header{padding:44px 36px 28px;border-bottom:1px solid var(--border);}
+.quiz-header .eyebrow{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--warn);text-transform:uppercase;margin-bottom:10px;}
+.quiz-header h1{font-size:25px;font-weight:700;margin-bottom:9px;}
+.quiz-header p{font-size:13px;color:var(--text-dim);max-width:540px;}
+.quiz-filters{padding:16px 36px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border);}
+.filter-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-size:11px;font-family:'Space Grotesk',sans-serif;transition:all 0.2s;}
+.filter-btn:hover{border-color:var(--warn);color:var(--warn);}
+.filter-btn.active{background:var(--warn);color:#000;border-color:var(--warn);font-weight:600;}
+.quiz-grid{padding:20px 36px 80px;display:flex;flex-direction:column;gap:13px;max-width:800px;}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.q-card.hidden{display:none;}
+.q-header{padding:13px 17px;display:flex;align-items:flex-start;gap:11px;cursor:pointer;user-select:none;}
+.q-header:hover{background:var(--surface2);}
+.q-mark{flex-shrink:0;padding:2px 7px;border-radius:5px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;margin-top:1px;}
+.mark-2{background:rgba(16,185,129,0.2);color:var(--accent3);border:1px solid rgba(16,185,129,0.3);}
+.mark-6{background:rgba(0,212,255,0.15);color:var(--accent);border:1px solid rgba(0,212,255,0.3);}
+.mark-8{background:rgba(124,58,237,0.2);color:#a78bfa;border:1px solid rgba(124,58,237,0.3);}
+.mark-10{background:rgba(245,158,11,0.2);color:var(--warn);border:1px solid rgba(245,158,11,0.3);}
+.mark-12{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3);}
+.q-type{flex-shrink:0;padding:2px 7px;border-radius:5px;font-size:9px;font-family:'Space Mono',monospace;background:var(--surface2);color:var(--text-muted);border:1px solid var(--border);margin-top:1px;}
+.q-text{flex:1;font-size:13px;line-height:1.6;color:var(--text);}
+.q-toggle{flex-shrink:0;width:22px;height:22px;background:var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-muted);transition:transform 0.2s;margin-top:2px;}
+.q-card.open .q-toggle{transform:rotate(180deg);color:var(--accent);}
+.q-answer{display:none;padding:0 17px 17px;border-top:1px solid var(--border);}
+.q-card.open .q-answer{display:block;padding-top:13px;}
+.answer-title{font-size:9px;font-family:'Space Mono',monospace;letter-spacing:2px;color:var(--accent3);text-transform:uppercase;margin-bottom:8px;}
+.q-answer p{font-size:12px;}
+.q-answer ul{padding-left:17px;margin:6px 0;}
+.q-answer li{font-size:12px;color:var(--text-dim);margin-bottom:5px;line-height:1.6;}
+.q-answer strong{color:var(--text);}
+.ch-nav{display:flex;gap:10px;margin-top:40px;padding-top:20px;border-top:1px solid var(--border);}
+.ch-nav-btn{padding:8px 17px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-size:12px;font-family:'Space Grotesk',sans-serif;transition:all 0.2s;}
+.ch-nav-btn:hover{border-color:var(--accent);color:var(--accent);}
+.ch-nav-btn.next{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;margin-left:auto;}
+.ch-nav-btn.next:hover{background:#00b8e0;}
+.wait-box{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:13px 17px;margin-top:30px;font-size:12px;color:var(--warn);display:flex;align-items:center;gap:10px;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+</style>
+</head>
+<body>
+<div id="sidebar">
+  <div class="sidebar-logo">
+    <div class="tag">UCA / IUT / BUT R&amp;T</div>
+    <h2>SaE <span>22</span><br>Guide de Révision</h2>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">Accueil</div>
+    <div class="nav-item active" onclick="showPage('home')"><span class="num">🏠</span>Accueil</div>
+    <div class="nav-section">Chapitres</div>
+    <div class="nav-item" onclick="showPage('ch1')"><span class="num">01</span>Chaîne de transmission numérique</div>
+    <div class="nav-item" onclick="showPage('ch2')"><span class="num">02</span>Spectre des fréquences &amp; ISM</div>
+    <div class="nav-item" onclick="showPage('ch3')"><span class="num">03</span>LoRa &amp; Cartes UCA</div>
+    <div class="nav-item" onclick="showPage('ch4')"><span class="num">04</span>Codes Arduino TP1 ✨</div>
+    <div class="nav-item" onclick="showPage('ch5')"><span class="num">05</span>Paramètres LoRa en détail</div>
+    <div class="nav-item" onclick="showPage('ch6')"><span class="num">06</span>Portée LoRa &amp; Bilan de liaison</div>
+    <div class="nav-item" onclick="showPage('ch7')"><span class="num">07</span>Mesures LoRa &amp; SDRangel</div>
+    <div class="nav-item" onclick="showPage('ch8')"><span class="num">08</span>Mesure signal TNT</div>
+    <div class="nav-item" onclick="showPage('ch9')"><span class="num">09</span>Mesure TV Satellite</div>
+    <div class="nav-section">Révision</div>
+    <div class="nav-item" onclick="showPage('quiz')"><span class="num">📝</span>Questions d'examen</div>
+  </div>
+  <div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 9 chapitres</div>
+  </div>
+</div>
+
+<div id="main">
+  <div class="topbar">
+    <div class="topbar-title">SaE 22 — <span id="topbarTitle">Bienvenue</span></div>
+    <div class="topbar-btns">
+      <button class="btn-mode active" onclick="setView('learn')">📖 Cours</button>
+      <button class="btn-mode" onclick="setView('quiz')">📝 Examen</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="hero">
+      <div class="eyebrow">BUT R&amp;T · 1ère Année · 2021–2022</div>
+      <h1>Mesurer &amp; Caractériser<br>un <span class="hl">Signal</span> ou un Système</h1>
+      <p class="sub">Ton guide de révision interactif pour SaE 22. Chaque chapitre explique la théorie, montre les formules et prépare à l'examen. Tape <strong>"next"</strong> dans le chat pour que je t'explique chaque chapitre un par un.</p>
+    </div>
+    <div class="chapter-grid">
+      <div class="chapter-card" onclick="showPage('ch1')"><div class="card-num">CHAPITRE 01</div><div class="card-title">Chaîne de transmission numérique</div><div class="card-desc">De la voix au haut-parleur : CAN, modulateur, canal, démodulateur, CNA.</div><div class="card-badge">Théorie</div></div>
+      <div class="chapter-card" onclick="showPage('ch2')"><div class="card-num">CHAPITRE 02</div><div class="card-title">Spectre des fréquences &amp; ISM</div><div class="card-desc">Fréquences licenciées vs libres, bandes ISM, duty cycle, comparatif technologies.</div><div class="card-badge">Théorie</div></div>
+      <div class="chapter-card" onclick="showPage('ch3')"><div class="card-num">CHAPITRE 03</div><div class="card-title">LoRa &amp; Cartes UCA</div><div class="card-desc">Technologie LoRaWAN, module RFM95W, plateforme UCA IoT, installation Arduino IDE.</div><div class="card-badge">Technique</div></div>
+      <div class="chapter-card" onclick="showPage('ch4')"><div class="card-num">CHAPITRE 04 ✨</div><div class="card-title">Codes Arduino TP1 — Émission &amp; Réception</div><div class="card-desc">Les deux codes complets TP1 annotés ligne par ligne. Différences critiques émetteur/récepteur.</div><div class="card-badge new">NOUVEAU</div></div>
+      <div class="chapter-card" onclick="showPage('ch5')"><div class="card-num">CHAPITRE 05</div><div class="card-title">Paramètres LoRa en détail</div><div class="card-desc">SF, BW, Coding Rate, Préambule, Puissance TX : impact sur portée, débit et énergie.</div><div class="card-badge">Technique</div></div>
+      <div class="chapter-card" onclick="showPage('ch6')"><div class="card-num">CHAPITRE 06</div><div class="card-title">Portée LoRa &amp; Bilan de liaison</div><div class="card-desc">Sensibilité récepteur, bilan de liaison, Okumura-Hata, formule de Friis, extrapolation.</div><div class="card-badge">Calcul</div></div>
+      <div class="chapter-card" onclick="showPage('ch7')"><div class="card-num">CHAPITRE 07</div><div class="card-title">Mesures LoRa &amp; SDRangel</div><div class="card-desc">Mesures RSSI indoor/outdoor, duty cycle, consommation énergie, spectrogramme waterfall.</div><div class="card-badge">Pratique</div></div>
+      <div class="chapter-card" onclick="showPage('ch8')"><div class="card-num">CHAPITRE 08</div><div class="card-title">Mesure signal TNT</div><div class="card-desc">DVB-T en bande UHF, multiplex 8 MHz, niveaux dBµV, mesureur Televes H30FLEX.</div><div class="card-badge">Pratique</div></div>
+      <div class="chapter-card" onclick="showPage('ch9')"><div class="card-num">CHAPITRE 09</div><div class="card-title">Mesure TV Satellite</div><div class="card-desc">Satellites géostationnaires, LNB, fréquence intermédiaire, transpondeurs, UNAOHM AP01.</div><div class="card-badge">Pratique</div></div>
+    </div>
+  </div>
+
+  <!-- CH1 -->
+  <div class="page" id="page-ch1">
+    <div class="chapter-content">
+      <div class="ch-header"><div class="ch-eyebrow">Chapitre 01 · Théorie</div><h1 class="ch-title">Chaîne de Transmission Numérique</h1><div class="ch-summary">Une chaîne de transmission numérique convertit un signal réel (son) en données numériques, les envoie à travers un canal, puis les reconstruit à l'autre bout. C'est un pipeline où chaque étape transforme le signal d'une façon précise.</div></div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📡</div>La chaîne complète</div>
+        <p>La chaîne se divise en <strong>émission</strong> et <strong>réception</strong>, reliés par un <strong>support de transmission</strong>. En SaE 22, le canal est l'espace libre (air) pour LoRa, un câble coaxial pour la TNT.</p>
+        <div class="info-box accent"><div class="info-box-title">📤 Côté Émission</div><strong>Microphone</strong> → Convertit les ondes sonores en signal électrique analogique.<br><br><strong>Échantillonneur-Bloqueur</strong> → Prend des échantillons à intervalles réguliers. Signal en "escalier" (temps discret).<br><br><strong>CAN (ADC)</strong> → Convertit les échantillons analogiques en valeurs binaires (0 et 1).<br><br><strong>Émetteur Numérique</strong> → Applique le codage canal (protection erreurs) et la modulation (encode les bits sur une porteuse radio).</div>
+        <div class="info-box green"><div class="info-box-title">📥 Côté Réception</div><strong>Récepteur Numérique</strong> → Démodulation (extrait les données de la porteuse) + décodage (corrige les erreurs).<br><br><strong>CNA (DAC)</strong> → Reconvertit les données binaires en signal analogique.<br><br><strong>Haut-Parleur</strong> → Convertit le signal électrique en ondes acoustiques (son).</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">🔗</div>Les supports de transmission</div>
+        <table class="kv-table"><tr><th>Support</th><th>Exemple</th><th>Signal</th></tr><tr><td><strong>Espace libre (air)</strong></td><td>LoRa, WiFi, 4G, satellite</td><td>Ondes électromagnétiques</td></tr><tr><td><strong>Fibre optique</strong></td><td>Internet, FTTx</td><td>Impulsions lumineuses</td></tr><tr><td><strong>Câble coaxial / paires torsadées</strong></td><td>TNT, Ethernet</td><td>Signaux électriques</td></tr></table>
+      </div>
+      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> dans le chat pour passer au Chapitre 02 : Spectre des fréquences &amp; ISM.</span></div>
+      <div class="ch-nav"><button class="ch-nav-btn next" onclick="showPage('ch2')">Chapitre 02 : Spectre &amp; ISM →</button></div>
+    </div>
+  </div>
+
+  <!-- CH2 -->
+  <div class="page" id="page-ch2">
+    <div class="chapter-content">
+      <div class="ch-header"><div class="ch-eyebrow">Chapitre 02 · Théorie</div><h1 class="ch-title">Spectre des Fréquences &amp; Bandes ISM</h1><div class="ch-summary">Toutes les fréquences ne se valent pas. Les basses fréquences portent loin mais ont de faibles débits. Les bandes ISM sont libres d'utilisation. LoRa utilise la bande ISM 868 MHz en Europe.</div></div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📻</div>Compromis fréquence / portée / antenne</div>
+        <div class="info-box accent"><div class="info-box-title">⬅️ Basse fréquence (ex. 868 MHz – LoRa)</div>✅ Longue portée — propagation loin, pénétration murs.<br>❌ Grandes antennes — taille ≈ λ/4.<br>❌ Bande passante limitée — faibles débits.</div>
+        <div class="info-box warn"><div class="info-box-title">➡️ Haute fréquence (ex. 2,4 GHz – WiFi)</div>✅ Petites antennes — appareils compacts.<br>✅ Large bande passante — débits élevés (100 Mb/s).<br>❌ Courte portée — forte atténuation.</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">🔓</div>Fréquences licenciées vs ISM</div>
+        <p>La plupart du spectre est <strong>licenciée</strong> (opérateurs mobiles, TV). Les bandes <strong>ISM</strong> sont <strong>libres sans licence</strong> mais avec des règles de puissance et de duty cycle.</p>
+        <div class="info-box green"><div class="info-box-title">✅ ISM vs Non-ISM (selon le cours)</div>ISM : WiFi · Bluetooth · LoRa · ZigBee · Fours à micro-ondes<br>NON ISM : TV Satellite · GSM/4G · TNT (toutes licenciées)</div>
+        <div class="info-box purple"><div class="info-box-title">🌍 Fréquences ISM par région</div>Europe : 433 MHz et <strong>868 MHz</strong> (LoRa)<br>USA : 315 MHz et 915 MHz<br>Mondial : 2,4 GHz (WiFi, Bluetooth)<br><br>⚠️ Fréquences non uniformisées sous 1 GHz dans le monde — un module LoRa 868 MHz européen ne fonctionne pas aux USA (915 MHz) sans modification.</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">⏱️</div>Règle du Duty Cycle</div>
+        <div class="info-box warn"><div class="info-box-title">⚠️ Duty Cycle LoRaWAN 868 MHz Europe</div>Le duty cycle peut être <strong>0,1%, 1%, ou 10%</strong> selon la sous-bande.<br><br>Exemple (1%) : Si une trame dure 100 ms → silence obligatoire ≥ 9 900 ms (≈ 10 s)<br><br><strong>Formule :</strong> Temps silence ≥ Durée trame × (100/Duty% − 1)</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">⚖️</div>Comparatif des technologies sans fil</div>
+        <table class="kv-table"><tr><th>Techno</th><th>Fréquence</th><th>Portée</th><th>Débit</th><th>Puissance</th></tr><tr><td><strong>WiFi</strong></td><td>2,4–5 GHz</td><td>100 m</td><td>100 Mb/s</td><td>1 W</td></tr><tr><td><strong>Bluetooth LE</strong></td><td>2,4 GHz</td><td>100 m</td><td>1 Mb/s</td><td>10 mW</td></tr><tr><td><strong>SigFox</strong></td><td>900 MHz</td><td>15 km</td><td>100 b/s</td><td>25 mW</td></tr><tr><td><strong>LoRa</strong></td><td>900 MHz</td><td>15 km</td><td>290 b/s–5 kb/s</td><td>25 mW</td></tr><tr><td><strong>LTE (4G)</strong></td><td>700 MHz</td><td>10 km</td><td>100 Mb/s</td><td>2 W</td></tr></table>
+        <p>LoRa = <strong>LPWAN</strong> (Low Power Wide Area Network) : longue portée + faible consommation + faible débit. Idéal pour l'IoT.</p>
+      </div>
+      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 03 : LoRa &amp; Cartes UCA.</span></div>
+      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch1')">← Ch.01</button><button class="ch-nav-btn next" onclick="showPage('ch3')">Chapitre 03 : LoRa &amp; UCA →</button></div>
+    </div>
+  </div>
+
+  <!-- CH3 -->
+  <div class="page" id="page-ch3">
+    <div class="chapter-content">
+      <div class="ch-header"><div class="ch-eyebrow">Chapitre 03 · Technique</div><h1 class="ch-title">LoRa &amp; Cartes UCA</h1><div class="ch-summary">LoRa (Long Range) est une modulation propriétaire de Semtech basée sur le Chirp Spread Spectrum (CSS). La carte UCA est une plateforme IoT complète construite autour du module RFM95W, utilisée dans tous les TPs.</div></div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📶</div>Qu'est-ce que LoRa ?</div>
+        <div class="info-box accent"><div class="info-box-title">🎯 Avantages et Inconvénients LoRa</div>✅ Longue portée : jusqu'à 15 km en milieu rural<br>✅ Faible consommation : des années sur batterie<br>✅ Bonne pénétration des murs<br>✅ Bande ISM gratuite (868 MHz Europe)<br>❌ Faible débit : 290 b/s à 5 kb/s seulement<br>❌ Duty cycle restrictif</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">🔧</div>Matériel de la carte UCA</div>
+        <table class="kv-table"><tr><th>Composant</th><th>Référence</th><th>Rôle</th></tr><tr><td><strong>Microcontrôleur</strong></td><td>ATMEGA 328P</td><td>Exécute le code Arduino</td></tr><tr><td><strong>Programmeur USB</strong></td><td>CH340C</td><td>Connexion PC → carte pour uploader le code</td></tr><tr><td><strong>Module LoRa</strong></td><td>RFM95W</td><td>Radio : modulation LoRa à 868 MHz</td></tr><tr><td><strong>Antenne</strong></td><td>Imprimée intégrée</td><td>Émet/reçoit les ondes 868 MHz</td></tr><tr><td><strong>Capteurs</strong></td><td>Luminosité, T°/Humidité, Accéléromètre, LEDs RGB</td><td>Capteurs IoT intégrés</td></tr></table>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">💻</div>Installation Arduino IDE</div>
+        <div class="info-box warn"><div class="info-box-title">⚙️ Étapes d'installation (avant la séance)</div>1. Installer le <strong>driver CH340C</strong><br>2. Arduino IDE → Préférences → ajouter URL gestionnaire cartes RFThings<br>3. Installer <strong>"RFThings AVR Boards by RFThings Vietnam"</strong><br>4. Sélectionner carte : <strong>"RFThings UCA"</strong> / version <strong>"3.9 and newer: AT328PB"</strong><br>5. Si erreur bibliothèque → Outils → Gérer bibliothèques → <strong>LoRa by Sandeep Mistry</strong><br><br>⚠️ <strong>DEUX PC par groupe obligatoires</strong> : un pour l'émetteur, un pour le récepteur.</div>
+      </div>
+      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 04 : Codes Arduino TP1 annotés (NOUVEAU).</span></div>
+      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch2')">← Ch.02</button><button class="ch-nav-btn next" onclick="showPage('ch4')">Chapitre 04 : Codes Arduino TP1 →</button></div>
+    </div>
+  </div>
+
+  <!-- CH4 NEW -->
+  <div class="page" id="page-ch4">
+    <div class="chapter-content">
+      <div class="ch-header"><div class="ch-eyebrow">Chapitre 04 · Pratique ✨ NOUVEAU</div><h1 class="ch-title">Codes Arduino TP1 — Émission &amp; Réception</h1><div class="ch-summary">Ces deux fichiers sont les programmes Arduino utilisés lors du TP1. L'un programme la carte <strong>émettrice</strong>, l'autre la carte <strong>réceptrice</strong>. Tu dois être capable de lire, annoter, expliquer les deux et identifier leurs différences critiques.</div></div>
+
+      <div class="section">
+        <div class="section-title"><div class="icon">📤</div>Code d'Émission TP1 — Annoté ligne par ligne</div>
+        <p>Ce programme envoie en boucle le payload <strong>"hello"</strong> toutes les 100 ms via LoRa à 865 MHz.</p>
+        <div class="code-block"><span class="cm">// Bibliothèque SPI — interface série pour communiquer avec le module RFM95W via SPI</span>
+<span class="kw">#include</span> &lt;SPI.h&gt;
+<span class="kw">#include</span> &lt;LoRa.h&gt;    <span class="cm">// Bibliothèque LoRa de Sandeep Mistry</span>
+
+<span class="kw">int</span> counter = <span class="num">0</span>;     <span class="cm">// Compteur de trames envoyées (affiché dans le moniteur série)</span>
+
+<span class="cm">// ===== PARAMÈTRES MODIFIABLES =====</span>
+<span class="kw">int</span> txPower = <span class="num">14</span>;              <span class="cm">// Puissance TX en dBm (0 à 20, max ISM = 14)</span>
+<span class="kw">int</span> spreadingFactor = <span class="num">12</span>;     <span class="cm">// Facteur d'étalement SF (7 à 12, défaut 12)</span>
+<span class="kw">long</span> signalBandwidth = <span class="num">125E3</span>; <span class="cm">// Bande passante : 125 kHz</span>
+<span class="kw">int</span> codingRateDenominator = <span class="num">5</span>;<span class="cm">// Taux de codage CR = 4/5 (dénominateur 5 à 8)</span>
+<span class="kw">int</span> preambleLength = <span class="num">8</span>;       <span class="cm">// Longueur préambule : 8 symboles (2 à 20)</span>
+<span class="kw">String</span> payload = <span class="str">"hello"</span>;     <span class="cm">// Contenu du paquet à envoyer (modifiable)</span>
+
+<span class="cm">// ===== BROCHES MATÉRIELLES (carte UCA émetteur) =====</span>
+<span class="kw">#define</span> SS   <span class="num">10</span>    <span class="cm">// Broche Slave Select SPI</span>
+<span class="kw">#define</span> RST  <span class="num">8</span>     <span class="cm">// Broche Reset du module RFM95W</span>
+<span class="del"><span class="kw">#define</span> DI0  <span class="num">3</span>     <span class="cm">// ⚠️ Broche interruption PIN 3 — DIFFÉRENTE du récepteur (PIN 6)</span></span>
+<span class="kw">#define</span> BAND <span class="num">865E6</span> <span class="cm">// Fréquence porteuse : 865 MHz (allouée par l'enseignant)</span>
+
+<span class="kw">void</span> <span class="fn">setup</span>() {
+<span class="del">  Serial.<span class="fn">begin</span>(<span class="num">9600</span>);          <span class="cm">// ⚠️ Port série à 9600 bauds — DIFFÉRENT du récepteur (115200)</span></span>
+  <span class="kw">while</span> (!Serial);              <span class="cm">// Attendre l'ouverture du moniteur série</span>
+  Serial.<span class="fn">println</span>(<span class="str">"LoRa Sender"</span>);<span class="cm">// Affiche le rôle de la carte</span>
+  Serial.<span class="fn">print</span>(<span class="str">"SetFrequency : "</span>);
+  Serial.<span class="fn">print</span>(BAND);
+  Serial.<span class="fn">println</span>(<span class="str">"Hz"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"SetSpreadingFactor : SF"</span>);
+  Serial.<span class="fn">println</span>(spreadingFactor);
+
+  SPI.<span class="fn">begin</span>();                 <span class="cm">// Initialise le bus SPI</span>
+  LoRa.<span class="fn">setPins</span>(SS, RST, DI0);  <span class="cm">// Assigne les broches au module LoRa</span>
+  <span class="kw">if</span> (!LoRa.<span class="fn">begin</span>(BAND)) {    <span class="cm">// Initialise LoRa à 865 MHz — bloque si erreur</span>
+    Serial.<span class="fn">println</span>(<span class="str">"Starting LoRa failed!"</span>);
+    <span class="kw">while</span> (<span class="num">1</span>);
+  }
+  LoRa.<span class="fn">setTxPower</span>(txPower, <span class="num">1</span>);            <span class="cm">// Puissance TX = 14 dBm</span>
+  LoRa.<span class="fn">setSpreadingFactor</span>(spreadingFactor); <span class="cm">// SF = 12</span>
+  LoRa.<span class="fn">setSignalBandwidth</span>(signalBandwidth);  <span class="cm">// BW = 125 kHz</span>
+  LoRa.<span class="fn">setCodingRate4</span>(codingRateDenominator);<span class="cm">// CR = 4/5</span>
+  LoRa.<span class="fn">setPreambleLength</span>(preambleLength);   <span class="cm">// Préambule = 8 symboles</span>
+}
+
+<span class="kw">void</span> <span class="fn">loop</span>() {
+  LoRa.<span class="fn">beginPacket</span>();   <span class="cm">// Commence à construire un paquet LoRa</span>
+  LoRa.<span class="fn">print</span>(payload);  <span class="cm">// Insère "hello" dans le paquet</span>
+  LoRa.<span class="fn">endPacket</span>();     <span class="cm">// Émet le paquet via l'antenne</span>
+  counter++;             <span class="cm">// Incrémente le compteur</span>
+  Serial.<span class="fn">print</span>(<span class="str">"Sending packet with payload {"</span>);
+  Serial.<span class="fn">print</span>(payload);
+  Serial.<span class="fn">print</span>(<span class="str">"} N°"</span>);
+  Serial.<span class="fn">println</span>(counter); <span class="cm">// Affiche le numéro du paquet envoyé</span>
+  <span class="fn">delay</span>(<span class="num">100</span>);              <span class="cm">// Attendre 100 ms avant le prochain envoi</span>
+}</div>
+        <div class="info-box accent"><div class="info-box-title">📌 Résumé programme émetteur</div>Envoie en boucle le payload <strong>"hello"</strong> toutes les <strong>100 ms</strong> via LoRa à 865 MHz, SF=12, BW=125 kHz, CR=4/5. Chaque envoi incrémente un compteur affiché dans le moniteur série (9600 bauds).</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><div class="icon">📥</div>Code de Réception TP1 — Annoté ligne par ligne</div>
+        <p>Ce programme configure la carte en mode <strong>réception</strong>. Il attend un paquet LoRa, lit son contenu et affiche le <strong>RSSI</strong> en dBm dans le moniteur série.</p>
+        <div class="code-block"><span class="kw">#include</span> &lt;SPI.h&gt;
+<span class="kw">#include</span> &lt;LoRa.h&gt;
+
+<span class="kw">int</span> counter = <span class="num">0</span>;
+<span class="kw">int</span> txPower = <span class="num">14</span>;
+<span class="kw">int</span> spreadingFactor = <span class="num">12</span>;     <span class="cm">// ⚠️ IDENTIQUE à l'émetteur — obligatoire</span>
+<span class="kw">long</span> signalBandwidth = <span class="num">125E3</span>; <span class="cm">// ⚠️ IDENTIQUE à l'émetteur — obligatoire</span>
+<span class="kw">int</span> codingRateDenominator = <span class="num">5</span>;<span class="cm">// ⚠️ IDENTIQUE à l'émetteur — obligatoire</span>
+<span class="kw">int</span> preambleLength = <span class="num">8</span>;       <span class="cm">// ⚠️ IDENTIQUE à l'émetteur — obligatoire</span>
+<span class="kw">String</span> payload = <span class="str">"hello"</span>;
+
+<span class="kw">#define</span> SS   <span class="num">10</span>    <span class="cm">// Identique à l'émetteur</span>
+<span class="kw">#define</span> RST  <span class="num">8</span>     <span class="cm">// Identique à l'émetteur</span>
+<span class="add"><span class="kw">#define</span> DI0  <span class="num">6</span>     <span class="cm">// ⚠️ DIFFÉRENT : PIN 6 pour le RÉCEPTEUR (PIN 3 pour émetteur)</span></span>
+<span class="kw">#define</span> BAND <span class="num">865E6</span> <span class="cm">// ⚠️ IDENTIQUE à l'émetteur — obligatoire</span>
+
+<span class="kw">void</span> <span class="fn">setup</span>() {
+<span class="add">  Serial.<span class="fn">begin</span>(<span class="num">115200</span>);        <span class="cm">// ⚠️ DIFFÉRENT : 115200 bauds pour le RÉCEPTEUR (9600 pour émetteur)</span></span>
+  <span class="kw">while</span> (!Serial);
+  Serial.<span class="fn">println</span>(<span class="str">"LoRa Receiver"</span>); <span class="cm">// Affiche "Receiver" (vs "Sender" pour l'émetteur)</span>
+  Serial.<span class="fn">print</span>(<span class="str">"SetFrequency : "</span>);
+  Serial.<span class="fn">print</span>(BAND);
+  Serial.<span class="fn">println</span>(<span class="str">"Hz"</span>);
+  Serial.<span class="fn">print</span>(<span class="str">"SetSpreadingFactor : SF"</span>);
+  Serial.<span class="fn">println</span>(spreadingFactor);
+
+  SPI.<span class="fn">begin</span>();
+  LoRa.<span class="fn">setPins</span>(SS, RST, DI0);
+  <span class="kw">if</span> (!LoRa.<span class="fn">begin</span>(BAND)) {
+    Serial.<span class="fn">println</span>(<span class="str">"Starting LoRa failed!"</span>);
+    <span class="kw">while</span> (<span class="num">1</span>);
+  }
+  LoRa.<span class="fn">setTxPower</span>(txPower, <span class="num">1</span>);
+  LoRa.<span class="fn">setSpreadingFactor</span>(spreadingFactor);
+  LoRa.<span class="fn">setSignalBandwidth</span>(signalBandwidth);
+  LoRa.<span class="fn">setCodingRate4</span>(codingRateDenominator);
+  LoRa.<span class="fn">setPreambleLength</span>(preambleLength);
+}
+
+<span class="kw">void</span> <span class="fn">loop</span>() {
+<span class="add">  <span class="kw">int</span> packetSize = LoRa.<span class="fn">parsePacket</span>(); <span class="cm">// ⚠️ DIFFÉRENT : écoute un paquet entrant (non-bloquant)</span></span>
+  <span class="kw">if</span> (packetSize) {                      <span class="cm">// Si un paquet est reçu (packetSize &gt; 0)...</span>
+    Serial.<span class="fn">print</span>(<span class="str">"Received packet '"</span>);
+    <span class="kw">while</span> (LoRa.<span class="fn">available</span>()) {          <span class="cm">// Tant qu'il reste des octets à lire...</span>
+      Serial.<span class="fn">print</span>((<span class="kw">char</span>)LoRa.<span class="fn">read</span>()); <span class="cm">// Affiche chaque caractère reçu</span>
+    }
+<span class="add">    Serial.<span class="fn">print</span>(<span class="str">"' with RSSI "</span>);
+    Serial.<span class="fn">println</span>(LoRa.<span class="fn">packetRssi</span>()); <span class="cm">// ⚠️ DIFFÉRENT : affiche le RSSI du paquet reçu (dBm)</span></span>
+  }
+}</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><div class="icon">🔍</div>Tableau des différences critiques Émetteur vs Récepteur</div>
+        <div class="info-box red">
+          <div class="info-box-title">⚠️ Points critiques à retenir pour l'examen</div>
+          <table class="kv-table" style="margin:8px 0 0"><tr><th>Paramètre</th><th>Émetteur TP1</th><th>Récepteur TP1</th><th>Raison</th></tr><tr><td><strong>DI0</strong></td><td>PIN 3</td><td>PIN 6</td><td>Câblage physique différent sur les deux cartes UCA</td></tr><tr><td><strong>Serial baud rate</strong></td><td>9600</td><td>115200</td><td>Le récepteur affiche le RSSI — vitesse plus élevée pour fluidité</td></tr><tr><td><strong>Fonction loop()</strong></td><td>Envoie "hello" toutes les 100ms</td><td>Écoute et affiche RSSI reçu</td><td>Rôles opposés : émission vs réception</td></tr><tr><td><strong>SF, BW, CR, Préambule, BAND</strong></td><td colspan="2" style="text-align:center">⚠️ IDENTIQUES des deux côtés (obligatoire)</td><td>LoRa ne décode que les signaux au même SF, BW, CR</td></tr></table>
+        </div>
+        <div class="info-box green"><div class="info-box-title">📡 Qu'est-ce que le RSSI ?</div><strong>RSSI (Received Signal Strength Indicator)</strong> = indicateur de la puissance du signal reçu, en <strong>dBm</strong>.<br><br>• RSSI proche de 0 dBm = signal fort (émetteur proche)<br>• RSSI très négatif (ex. −130 dBm) = signal très faible (émetteur loin)<br>• Si RSSI &lt; sensibilité du récepteur → <strong>liaison rompue, aucune réception</strong></div>
+      </div>
+
+      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 05 : Paramètres LoRa en détail.</span></div>
+      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch3')">← Ch.03</button><button class="ch-nav-btn next" onclick="showPage('ch5')">Chapitre 05 : Paramètres LoRa →</button></div>
+    </div>
+  </div>
+
+  <!-- CH5 -->
+  <div class="page" id="page-ch5">
+    <div class="chapter-content">
+      <div class="ch-header"><div class="ch-eyebrow">Chapitre 05 · Technique</div><h1 class="ch-title">Paramètres LoRa en Détail</h1><div class="ch-summary">Chaque paramètre LoRa affecte directement la portée, le débit, la durée de trame et la consommation d'énergie. Comprendre le compromis de chacun est essentiel pour concevoir un système IoT optimal.</div></div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📊</div>Spreading Factor (SF)</div>
+        <div class="info-box accent"><div class="info-box-title">📡 SF : de 7 à 12</div>SF contrôle le nombre de "chips" pour représenter un bit.<br><br><strong>SF élevé (SF12) :</strong> Plus de chips par bit → plus résistant au bruit → plus longue portée → débit faible, trame longue, plus d'énergie.<br><strong>SF faible (SF7) :</strong> Débit plus rapide → portée plus courte.<br><br>⚠️ Chaque pas de SF <strong>double la durée de trame</strong> et double la consommation d'énergie par trame.</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📶</div>Bande Passante (BW)</div>
+        <div class="info-box green"><div class="info-box-title">📶 BW typique : 125, 250, 500 kHz</div><strong>BW large (500 kHz) :</strong> Débit rapide, trame courte, sensibilité moins bonne.<br><strong>BW étroite (125 kHz) :</strong> Meilleure sensibilité → plus longue portée.<br><br>Sensibilité ≈ plancher de bruit. BW étroite → plancher de bruit plus bas → meilleure sensibilité.</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">🔒</div>Taux de Codage (CR)</div>
+        <div class="info-box warn"><div class="info-box-title">🔒 CR = 4/dénominateur (5 à 8)</div><strong>CR = 4/5 :</strong> Minimum de redondance, le plus rapide. Canal propre.<br><strong>CR = 4/8 :</strong> Maximum de redondance (50% bits redondants), le plus robuste mais plus lent.<br><br>Dans TP1 : <code>codingRateDenominator = 5</code> → CR = 4/5 (trame courte, peu de protection).</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">⚡</div>Récapitulatif paramètres TP1</div>
+        <table class="kv-table"><tr><th>Paramètre</th><th>Valeur TP1</th><th>Impact sur la liaison</th></tr><tr><td>BAND</td><td>865 MHz</td><td>Fréquence porteuse — identique des deux côtés</td></tr><tr><td>spreadingFactor</td><td>12</td><td>SF max → portée max, débit min</td></tr><tr><td>signalBandwidth</td><td>125 kHz</td><td>Étroite → meilleure sensibilité</td></tr><tr><td>codingRateDenominator</td><td>5 (CR=4/5)</td><td>Trame courte, protection minimale</td></tr><tr><td>preambleLength</td><td>8 symboles</td><td>Synchronisation standard</td></tr><tr><td>txPower</td><td>14 dBm</td><td>Puissance max autorisée ISM 868 MHz Europe</td></tr></table>
+      </div>
+      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 06 : Portée &amp; Bilan de liaison.</span></div>
+      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch4')">← Ch.04</button><button class="ch-nav-btn next" onclick="showPage('ch6')">Chapitre 06 : Portée &amp; Bilan →</button></div>
+    </div>
+  </div>
+
+  <!-- CH6 -->
+  <div class="page" id="page-ch6">
+    <div class="chapter-content">
+      <div class="ch-header"><div class="ch-eyebrow">Chapitre 06 · Calcul</div><h1 class="ch-title">Portée LoRa — Théorie &amp; Bilan de Liaison</h1><div class="ch-summary">Pour prédire si une liaison LoRa fonctionnera à une distance donnée, on calcule le bilan de liaison — la perte maximale tolérée par le système.</div></div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📤</div>Puissance maximale ISM 868 MHz</div>
+        <p>Dans la bande ISM 868 MHz en Europe, la puissance max autorisée est <strong>+14 dBm</strong> (≈ 25 mW). Valeur utilisée dans le code : <code>txPower = 14</code>.</p>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📡</div>Sensibilité du récepteur (RFM95W)</div>
+        <div class="info-box green"><div class="info-box-title">📊 Valeurs de sensibilité (courbes du cours, BW=125 kHz)</div>SF7 → ≈ −124 dBm | SF9 → ≈ −131 dBm | SF11 → ≈ −139 dBm | SF12 → ≈ −143 dBm<br><br>SF plus élevé + BW plus étroite → meilleure sensibilité → reçoit des signaux plus faibles → portée plus longue.</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">🔋</div>Bilan de liaison</div>
+        <div class="formula">Pertes max (dB) = Puissance TX (dBm) − Sensibilité récepteur (dBm)<br><br>Exemple SF12, BW=125kHz : Pertes max = 14 − (−143) = 157 dB</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📐</div>Modèle d'Okumura-Hata</div>
+        <div class="formula">pertes = 146,4 + 44,9 × log₁₀(R) + C<br><br>C = 0 (urbain) | C = −9,85 (suburbain) | C = −28,35 (rural)<br>R = distance en km</div>
+        <div class="info-box accent"><div class="info-box-title">🔍 Calcul de la portée maximale R</div>1. Calcule le bilan de liaison : Pertes max = TX − Sensibilité<br>2. Pose : Pertes max = 146,4 + 44,9 × log₁₀(R) + C<br>3. Isole R :<br><br><strong>log₁₀(R) = (Pertes max − 146,4 − C) / 44,9</strong><br><strong>R = 10^[(Pertes max − 146,4 − C) / 44,9] km</strong></div>
+        <div class="info-box warn"><div class="info-box-title">👁️ Vue directe : Formule de Friis</div>Si liaison en vue directe (sans obstacle), utiliser la <strong>formule de Friis</strong> (cours R205). Elle prédit moins de pertes → portée plus grande que Okumura-Hata.</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📏</div>Extrapolation au-delà de 100 m</div>
+        <div class="info-box green"><div class="info-box-title">📈 Méthode d'extrapolation</div>1. Mesurer RSSI à plusieurs distances ≤ 100 m<br>2. Tracer RSSI vs log(distance) → droite sur papier semi-log<br>3. Ajuster la droite et extrapoler jusqu'à RSSI = sensibilité<br>4. Ou : appliquer directement Okumura-Hata avec le bilan de liaison<br><br>Clé : 44,9 dB de pertes supplémentaires par <strong>décade de distance</strong> (×10 distance).</div>
+      </div>
+      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 07 : Mesures LoRa &amp; SDRangel.</span></div>
+      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch5')">← Ch.05</button><button class="ch-nav-btn next" onclick="showPage('ch7')">Chapitre 07 : Mesures LoRa →</button></div>
+    </div>
+  </div>
+
+  <!-- CH7 -->
+  <div class="page" id="page-ch7">
+    <div class="chapter-content">
+      <div class="ch-header"><div class="ch-eyebrow">Chapitre 07 · Pratique</div><h1 class="ch-title">Mesures LoRa &amp; SDRangel</h1><div class="ch-summary">Les séances encadrées impliquent des mesures RSSI en extérieur et intérieur, la visualisation des trames avec SDRangel/ADALM-PLUTO, la vérification du duty cycle et le calcul de la consommation d'énergie par trame.</div></div>
+      <div class="section">
+        <div class="section-title"><div class="icon">🌳</div>Mesures extérieures (Outdoor)</div>
+        <div class="info-box accent"><div class="info-box-title">📋 Procédure</div>Paramètres : SF=7, BW=125 kHz, Pow=14 dBm, BAND=866 MHz<br>• Relever RSSI moyen à ≥ 8 distances différentes<br>• Calculer distance exacte émetteur–récepteur pour chaque point<br>• Estimer atténuation causée par un bâtiment<br>• Recommencer avec Pow = 0 dBm<br>• Tracer courbes sur papier semi-logarithmique (RSSI vs log(d))</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">🏢</div>Mesures intérieures (Indoor)</div>
+        <div class="info-box warn"><div class="info-box-title">🧱 Facteurs d'atténuation intérieur</div>Estimer les pertes (dB) causées par : portes · cloisons (murs intérieurs) · dalles (planchers/plafonds)<br>Recommencer avec SF=14 (SF plus élevé) pour voir l'amélioration de sensibilité.</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📺</div>SDRangel — Visualisation waterfall</div>
+        <div class="info-box accent"><div class="info-box-title">🔧 Configuration SDRangel</div>1. Connecter ADALM-PLUTO en USB (LED bleue clignote)<br>2. Ajouter PlutoSDR comme device Rx<br>3. Régler fréquence centrale allouée par l'enseignant<br>4. Activer suppression DC (bouton "DC")<br>5. Filtre Low-Pass (LP) ≈ 2× BW LoRa<br>6. Filtre FIR anti-repliement : 126 kHz minimum<br>7. Vitesse défilement : <strong>2 FPS</strong><br>8. Augmenter taille FFT pour meilleure résolution</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">⚡</div>Duty Cycle &amp; Énergie</div>
+        <div class="formula">Temps de silence ≥ Durée trame × (100/1 − 1) = Durée trame × 99<br>Énergie par trame (mWh) = Puissance TX (mW) × Durée trame (h)</div>
+      </div>
+      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 08 : Mesure signal TNT.</span></div>
+      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch6')">← Ch.06</button><button class="ch-nav-btn next" onclick="showPage('ch8')">Chapitre 08 : TNT →</button></div>
+    </div>
+  </div>
+
+  <!-- CH8 -->
+  <div class="page" id="page-ch8">
+    <div class="chapter-content">
+      <div class="ch-header"><div class="ch-eyebrow">Chapitre 08 · Pratique</div><h1 class="ch-title">Mesure du Signal TNT</h1><div class="ch-summary">La TNT (DVB-T) diffuse la TV numérique en bande UHF. Chaque canal occupe 8 MHz et regroupe plusieurs chaînes (multiplex). On mesure avec le mesureur de champ Televes H30FLEX.</div></div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📺</div>Caractéristiques TNT</div>
+        <div class="info-box accent"><div class="info-box-title">📡 Fiche technique TNT</div>Standard : DVB-T | Bande : UHF <strong>470–694 MHz</strong> | Canal : <strong>8 MHz</strong> par multiplex<br>Pas de conversion de fréquence (signal directement utilisable)<br>Antenne : Yagi / râteau directionnelle, orientée vers l'émetteur terrestre</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📊</div>Niveaux en dBµV</div>
+        <div class="formula">dBµV = 20 × log₁₀(V / 1 µV)</div>
+        <table class="kv-table"><tr><th>Niveau (dBµV)</th><th>Qualité</th><th>Classification</th></tr><tr><td>&lt; 45 dBµV</td><td>Réception difficile</td><td>⚠️ Niveau 3</td></tr><tr><td>45 – 70 dBµV</td><td>Réception correcte</td><td>✅ Niveau 2</td></tr><tr><td>&gt; 75 dBµV</td><td>Niveau élevé</td><td>🟢 Niveau 1</td></tr></table>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">🔧</div>Procédure Televes H30FLEX</div>
+        <div class="info-box green"><div class="info-box-title">📋 Étapes</div>1. Câble coaxial antenne → RF IN du Televes<br>2. Configurer DVB-T, Digital<br>3. Mode SPECTRE → afficher bande UHF (470–694 MHz)<br>4. Compter les multiplex visibles<br>5. Zoomer sur un multiplex → mesurer largeur (≈ 8 MHz)<br>6. Pour 4 canaux valides + 1 invalide : relever fréquence, niveau (dBµV), largeur, qualité (1/2/3)</div>
+      </div>
+      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 09 : TV Satellite.</span></div>
+      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch7')">← Ch.07</button><button class="ch-nav-btn next" onclick="showPage('ch9')">Chapitre 09 : TV Satellite →</button></div>
+    </div>
+  </div>
+
+  <!-- CH9 -->
+  <div class="page" id="page-ch9">
+    <div class="chapter-content">
+      <div class="ch-header"><div class="ch-eyebrow">Chapitre 09 · Pratique</div><h1 class="ch-title">Mesure du Signal TV Satellite</h1><div class="ch-summary">La TV satellite utilise des satellites géostationnaires à 36 000 km. Le LNB sur la parabole convertit la fréquence Ku (10,7–12,75 GHz) en fréquence intermédiaire (950–2150 MHz) pour le câble coaxial.</div></div>
+      <div class="section">
+        <div class="section-title"><div class="icon">🛰️</div>Le LNB — Rôle et fonctionnement</div>
+        <div class="info-box green"><div class="info-box-title">🔄 Pourquoi le LNB est indispensable</div>Les signaux Ku (10,7–12,75 GHz) s'atténuent trop fortement dans un câble coaxial. Le LNB :<br><br>1. <strong>Amplifie</strong> le signal satellite (très faible après 36 000 km)<br>2. <strong>Convertit</strong> en FI (950–2 150 MHz) → voyage bien en câble coaxial<br><br><strong>FI = Fréquence satellite − Fréquence OL</strong><br>Exemple : 11 642 MHz − 9 750 MHz = <strong>1 892 MHz</strong><br><br>Le LNB est alimenté <em>via le câble coaxial</em> en DC (+13V ou +18V selon polarisation).</div>
+      </div>
+      <div class="section">
+        <div class="section-title"><div class="icon">📊</div>TNT vs Satellite — Comparatif complet</div>
+        <table class="kv-table"><tr><th>Critère</th><th>TNT</th><th>Satellite</th></tr><tr><td>Fréquence émise</td><td>470–694 MHz (UHF)</td><td>10,7–12,75 GHz (Ku)</td></tr><tr><td>Au mesureur</td><td>Identique (directe)</td><td>950–2150 MHz (FI)</td></tr><tr><td>Conversion ?</td><td>Non</td><td>Oui — par le LNB</td></tr><tr><td>Organisation</td><td>Multiplex (bloc 8 MHz)</td><td>Transpondeur (pic)</td></tr><tr><td>Unité mesure</td><td>dBµV</td><td>dBm</td></tr><tr><td>Niveaux standards ?</td><td>Oui (45/70/75 dBµV)</td><td>Non</td></tr><tr><td>Antenne</td><td>Yagi / râteau</td><td>Parabole</td></tr><tr><td>Distance source</td><td>~50 km</td><td>~36 000 km</td></tr></table>
+      </div>
+      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch8')">← Ch.08</button><button class="ch-nav-btn next" onclick="showPage('quiz')">📝 Questions d'examen →</button></div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="page" id="page-quiz">
+    <div class="quiz-header"><div class="eyebrow">Préparation Examen · Strictement basé sur les fichiers du cours</div><h1>Questions d'Examen</h1><p>Questions de 2 à 12 points, théorie et technique. Clique pour révéler la réponse modèle.</p></div>
+    <div class="quiz-filters">
+      <button class="filter-btn active" onclick="filterQ('all')">Toutes</button>
+      <button class="filter-btn" onclick="filterQ('2')">2 pts</button>
+      <button class="filter-btn" onclick="filterQ('6')">6 pts</button>
+      <button class="filter-btn" onclick="filterQ('8')">8 pts</button>
+      <button class="filter-btn" onclick="filterQ('10')">10 pts</button>
+      <button class="filter-btn" onclick="filterQ('12')">12 pts</button>
+      <button class="filter-btn" onclick="filterQ('theory')">Théorie</button>
+      <button class="filter-btn" onclick="filterQ('technical')">Technique</button>
+    </div>
+    <div class="quiz-grid">
+
+      <div class="q-card" data-mark="2" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-2">2 pts</span><span class="q-type">Théorie</span><div class="q-text">Définir ce qu'est une <strong>bande ISM</strong> et donner la fréquence utilisée par LoRa en Europe.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p>Les bandes <strong>ISM (Industrial, Scientific, and Medical)</strong> sont des portions du spectre radio libres d'utilisation sans licence, sous réserve de règles de puissance et de duty cycle. LoRa utilise la bande <strong>868 MHz</strong> en Europe.</p></div></div>
+
+      <div class="q-card" data-mark="2" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-2">2 pts</span><span class="q-type">Technique</span><div class="q-text">Dans le code TP1, quelle est la différence de la broche <strong>DI0</strong> entre l'émetteur et le récepteur ? Pourquoi ?</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p>Émetteur : <code>DI0 = 3</code>. Récepteur : <code>DI0 = 6</code>. Cette différence existe car les deux cartes UCA ont des <strong>connexions physiques différentes</strong> entre l'ATMEGA 328P et le module RFM95W. La broche DI0 est la broche d'interruption signalant la réception ou la fin d'émission d'un paquet.</p></div></div>
+
+      <div class="q-card" data-mark="2" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-2">2 pts</span><span class="q-type">Technique</span><div class="q-text">Quelle est la puissance maximale d'émission autorisée (en dBm) dans la bande ISM 868 MHz en Europe ? Quelle valeur est utilisée dans le code TP1 ?</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p>La puissance maximale autorisée est <strong>+14 dBm</strong> (≈ 25 mW). Dans le code TP1, la valeur <code>txPower = 14</code> correspond à cette limite réglementaire.</p></div></div>
+
+      <div class="q-card" data-mark="2" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-2">2 pts</span><span class="q-type">Théorie</span><div class="q-text">Indiquer la plage de fréquences de la TNT en France et la largeur de bande d'un canal TNT.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p>TNT : bande <strong>UHF, 470–694 MHz</strong>. Largeur d'un canal (multiplex) : <strong>8 MHz</strong>.</p></div></div>
+
+      <div class="q-card" data-mark="6" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-6">6 pts</span><span class="q-type">Théorie</span><div class="q-text">Expliquer le rôle de chaque bloc de la chaîne de transmission numérique : Échantillonneur-Bloqueur, CAN, Émetteur Numérique, Récepteur Numérique, CNA.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><ul><li><strong>Échantillonneur-Bloqueur :</strong> Convertit le signal analogique continu en signal à temps discret (échantillons à intervalles réguliers, forme en "escalier").</li><li><strong>CAN (ADC) :</strong> Convertit les échantillons analogiques en valeurs binaires numériques (0 et 1).</li><li><strong>Émetteur Numérique :</strong> Applique le codage canal (protection erreurs) et la modulation numérique (encode les bits sur une porteuse radio).</li><li><strong>Récepteur Numérique :</strong> Démodulation (extrait les données de la porteuse) et décodage (détecte et corrige les erreurs).</li><li><strong>CNA (DAC) :</strong> Reconvertit les données binaires reçues en signal analogique.</li></ul></div></div>
+
+      <div class="q-card" data-mark="6" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-6">6 pts</span><span class="q-type">Technique</span><div class="q-text">Dans le code de réception TP1, expliquer précisément le fonctionnement de <code>loop()</code>. Quel est le rôle de <code>LoRa.parsePacket()</code>, <code>LoRa.available()</code> et <code>LoRa.packetRssi()</code> ?</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><ul><li><strong><code>LoRa.parsePacket()</code> :</strong> Vérifie si un paquet LoRa a été reçu. Retourne la taille du paquet (octets) si disponible, ou 0 sinon. Fonction <em>non-bloquante</em>.</li><li><strong><code>LoRa.available()</code> :</strong> Retourne vrai tant qu'il reste des octets non lus dans le tampon de réception. Utilisé dans la boucle while pour lire octet par octet.</li><li><strong><code>LoRa.packetRssi()</code> :</strong> Retourne le RSSI du dernier paquet reçu en dBm.</li></ul><p>En résumé : le programme sonde en continu l'arrivée d'un paquet. Quand un paquet arrive, il affiche son contenu caractère par caractère puis le RSSI dans le moniteur série.</p></div></div>
+
+      <div class="q-card" data-mark="6" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-6">6 pts</span><span class="q-type">Théorie</span><div class="q-text">Expliquer le rôle du LNB dans un système de réception TV satellite. Pourquoi la conversion de fréquence est-elle indispensable ?</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p>Le LNB assure deux fonctions : <strong>amplification faible bruit</strong> du signal satellite très affaibli, et <strong>conversion de fréquence</strong> Ku (10,7–12,75 GHz) en FI (950–2 150 MHz).</p><p>La conversion est indispensable car les signaux Ku s'atténuent de façon rédhibitoire dans les câbles coaxiaux, même sur quelques mètres. À 950–2 150 MHz (FI), le signal voyage efficacement en câble coaxial standard jusqu'au téléviseur.</p></div></div>
+
+      <div class="q-card" data-mark="8" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-8">8 pts</span><span class="q-type">Technique</span><div class="q-text">Comparer les codes d'émission et réception TP1 sur : (a) valeur de DI0, (b) vitesse du port série, (c) contenu de loop(), (d) paramètres devant être identiques des deux côtés et justification.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><ul><li><strong>(a) DI0 :</strong> Émetteur = PIN 3 ; Récepteur = PIN 6. Câblage physique différent sur les deux cartes UCA.</li><li><strong>(b) Vitesse série :</strong> Émetteur = 9 600 bauds ; Récepteur = 115 200 bauds. Le récepteur utilise une vitesse plus élevée pour afficher rapidement le RSSI à chaque paquet reçu.</li><li><strong>(c) Fonction loop() :</strong> Émetteur → envoie "hello" toutes les 100 ms via <code>beginPacket()/print()/endPacket()</code>. Récepteur → écoute via <code>parsePacket()</code>, lit contenu et affiche RSSI via <code>packetRssi()</code>.</li><li><strong>(d) Paramètres identiques :</strong> SF, BW, CR, préambule, BAND. En LoRa, le récepteur ne peut décoder que des signaux ayant <em>exactement</em> le même SF, BW et CR. Les signaux à différents SF sont orthogonaux — ils s'ignorent mutuellement. Une seule différence rompt la liaison.</li></ul></div></div>
+
+      <div class="q-card" data-mark="8" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-8">8 pts</span><span class="q-type">Technique</span><div class="q-text">Le duty cycle impose 1% d'occupation maximale du canal. Une trame LoRa SF=9, BW=125 kHz dure 412 ms. (a) Calculer le temps de silence obligatoire. (b) Cette contrainte est-elle problématique pour une transmission toutes les 5 minutes ?</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p><strong>(a)</strong> Temps silence = 412 × (100/1 − 1) = 412 × 99 = <strong>40 788 ms ≈ 40,8 secondes</strong></p><p><strong>(b)</strong> Intervalle de transmission = 5 min = 300 000 ms. Comme 40,8 s ≪ 300 s, la contrainte de duty cycle n'est <strong>pas problématique</strong>. Le canal reste inactif ~299 588 ms entre chaque trame, bien en dessous de la limite réglementaire.</p></div></div>
+
+      <div class="q-card" data-mark="8" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-8">8 pts</span><span class="q-type">Théorie</span><div class="q-text">Comparer les effets d'une augmentation du SF de 7 à 12 sur : (a) sensibilité récepteur, (b) débit, (c) durée de trame, (d) consommation d'énergie par trame. Justifier chaque réponse.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><ul><li><strong>(a) Sensibilité :</strong> S'améliore (plus négative). SF12 ≈ −143 dBm vs SF7 ≈ −124 dBm à BW=125 kHz. Plus de chips/bit = plus grand gain de traitement.</li><li><strong>(b) Débit :</strong> Diminue. Chaque pas de SF divise le débit par 2. SF7 → SF12 = débit ÷ 64.</li><li><strong>(c) Durée de trame :</strong> Augmente. Chaque pas de SF double la durée. SF7 → SF12 : durée × 64.</li><li><strong>(d) Énergie par trame :</strong> Augmente proportionnellement à la durée. Énergie = Puissance × Durée, donc SF7 → SF12 : énergie × 64 pour le même payload.</li></ul></div></div>
+
+      <div class="q-card" data-mark="10" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-10">10 pts</span><span class="q-type">Technique</span><div class="q-text">Lors du TP mesures LoRa outdoor : (a) Pourquoi tracer sur papier semi-logarithmique ? (b) Tu mesures RSSI = −85 dBm à 10 m et −105 dBm à 50 m. Calculer l'exposant d'atténuation empirique. (c) Extrapoler la distance pour RSSI = −143 dBm (limite sensibilité SF12).</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p><strong>(a)</strong> Okumura-Hata prédit une relation linéaire entre pertes et log(distance). Sur papier semi-log, cette relation donne une droite, facilitant l'ajustement et l'extrapolation.</p><p><strong>(b)</strong> Pertes à 10 m : L₁ = 14−(−85) = 99 dB | Pertes à 50 m : L₂ = 14−(−105) = 119 dB<br>B = ΔL / log(d₂/d₁) = 20 / log(5) = 20 / 0,699 = <strong>28,6 dB/décade</strong></p><p><strong>(c)</strong> Pertes max = 14−(−143) = 157 dB<br>157 = 99 + 28,6 × log(d/10) → log(d/10) = 58/28,6 = 2,028<br>d = 10 × 10^2,028 = <strong>≈ 1 067 m ≈ 1,07 km</strong></p></div></div>
+
+      <div class="q-card" data-mark="10" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-10">10 pts</span><span class="q-type">Théorie</span><div class="q-text">Comparer TNT et TV Satellite sur : (a) bande de fréquence émise, (b) nécessité de conversion de fréquence, (c) unité de mesure du niveau, (d) niveaux standards de réception, (e) type d'antenne. Justifier techniquement chaque différence.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><ul><li><strong>(a)</strong> TNT : UHF 470–694 MHz (bonne propagation terrestre). Satellite : Ku 10,7–12,75 GHz (antennes compactes sur satellite, grande capacité).</li><li><strong>(b)</strong> TNT : aucune conversion (UHF acceptable en câble coaxial). Satellite : LNB indispensable — signal Ku s'atténue trop en câble coaxial → conversion en FI 950–2150 MHz.</li><li><strong>(c)</strong> TNT : dBµV (convention installation TV). Satellite : dBm (pas de convention unique).</li><li><strong>(d)</strong> TNT : seuils définis &lt;45 (difficile), 45–70 (correct), &gt;75 dBµV (élevé). Satellite : aucun seuil standard (niveaux variables selon diamètre parabole, qualité LNB, pointage).</li><li><strong>(e)</strong> TNT : antenne Yagi/râteau (UHF, émetteur terrestre ~50 km). Satellite : parabole (réflecteur pour concentrer signal très faible venant de 36 000 km sur le LNB).</li></ul></div></div>
+
+      <div class="q-card" data-mark="12" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-12">12 pts</span><span class="q-type">Technique</span><div class="q-text">Système IoT pour surveiller l'humidité du sol en vignoble (rural). Transmission toutes les 10 minutes. SF ∈ {9, 11}, BW ∈ {125, 250 kHz}. TX=14 dBm. Portée requise : 3 km. Durées trame : SF9/125k=412ms, SF9/250k=206ms, SF11/125k=1650ms, SF11/250k=825ms. Sensibilités : SF9/125k=−131, SF9/250k=−128, SF11/125k=−139, SF11/250k=−136 dBm. (a) Calculer bilan de liaison et portée pour chaque combinaison. (b) Identifier les combinaisons valides. (c) Choisir la configuration optimale pour la batterie. (d) Vérifier conformité duty cycle 1%.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p><strong>(a) Portées — Rural C=−28,35 :</strong></p><p>SF9/125k : bilan=145 dB → log(R)=26,95/44,9=0,600 → <strong>R=3,98 km ✅</strong></p><p>SF9/250k : bilan=142 dB → log(R)=23,95/44,9=0,533 → <strong>R=3,41 km ✅</strong></p><p>SF11/125k : bilan=153 dB → log(R)=34,95/44,9=0,778 → <strong>R=6,0 km ✅</strong></p><p>SF11/250k : bilan=150 dB → log(R)=31,95/44,9=0,712 → <strong>R=5,14 km ✅</strong></p><p><strong>(b)</strong> Les 4 combinaisons dépassent 3 km. Toutes viables.</p><p><strong>(c)</strong> Énergie min = durée trame min = SF9/250k → 206 ms. Cette config satisfait aussi la portée (3,41 km). → <strong>Choix optimal : SF9 / BW=250 kHz</strong></p><p><strong>(d)</strong> Silence requis = 206 × 99 = 20 394 ms ≈ 20,4 s. Intervalle = 600 000 ms. 20,4 s ≪ 600 s → <strong>Conforme au duty cycle 1%.</strong></p></div></div>
+
+      <div class="q-card" data-mark="12" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-12">12 pts</span><span class="q-type">Technique</span><div class="q-text">Calculer la portée LoRa maximale dans les 3 milieux (urbain, suburbain, rural) avec TX=14 dBm et sensibilité=−139 dBm (SF11, BW=125 kHz). Montrer tous les calculs. Puis discuter l'impact d'une réduction de la puissance TX à 0 dBm sur chaque portée calculée.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p><strong>Bilan de liaison :</strong> 14−(−139) = <strong>153 dB</strong></p><p><strong>Urbain (C=0) :</strong> log(R)=(153−146,4)/44,9=0,147 → <strong>R=1,40 km</strong></p><p><strong>Suburbain (C=−9,85) :</strong> log(R)=16,45/44,9=0,366 → <strong>R=2,32 km</strong></p><p><strong>Rural (C=−28,35) :</strong> log(R)=34,95/44,9=0,778 → <strong>R=6,0 km</strong></p><p><strong>Impact TX=0 dBm :</strong> Nouveau bilan = 0−(−139) = 139 dB (soit −14 dB). Δlog(R) = −14/44,9 = −0,312 → facteur = 10^(−0,312) ≈ 0,487 (portée ÷ 2 environ).<br>Urbain : 1,40×0,487 ≈ <strong>0,68 km</strong> | Suburbain : 2,32×0,487 ≈ <strong>1,13 km</strong> | Rural : 6,0×0,487 ≈ <strong>2,92 km</strong><br>Conclusion : réduire TX de 14 dBm à 0 dBm divise la portée par environ 2 dans tous les milieux.</p></div></div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+let visited=new Set(['home']);
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(item=>{if(item.getAttribute('onclick')&&item.getAttribute('onclick').includes("'"+id+"'"))item.classList.add('active');});
+  if(id.startsWith('ch'))visited.add(id);
+  updateProgress();
+  const t={home:'Bienvenue',ch1:'Ch.01 Chaîne numérique',ch2:'Ch.02 Spectre & ISM',ch3:'Ch.03 LoRa & UCA',ch4:'Ch.04 Codes Arduino TP1',ch5:'Ch.05 Paramètres LoRa',ch6:'Ch.06 Portée & Bilan',ch7:'Ch.07 Mesures & SDRangel',ch8:'Ch.08 TNT',ch9:'Ch.09 Satellite',quiz:"Questions d'examen"};
+  document.getElementById('topbarTitle').textContent=t[id]||id;
+  window.scrollTo(0,0);
+}
+function updateProgress(){
+  const total=9,done=[...visited].filter(c=>c.startsWith('ch')).length;
+  document.getElementById('progressFill').style.width=(done/total*100)+'%';
+  document.getElementById('progressLabel').textContent=done+' / '+total+' chapitres';
+}
+function toggleQ(card){card.classList.toggle('open');}
+function filterQ(type){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.q-card').forEach(card=>{
+    if(type==='all')card.classList.remove('hidden');
+    else if(['2','6','8','10','12'].includes(type)){if(card.dataset.mark===type)card.classList.remove('hidden');else card.classList.add('hidden');}
+    else{if(card.dataset.type===type)card.classList.remove('hidden');else card.classList.add('hidden');}
+  });
+}
+function setView(mode){
+  document.querySelectorAll('.btn-mode').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  if(mode==='quiz')showPage('quiz');else showPage('ch1');
+}
+</script>
+</body>
+</html>
