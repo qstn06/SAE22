@@ -138,6 +138,81 @@
   .complete-banner h3 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px; }
   .complete-banner p { font-size: 14px; color: var(--soft); }
 
+  .cmd-filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .cmd-group {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .cmd-group-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s;
+  }
+  .cmd-group-header:hover { background: rgba(157,110,144,0.08); }
+  .cmd-group-title {
+    font-family: var(--font-head);
+    font-size: 15px; font-weight: 700; color: #fff;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cmd-group-icon { font-size: 20px; }
+  .cmd-group-badge {
+    font-size: 11px; font-weight: 700;
+    background: rgba(157,110,144,0.2);
+    border: 1px solid rgba(157,110,144,0.3);
+    color: #9D6E90; padding: 2px 8px; border-radius: 100px;
+    margin-left: 8px;
+  }
+  .cmd-group-chevron { color: var(--muted); font-size: 14px; transition: transform 0.25s; }
+  .cmd-group-chevron.open { transform: rotate(180deg); }
+  .cmd-group-body { display: none; padding: 0 16px 16px; }
+  .cmd-group-body.open { display: block; }
+  .cmd-entry {
+    border-bottom: 1px solid rgba(54,40,76,0.4);
+    padding: 12px 0;
+  }
+  .cmd-entry:last-child { border-bottom: none; }
+  .cmd-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #9D6E90; margin-bottom: 6px;
+  }
+  .cmd-code {
+    font-family: var(--font-mono);
+    background: rgba(20,13,25,0.8);
+    border: 1px solid rgba(54,40,76,0.6);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #C4A0BD;
+    line-height: 1.7;
+    white-space: pre;
+    overflow-x: auto;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .cmd-code:hover { border-color: #9D6E90; }
+  .cmd-code::after {
+    content: '📋 copier';
+    position: absolute; top: 8px; right: 10px;
+    font-family: var(--font-body);
+    font-size: 10px; color: var(--muted);
+    background: rgba(54,40,76,0.6);
+    padding: 2px 7px; border-radius: 100px;
+    pointer-events: none;
+  }
+  .cmd-code.copied { border-color: #C4A0BD; }
+  .cmd-code.copied::after { content: '✓ copié !'; color: #C4A0BD; }
+  .cmd-desc {
+    font-size: 13px; color: var(--soft);
+    line-height: 1.6; margin-top: 6px;
+  }
+  .cmd-desc strong { color: var(--text); }
+
   @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   .fade-in { animation: fadeIn 0.3s ease; }
 
@@ -156,6 +231,7 @@
         <button class="nav-tab active" onclick="showSection('overview')">📚 Chapitres</button>
         <button class="nav-tab" onclick="showSection('learn')">🎓 Apprendre</button>
         <button class="nav-tab" onclick="showSection('exam')">📝 Révisions Examen</button>
+        <button class="nav-tab" onclick="showSection('cmds')">⌨️ Commandes</button>
       </div>
     </div>
   </div>
@@ -186,6 +262,14 @@
     <button class="next-btn" id="nextBtn" onclick="nextSlide()">
       <span id="nextLabel">Continuer</span> <span>→</span>
     </button>
+  </section>
+
+  <section id="cmds" class="section">
+    <div style="margin-bottom:16px;">
+      <p style="font-size:14px;color:var(--soft);">Toutes les commandes Cisco IOS du cours R201 — classées par thème. Appuyez sur <strong style="color:var(--accent3)">▼ Afficher</strong> pour dérouler chaque bloc.</p>
+    </div>
+    <div class="cmd-filters" id="cmdFilters"></div>
+    <div id="cmdList"></div>
   </section>
 
   <section id="exam" class="section">
@@ -1573,7 +1657,7 @@ function showSection(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.nav-tab')[['overview','learn','exam'].indexOf(id)].classList.add('active');
+  document.querySelectorAll('.nav-tab')[['overview','learn','exam','cmds'].indexOf(id)].classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -1686,3 +1770,168 @@ init();
 </script>
 </body>
 </html>
+<script>
+// ════════════════════════════════════════════════
+// DATA & RENDER: COMMANDES CISCO IOS
+// ════════════════════════════════════════════════
+const cmdGroups = [
+  { id:'base', icon:'🖥️', title:'Configuration de Base du Routeur', tag:'base', cmds:[
+    { label:'Nommer le routeur', code:'Router(config)#hostname NOM_ROUTEUR', desc:'Définit le nom du routeur affiché dans le prompt.' },
+    { label:'Table de noms logiques (ip host)', code:'Router(config)#ip host NOM_EQUIPEMENT @IP1 @IP2\nRouter#show hosts', desc:'Crée une association statique nom↔IP locale. <code>show hosts</code> affiche la table.' },
+    { label:'Afficher la configuration active', code:'Router#show running-config', desc:'Affiche la configuration en cours (RAM).' },
+    { label:'Sauvegarder la configuration', code:'Router#copy running-config startup-config', desc:'Sauvegarde en NVRAM — persistante après redémarrage.' },
+    { label:'Afficher la version IOS', code:'Router#show version', desc:'Version IOS, uptime, mémoire, interfaces présentes. Vérifier la compatibilité IPv6.' },
+    { label:'Résumé des interfaces', code:'Router#show interface brief\nRouter#show ip interface brief', desc:'État (up/down) et adresses IP de toutes les interfaces en format condensé.' },
+    { label:'Détail d\'une interface', code:'Router#show interface FastEthernet0/0', desc:'Statistiques détaillées : erreurs, bande passante, encapsulation, file d\'attente.' },
+    { label:'Configurer une interface Ethernet', code:'Router(config)#interface FastEthernet0/0\nRouter(config-if)#ip address 192.168.1.1 255.255.255.0\nRouter(config-if)#no shutdown', desc:'Configure une adresse IP et active l\'interface. <strong>no shutdown</strong> est indispensable — interfaces inactives par défaut.' },
+    { label:'Configurer une interface Série (DCE)', code:'Router(config)#interface Serial0/0\nRouter(config-if)#ip address 192.168.7.1 255.255.255.252\nRouter(config-if)#clock rate 128000\nRouter(config-if)#no shutdown', desc:'Le côté DCE d\'une liaison série doit configurer le <strong>clock rate</strong> (fréquence d\'horloge, ex. 128000 bps).' },
+    { label:'Désactiver une interface', code:'Router(config-if)#shutdown', desc:'Désactive administrativement une interface (état "administratively down").' },
+    { label:'Effacer la configuration', code:'Router#erase startup-config\nRouter#reload', desc:'Efface la configuration NVRAM et redémarre le routeur.' },
+  ]},
+  { id:'route', icon:'🗺️', title:'Routage Statique & Table de Routage', tag:'routage', cmds:[
+    { label:'Route statique (prochain saut)', code:'Router(config)#ip route 192.168.1.0 255.255.255.0 192.168.7.252', desc:'Syntaxe : <strong>ip route @réseau_dest masque @IP_prochain_saut</strong>.' },
+    { label:'Route statique (interface de sortie)', code:'Router(config)#ip route 192.168.1.0 255.255.255.0 Serial0/0', desc:'Alternative : préciser l\'interface de sortie plutôt que le prochain saut (courant sur liaisons point à point).' },
+    { label:'Route par défaut', code:'Router(config)#ip route 0.0.0.0 0.0.0.0 172.16.25.252\nRouter(config)#ip classless', desc:'Route de dernier recours pour toute destination inconnue. <strong>ip classless</strong> nécessaire sur certaines versions IOS. ⚠️ Éviter les boucles !' },
+    { label:'Route flottante (backup)', code:'Router(config)#ip route 192.168.2.0 255.255.255.0 10.0.0.2 200', desc:'Route de secours avec DA élevée (200) — utilisée uniquement si la route principale tombe.' },
+    { label:'Afficher la table de routage', code:'Router#show ip route\nRouter#show ip route static\nRouter#show ip route ospf\nRouter#show ip route rip\nRouter#clear ip route *', desc:'Codes : C=Connected, S=Static, R=RIP, O=OSPF. Valeurs [DA/métrique] via @prochain_saut. <strong>clear ip route *</strong> efface les routes dynamiques.' },
+  ]},
+  { id:'nat', icon:'🔄', title:'Translation d\'Adresses NAT / PAT', tag:'nat', cmds:[
+    { label:'Marquer les interfaces NAT', code:'Router(config)#interface FastEthernet0/0\nRouter(config-if)#ip nat inside\n!\nRouter(config)#interface Serial0/0\nRouter(config-if)#ip nat outside', desc:'<strong>ip nat inside</strong> = réseau interne. <strong>ip nat outside</strong> = réseau externe. Obligatoire avant toute config NAT.' },
+    { label:'NAT Statique (SNAT)', code:'Router(config)#ip nat inside source static 192.168.1.10 200.20.2.10', desc:'Association biunivoque permanente : IP privée ↔ IP publique. Connexions depuis l\'extérieur possibles.' },
+    { label:'DNAT (modifier IP destination)', code:'Router(config)#ip nat outside source static 200.20.2.11 134.59.0.7', desc:'Modifie l\'adresse IP de destination du paquet entrant.' },
+    { label:'Port Forwarding (NAT statique avec port)', code:'Router(config)#ip nat inside source static tcp 192.168.1.10 22 200.20.2.5 22\nRouter(config)#ip nat inside source static tcp 192.168.1.20 80 200.20.2.5 8080', desc:'Redirige un port externe vers un hôte interne. Syntaxe : ip nat inside source static {tcp|udp} @IP_locale port_local @IP_global port_global.' },
+    { label:'NAT Dynamique (pool)', code:'Router(config)#ip nat pool MON_POOL 200.20.2.1 200.20.2.10 netmask 255.255.255.240\nRouter(config)#access-list 1 permit 192.168.1.0 0.0.0.255\nRouter(config)#ip nat inside source list 1 pool MON_POOL', desc:'1) Définir le pool d\'adresses publiques. 2) ACL des adresses internes autorisées. 3) Appliquer la translation. Seules les connexions sortantes créent une entrée dans la table NAT.' },
+    { label:'PAT / Masquerading (via interface)', code:'Router(config)#access-list 1 permit 192.168.1.0 0.0.0.255\nRouter(config)#ip nat inside source list 1 interface Serial0/0 overload', desc:'Tous les hôtes partagent l\'IP de l\'interface de sortie. Le mot-clé <strong>overload</strong> est obligatoire ! C\'est le NAT des box domestiques.' },
+    { label:'PAT / Masquerading (via pool)', code:'Router(config)#ip nat pool MASQ 200.20.2.5 200.20.2.5 netmask 255.255.255.252\nRouter(config)#access-list 1 permit 192.168.1.0 0.0.0.255\nRouter(config)#ip nat inside source list 1 pool MASQ overload', desc:'PAT avec pool d\'une seule adresse + overload. Alternative à l\'utilisation de l\'interface.' },
+    { label:'Vérification et débogage NAT', code:'Router#show ip nat translations\nRouter#show ip nat statistics\nRouter#debug ip nat\nRouter#no debug ip nat\nRouter#clear ip nat translation *', desc:'<strong>show ip nat translations</strong> : table NAT active. <strong>debug ip nat</strong> : temps réel (⚠️ précaution en production). <strong>clear</strong> : vide les translations dynamiques.' },
+  ]},
+  { id:'acl', icon:'🛡️', title:'Listes de Contrôle d\'Accès ACL', tag:'acl', cmds:[
+    { label:'ACL Standard Numérotée (1-99 / 1300-1999)', code:'Router(config)#access-list 10 permit 192.168.0.0 0.0.0.255\nRouter(config)#access-list 10 deny any\n!\nRouter(config)#interface FastEthernet0/1\nRouter(config-if)#ip access-group 10 out', desc:'Filtre uniquement l\'<strong>IP source</strong>. Placer près de la <strong>destination</strong>. Traitement séquentiel, premier match, deny implicite final.' },
+    { label:'ACL Étendue Numérotée (100-199 / 2000-2699)', code:'Router(config)#access-list 110 permit tcp 192.168.1.0 0.0.0.255 host 10.0.0.1 eq 80\nRouter(config)#access-list 110 permit tcp 192.168.1.0 0.0.0.255 host 10.0.0.1 eq 443\nRouter(config)#access-list 110 permit udp any any eq 53\nRouter(config)#access-list 110 deny ip any any log\n!\nRouter(config)#interface FastEthernet0/0\nRouter(config-if)#ip access-group 110 in', desc:'Filtre IP source, IP destination, protocole, ports. Opérateurs : <strong>eq, lt, gt, neq, range</strong>. Placer près de la <strong>source</strong>.' },
+    { label:'ACL Nommée Standard', code:'Router(config)#ip access-list standard FILTRAGE_RESEAUX\nRouter(config-std-nacl)#remark Autorise 192.168.0/1 interdit 192.168.2/3\nRouter(config-std-nacl)#permit 192.168.0.0 0.0.0.255\nRouter(config-std-nacl)#deny 192.168.0.0 0.0.3.255\nRouter(config-std-nacl)#permit any\n!\nRouter(config)#interface FastEthernet0/0\nRouter(config-if)#ip access-group FILTRAGE_RESEAUX in', desc:'Identifiée par un <strong>nom unique</strong>. Avantages : suppression/insertion de règles individuelles. Compatible IOS ≥ v11.2.' },
+    { label:'ACL Nommée Étendue', code:'Router(config)#ip access-list extended LAN_FILTER\nRouter(config-ext-nacl)#permit tcp 192.168.1.0 0.0.0.255 any eq 80\nRouter(config-ext-nacl)#permit tcp 192.168.1.0 0.0.0.255 any eq 443\nRouter(config-ext-nacl)#permit udp any any eq 53\nRouter(config-ext-nacl)#deny ip any any log\n!\nRouter(config-if)#ip access-group LAN_FILTER in', desc:'Syntaxe : <strong>{permit|deny} protocole @src wildcard {op} {port} @dst wildcard {op} {port} {established}</strong>.' },
+    { label:'Modifier une ACL nommée', code:'Router#show access-lists LAN_FILTER\n!\nRouter(config)#ip access-list extended LAN_FILTER\nRouter(config-ext-nacl)#no 20\nRouter(config-ext-nacl)#15 permit tcp host 10.0.0.5 any eq 8080', desc:'Voir les numéros de séquence avec <code>show access-lists</code>, puis supprimer (<code>no 20</code>) ou insérer une règle à une position précise.' },
+    { label:'Supprimer une ACL', code:'Router(config)#no ip access-list extended LAN_FILTER\nRouter(config)#no access-list 110', desc:'Supprime l\'ACL entière et toutes ses règles.' },
+    { label:'ACL sur lignes VTY (SSH/Telnet)', code:'Router(config)#ip access-list standard RESTRICTION_SSH\nRouter(config-std-nacl)#permit 192.168.1.5\nRouter(config-std-nacl)#deny any\n!\nRouter(config)#line vty 0 15\nRouter(config-line)#access-class RESTRICTION_SSH in', desc:'Restreint les accès SSH/Telnet au routeur depuis des adresses IP autorisées seulement.' },
+    { label:'Interdire les rebonds SSH', code:'Router(config)#ip access-list standard NO_REBOND_SSH\nRouter(config-ext-nacl)#deny any\n!\nRouter(config)#line vty 0 15\nRouter(config-line)#access-class NO_REBOND_SSH out', desc:'Empêche d\'utiliser le routeur comme rebond SSH (connexions sortantes VTY interdites).' },
+    { label:'Vérification ACL', code:'Router#show access-lists\nRouter#show access-lists NOM_ACL\nRouter#show ip interface FastEthernet0/0\nRouter#clear ip access-list counters NOM_ACL', desc:'<strong>show access-lists</strong> : toutes les ACL avec compteurs. <strong>show ip interface</strong> : ACL appliquées sur l\'interface. <strong>clear counters</strong> : remet les compteurs à zéro.' },
+  ]},
+  { id:'rip', icon:'📡', title:'Routage Dynamique RIP', tag:'routage', cmds:[
+    { label:'Configurer RIPv2', code:'Router(config)#router rip\nRouter(config-router)#version 2\nRouter(config-router)#network 192.168.1.0\nRouter(config-router)#network 20.0.0.0\nRouter(config-router)#no auto-summary', desc:'RIPv2 : classless, supporte VLSM. <strong>no auto-summary</strong> obligatoire avec VLSM pour désactiver le résumé automatique. Métrique = sauts (max 15, 16 = infini).' },
+    { label:'Interface passive', code:'Router(config-router)#passive-interface FastEthernet0/0', desc:'Empêche les annonces RIP de sortir par cette interface tout en continuant à recevoir.' },
+    { label:'Redistribution de routes statiques', code:'Router(config-router)#redistribute static', desc:'Injecte les routes statiques dans les annonces RIP.' },
+    { label:'Filtre de routes', code:'Router(config-router)#distribute-list 10 out Serial0/0', desc:'Filtre les réseaux annoncés sur l\'interface via l\'ACL n°10.' },
+    { label:'Désactiver split-horizon', code:'Router(config-if)#no ip split-horizon', desc:'⚠️ Peut créer des boucles de routage — à utiliser avec précaution.' },
+    { label:'Vérification RIP', code:'Router#show ip route\nRouter#show ip protocols\nRouter#debug ip rip events\nRouter#clear ip route *', desc:'Routes RIP marquées <strong>R</strong> dans la table. <strong>debug ip rip events</strong> : mises à jour en temps réel.' },
+  ]},
+  { id:'ospf', icon:'🔵', title:'Routage Dynamique OSPF', tag:'routage', cmds:[
+    { label:'Activer OSPF mono-aire', code:'Router(config)#router ospf 1\nRouter(config-router)#router-id 1.1.1.1\nRouter(config-router)#network 192.168.1.0 0.0.0.255 area 0\nRouter(config-router)#network 192.168.2.0 0.0.0.255 area 0\nRouter(config-router)#passive-interface FastEthernet0/0', desc:'Active OSPF (process-id=1). <strong>router-id</strong> identifie le routeur (format @IPv4). <strong>network</strong> + masque générique + numéro d\'aire. <strong>passive-interface</strong> sur LAN locaux.' },
+    { label:'OSPF Multi-Aires (ABR)', code:'! Routeur ABR : aire 0 + aire 1\nRouter(config)#router ospf 1\nRouter(config-router)#router-id 1.1.1.1\nRouter(config-router)#network 10.0.0.0 0.0.0.3 area 0\nRouter(config-router)#network 192.168.1.0 0.0.0.255 area 1\nRouter(config-router)#network 192.168.2.0 0.0.0.255 area 1', desc:'L\'ABR connecte deux aires. L\'<strong>aire 0</strong> backbone est obligatoire — toutes les autres aires doivent s\'y connecter.' },
+    { label:'Modifier le coût OSPF', code:'Router(config-if)#ip ospf cost 100\n! Ou via la bande passante\nRouter(config-if)#bandwidth 512', desc:'Coût = 10⁸/BW. Deux chemins de coût identique = équilibrage de charge (load balancing).' },
+    { label:'Authentification OSPF MD5', code:'Router(config)#router ospf 1\nRouter(config-router)#area 0 authentication message-digest\n!\nRouter(config)#interface Serial0/0\nRouter(config-if)#ip ospf message-digest-key 1 md5 MOT_DE_PASSE', desc:'Authentifie les annonces OSPF entre voisins avec MD5. Doit être identique sur toutes les interfaces de l\'aire. Max 16 caractères.' },
+    { label:'Redistribution routes statiques dans OSPF', code:'Router(config-router)#redistribute static subnets', desc:'Injecte les routes statiques dans OSPF. Génère des LSA de Type 5 diffusés dans tout le domaine.' },
+    { label:'Vérification OSPF', code:'Router#show ip ospf\nRouter#show ip ospf neighbor\nRouter#show ip ospf database\nRouter#show ip ospf interface\nRouter#show ip route ospf', desc:'<strong>show ip ospf neighbor</strong> : adjacences (FULL = voisinage établi). <strong>show ip ospf database</strong> : LSDB avec tous les LSA. Routes OSPF marquées <strong>O</strong>.' },
+    { label:'Débogage OSPF', code:'Router#debug ip ospf events\nRouter#debug ip ospf adj\nRouter#no debug all', desc:'Événements OSPF en temps réel. Toujours désactiver avec <strong>no debug all</strong> après usage.' },
+  ]},
+  { id:'hsrp', icon:'🔁', title:'Redondance HSRP', tag:'hsrp', cmds:[
+    { label:'Configuration HSRP complète', code:'! R1 — Actif (priorité haute)\nR1(config-if)#standby 1 ip 192.168.1.254\nR1(config-if)#standby 1 priority 110\nR1(config-if)#standby 1 preempt\n!\n! R2 — Passif (priorité défaut = 100)\nR2(config-if)#standby 1 ip 192.168.1.254\nR2(config-if)#standby 1 priority 90', desc:'<strong>standby 1 ip</strong> = IP virtuelle (passerelle des hôtes). <strong>priority 110</strong> > 100 = routeur actif. <strong>preempt</strong> = reprend le rôle actif après retour en ligne. MAC virtuelle : <strong>0000.0c07.ac**</strong>.' },
+    { label:'Vérification HSRP', code:'Router#show standby\nRouter#show standby brief', desc:'Affiche le rôle (Active/Standby/Listen), l\'IP virtuelle, la priorité et la MAC virtuelle HSRP.' },
+  ]},
+  { id:'dhcp', icon:'📬', title:'Service DHCP IPv4', tag:'dhcp', cmds:[
+    { label:'Configurer un serveur DHCP', code:'Router(config)#service dhcp\n!\nRouter(config)#ip dhcp pool MON_POOL\nRouter(dhcp-config)#network 192.168.13.0 255.255.255.0\nRouter(dhcp-config)#default-router 192.168.13.254\nRouter(dhcp-config)#dns-server 134.59.1.7\nRouter(dhcp-config)#domain-name M2103.unice.fr\nRouter(dhcp-config)#lease 0 1 0\nRouter(dhcp-config)#exit\n!\nRouter(config)#ip dhcp excluded-address 192.168.13.254\nRouter(config)#ip dhcp excluded-address 192.168.13.1 192.168.13.10', desc:'<strong>lease 0 1 0</strong> = 0 jours 1 heure 0 minutes. <strong>excluded-address</strong> réserve des adresses pour les équipements statiques (gateway, imprimantes).' },
+    { label:'Réservation DHCP par MAC', code:'Router(config)#ip dhcp pool IMPRIMANTE\nRouter(dhcp-config)#host 192.168.13.200 255.255.255.0\nRouter(dhcp-config)#client-identifier 010004.9A65.5A6C\n! Pour non-Windows :\nRouter(dhcp-config)#hardware-address 0004.9A65.5A6C', desc:'Réserve une IP fixe pour un équipement par son adresse MAC. Clients Windows : ajouter <strong>01</strong> devant la MAC (client-identifier).' },
+    { label:'Relais DHCP (ip helper-address)', code:'Router(config)#interface FastEthernet0/0\nRouter(config-if)#ip helper-address 192.168.254.10', desc:'Convertit les requêtes DHCP broadcast en unicast vers le serveur DHCP distant. Indispensable quand le serveur n\'est pas sur le même réseau que les clients.' },
+    { label:'Désactiver le service DHCP', code:'Router(config)#no service dhcp', desc:'Désactive le service DHCP sur le routeur.' },
+    { label:'Vérification DHCP', code:'Router#show ip dhcp binding\nRouter#show ip dhcp pool MON_POOL\nRouter#show ip dhcp conflict\nRouter#clear ip dhcp conflict *', desc:'<strong>show ip dhcp binding</strong> : adresses allouées. <strong>show ip dhcp conflict</strong> : conflits. <strong>clear ip dhcp conflict *</strong> : efface tous les conflits.' },
+  ]},
+  { id:'ipv6base', icon:'🚀', title:'Configuration IPv6 de Base', tag:'ipv6', cmds:[
+    { label:'Activer le routage IPv6 (obligatoire)', code:'Router(config)#ipv6 unicast-routing', desc:'Commande <strong>obligatoire</strong> avant toute configuration IPv6. Active les Router Advertisements (RA) et le SLAAC des hôtes.' },
+    { label:'Configurer une adresse GUA', code:'Router(config)#interface FastEthernet0/0\nRouter(config-if)#ipv6 address 2001:db8:1::1/64\nRouter(config-if)#no shutdown', desc:'Configure une adresse unicast globale IPv6 (routable Internet). L\'interface génère aussi automatiquement une LLA.' },
+    { label:'GUA avec EUI-64', code:'Router(config-if)#ipv6 address 2001:db8:1::/64 eui-64', desc:'L\'identifiant d\'interface (64 bits) est généré depuis l\'adresse MAC par EUI-64 (FF:FE inséré + inversion bit 7).' },
+    { label:'Configurer manuellement une LLA', code:'Router(config-if)#ipv6 address FE80::1 link-local', desc:'LLA non routable, utilisée comme gateway par défaut par les hôtes et pour les échanges de routage dynamique.' },
+    { label:'Activer IPv6 sans GUA', code:'Router(config-if)#ipv6 enable', desc:'Génère une LLA automatiquement sans configurer de GUA. Utile sur les interfaces série entre routeurs.' },
+    { label:'Routes statiques IPv6', code:'! Via prochain saut (GUA)\nRa(config)#ipv6 route 2001:db8:2::/64 2001:db8:link::1\n!\n! Via interface de sortie (si pas de GUA sur le lien)\nRa(config)#ipv6 route ::/0 Serial0/0\n!\n! Route par défaut IPv6\nRa(config)#ipv6 route ::/0 2001:db8:link::1', desc:'Si l\'interface série n\'a pas de GUA, utiliser l\'<strong>interface de sortie</strong> — une LLA ne peut pas être spécifiée comme next-hop dans une route statique.' },
+    { label:'Vérification IPv6', code:'Router#show ipv6 interface brief\nRouter#show ipv6 interface FastEthernet0/0\nRouter#show ipv6 route', desc:'<strong>show ipv6 interface brief</strong> : résumé de toutes les interfaces IPv6. <strong>show ipv6 route</strong> : table de routage IPv6 complète.' },
+  ]},
+  { id:'ripng', icon:'📶', title:'RIPng — RIP pour IPv6', tag:'ipv6', cmds:[
+    { label:'Configurer RIPng par interface', code:'Router(config)#ipv6 unicast-routing\n!\nRouter(config)#interface FastEthernet0/0\nRouter(config-if)#ipv6 rip RIP_PROCESS enable\n!\nRouter(config)#interface Serial0/0\nRouter(config-if)#ipv6 rip RIP_PROCESS enable', desc:'RIPng s\'active <strong>par interface</strong>. Le prochain saut dans les annonces est la <strong>LLA</strong> du voisin. Fonctionne même sans GUA sur les liens série.' },
+    { label:'Vérification RIPng', code:'Router#show ipv6 route\nRouter#show ipv6 protocols\nRouter#debug ipv6 rip', desc:'Routes RIPng marquées <strong>R</strong> dans la table IPv6. <strong>show ipv6 protocols</strong> affiche les protocoles IPv6 actifs.' },
+  ]},
+  { id:'ospfv3', icon:'🔷', title:'OSPFv3 — OSPF pour IPv6', tag:'ipv6', cmds:[
+    { label:'Configurer OSPFv3 par interface', code:'Router(config)#ipv6 unicast-routing\n!\nRouter(config)#interface FastEthernet0/0\nRouter(config-if)#ipv6 ospf 1 area 0\n!\nRouter(config)#interface Serial0/0\nRouter(config-if)#ipv6 ospf 1 area 0\n!\n! Interface passive\nRouter(config-if)#ipv6 ospf 1 area 0 passive', desc:'OSPFv3 se configure <strong>directement sur les interfaces</strong> (pas de commande network). Fonctionne sans GUA grâce aux LLA. Le prochain saut dans la table est la LLA du voisin.' },
+    { label:'Vérification OSPFv3', code:'Router#show ipv6 ospf neighbor\nRouter#show ipv6 ospf database\nRouter#show ipv6 route ospf\nRouter#show ipv6 ospf interface', desc:'Commandes analogues à OSPFv2 mais préfixées par <strong>ipv6</strong>. Routes marquées <strong>O</strong> dans la table IPv6.' },
+  ]},
+  { id:'dhcpv6', icon:'📮', title:'DHCPv6 — DHCP pour IPv6', tag:'ipv6', cmds:[
+    { label:'DHCPv6 avec état (tous paramètres)', code:'Router(config)#ipv6 unicast-routing\n!\nRouter(config)#ipv6 dhcp pool MON_POOL_V6\nRouter(config-dhcpv6)#address prefix 2003:DB8:ACDC:1::/64 lifetime infinite infinite\nRouter(config-dhcpv6)#dns-server 2001:4860:4860::8888\nRouter(config-dhcpv6)#domain-name M2103.unice.fr\n!\nRouter(config)#interface FastEthernet0/0\nRouter(config-if)#ipv6 dhcp server MON_POOL_V6\nRouter(config-if)#ipv6 nd managed-config-flag', desc:'DHCPv6 avec état : tous les paramètres (y compris l\'@IPv6) fournis par le serveur. <strong>managed-config-flag</strong> indique aux hôtes d\'utiliser DHCPv6 complet. Multicast <strong>FF02::1:2</strong>.' },
+    { label:'DHCPv6 sans état (SLAAC + DNS)', code:'Router(config)#ipv6 dhcp pool POOL_SANS_ETAT\nRouter(config-dhcpv6)#dns-server 2001:ABC:DEF::13\nRouter(config-dhcpv6)#domain-name M2103.unice.fr\n!\nRouter(config-if)#ipv6 dhcp server POOL_SANS_ETAT\nRouter(config-if)#ipv6 nd other-conf-flag', desc:'@IPv6 obtenue via SLAAC, le serveur DHCPv6 fournit uniquement DNS et domaine. <strong>other-conf-flag</strong> = chercher les autres paramètres chez DHCPv6.' },
+    { label:'Relais DHCPv6', code:'Rb(config)#interface FastEthernet0/0\nRb(config-if)#ipv6 nd managed-config-flag\nRb(config-if)#ipv6 dhcp relay destination @IPv6_serveur_DHCP', desc:'Convertit les requêtes DHCPv6 multicast (FF02::1:2) en unicast vers le serveur distant. Indispensable pour servir des réseaux non directement connectés.' },
+    { label:'Synchroniser l\'horloge', code:'Router#clock set 14:30:00 15 March 2024', desc:'Nécessaire avant DHCPv6 pour que les baux (lease) soient cohérents avec l\'heure des hôtes.' },
+    { label:'Vérification DHCPv6', code:'Router#show ipv6 dhcp binding\nRouter#show ipv6 dhcp pool MON_POOL_V6', desc:'<strong>show ipv6 dhcp binding</strong> : adresses IPv6 allouées aux clients. <strong>show ipv6 dhcp pool</strong> : config et statistiques du pool.' },
+  ]},
+  { id:'tunnel', icon:'🔗', title:'Tunnel IPv6 dans IPv4 (MCT)', tag:'ipv6', cmds:[
+    { label:'Configurer un tunnel MCT', code:'! Sur Ra (côté gauche)\nRa(config)#interface Tunnel0\nRa(config-if)#ipv6 address 2001:10:10:50::1/64\nRa(config-if)#tunnel source FastEthernet1/0\nRa(config-if)#tunnel destination 194.10.20.1\nRa(config-if)#tunnel mode ipv6ip\n!\n! Routes nécessaires\nRa(config)#ipv6 route 2001:10:10:20::/64 2001:10:10:50::2\nRa(config)#ip route 0.0.0.0 0.0.0.0 194.10.10.2', desc:'Encapsule des paquets IPv6 dans IPv4 (en-tête IPv4 de 20 octets). Les deux extrémités doivent être <strong>dual-stack</strong>. Des routes IPv4 <strong>et</strong> IPv6 sont nécessaires aux deux bouts.' },
+    { label:'Vérification du tunnel', code:'Router#show interface Tunnel0\nRouter#show ipv6 route', desc:'Vérifie l\'état du tunnel (protocol up/down) et les routes IPv6 passant par le tunnel.' },
+  ]},
+  { id:'aclv6', icon:'🔒', title:'ACL IPv6 (ACLv6)', tag:'ipv6', cmds:[
+    { label:'ACL IPv6 nommée (seul type possible)', code:'! En IPv6 : PAS d\'ACL numérotées — uniquement nommées\nRouter(config)#ipv6 access-list TELNET_ONLY\nRouter(config-ipv6-acl)#permit tcp host 2001:db8::1 any eq 23\nRouter(config-ipv6-acl)#deny ipv6 any any\n!\n! Application sur interface\nRouter(config-if)#ipv6 traffic-filter TELNET_ONLY in\n!\n! Application sur lignes VTY\nRouter(config)#line vty 0 15\nRouter(config-line)#ipv6 access-class TELNET_ONLY in', desc:'En IPv6 il n\'existe pas d\'ACL numérotées. Le mot-clé d\'application est <strong>ipv6 traffic-filter</strong> (pas ip access-group). Sur VTY : <strong>ipv6 access-class</strong>. Mêmes principes qu\'IPv4 (séquentiel, premier match, deny implicite).' },
+    { label:'Afficher les ACLv6', code:'Router#show ipv6 access-list', desc:'Affiche toutes les ACL IPv6 configurées avec leurs compteurs de correspondances.' },
+  ]},
+];
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderCommands() {
+  const tags = [...new Set(cmdGroups.map(g => g.tag))];
+  document.getElementById('cmdFilters').innerHTML =
+    '<button class="filter-btn active" onclick="filterCmds(\'all\',this)">Tout</button>' +
+    tags.map(t => '<button class="filter-btn" onclick="filterCmds(\''+t+'\',this)">'+t.charAt(0).toUpperCase()+t.slice(1)+'</button>').join('');
+
+  document.getElementById('cmdList').innerHTML = cmdGroups.map((g, gi) =>
+    '<div class="cmd-group fade-in" data-tag="'+g.tag+'" id="cg'+gi+'">' +
+    '<div class="cmd-group-header" onclick="toggleCmdGroup('+gi+')">' +
+    '<div class="cmd-group-title"><span class="cmd-group-icon">'+g.icon+'</span> '+g.title+'<span class="cmd-group-badge">'+g.cmds.length+'</span></div>' +
+    '<span class="cmd-group-chevron" id="cgchev'+gi+'">▼</span>' +
+    '</div>' +
+    '<div class="cmd-group-body" id="cgbody'+gi+'">' +
+    g.cmds.map((c,ci) =>
+      '<div class="cmd-entry">' +
+      '<div class="cmd-label">'+c.label+'</div>' +
+      '<div class="cmd-code" onclick="copyCmd(this,\''+encodeURIComponent(c.code)+'\')">' + escHtml(c.code) + '</div>' +
+      '<div class="cmd-desc">'+c.desc+'</div>' +
+      '</div>'
+    ).join('') +
+    '</div></div>'
+  ).join('');
+}
+
+function toggleCmdGroup(gi) {
+  const body = document.getElementById('cgbody'+gi);
+  const chev = document.getElementById('cgchev'+gi);
+  const open = body.classList.toggle('open');
+  chev.classList.toggle('open', open);
+}
+
+function copyCmd(el, encoded) {
+  const text = decodeURIComponent(encoded);
+  function done() { el.classList.add('copied'); setTimeout(()=>el.classList.remove('copied'),2000); }
+  if (navigator.clipboard) { navigator.clipboard.writeText(text).then(done).catch(done); }
+  else {
+    const ta = document.createElement('textarea');
+    ta.value=text; ta.style.cssText='position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta); done();
+  }
+}
+
+function filterCmds(tag, btn) {
+  document.querySelectorAll('.cmd-filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.cmd-group').forEach(g=>{
+    g.style.display=(tag==='all'||g.dataset.tag===tag)?'block':'none';
+  });
+}
+
+renderCommands();
+</script>
