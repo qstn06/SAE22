@@ -2,591 +2,1125 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SaE 22 – Guide de Révision</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>R201 – Routage &amp; Sécurité</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
-:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1a2235;--border:#1e2d45;--accent:#00d4ff;--accent2:#7c3aed;--accent3:#10b981;--warn:#f59e0b;--danger:#ef4444;--text:#e2e8f0;--text-muted:#64748b;--text-dim:#94a3b8;--glow:0 0 20px rgba(0,212,255,0.15);}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden;}
-#sidebar{position:fixed;left:0;top:0;bottom:0;width:265px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;z-index:100;display:flex;flex-direction:column;}
-.sidebar-logo{padding:22px 18px 14px;border-bottom:1px solid var(--border);}
-.sidebar-logo .tag{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;}
-.sidebar-logo h2{font-size:18px;font-weight:700;margin-top:4px;line-height:1.2;}
-.sidebar-logo span{color:var(--accent);}
-.sidebar-nav{padding:10px 0;flex:1;}
-.nav-section{padding:8px 18px 4px;font-size:9px;font-family:'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 18px;cursor:pointer;font-size:12px;color:var(--text-dim);transition:all 0.2s;border-left:3px solid transparent;line-height:1.3;}
-.nav-item:hover{background:var(--surface2);color:var(--text);}
-.nav-item.active{background:rgba(0,212,255,0.08);color:var(--accent);border-left-color:var(--accent);}
-.nav-item .num{font-family:'Space Mono',monospace;font-size:9px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 5px;min-width:22px;text-align:center;flex-shrink:0;}
-.nav-item.active .num{background:var(--accent);color:#000;border-color:var(--accent);}
-.progress-bar{margin:10px 18px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width 0.4s ease;border-radius:2px;}
-.progress-label{padding:0 18px 14px;font-size:10px;color:var(--text-muted);font-family:'Space Mono',monospace;}
-#main{margin-left:265px;min-height:100vh;}
-.topbar{position:sticky;top:0;background:rgba(10,14,26,0.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:13px 36px;display:flex;align-items:center;justify-content:space-between;z-index:50;}
-.topbar-title{font-size:12px;color:var(--text-muted);font-family:'Space Mono',monospace;}
-.topbar-title span{color:var(--accent);}
-.topbar-btns{display:flex;gap:8px;}
-.btn-mode{padding:5px 13px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-size:12px;font-family:'Space Grotesk',sans-serif;transition:all 0.2s;}
-.btn-mode:hover{border-color:var(--accent);color:var(--accent);}
-.btn-mode.active{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;}
-.page{display:none;}
-.page.active{display:block;}
-.hero{padding:56px 36px 36px;max-width:880px;}
-.hero .eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:14px;}
-.hero h1{font-size:clamp(26px,4vw,46px);font-weight:700;line-height:1.1;margin-bottom:18px;}
-.hero h1 .hl{color:var(--accent);}
-.hero .sub{font-size:13px;color:var(--text-dim);line-height:1.75;max-width:580px;margin-bottom:36px;}
-.chapter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:13px;padding:0 36px 56px;}
-.chapter-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:17px;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;}
-.chapter-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity 0.25s;}
-.chapter-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--glow);}
-.chapter-card:hover::before{opacity:1;}
-.card-num{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:7px;}
-.card-title{font-size:13px;font-weight:600;margin-bottom:6px;}
-.card-desc{font-size:11px;color:var(--text-muted);line-height:1.6;}
-.card-badge{display:inline-block;margin-top:9px;padding:2px 7px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);border-radius:4px;font-size:10px;color:var(--accent);font-family:'Space Mono',monospace;}
-.card-badge.new{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:var(--accent3);}
-.chapter-content{max-width:800px;padding:44px 36px 80px;}
-.ch-header{margin-bottom:32px;padding-bottom:22px;border-bottom:1px solid var(--border);}
-.ch-eyebrow{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--accent);text-transform:uppercase;margin-bottom:10px;}
-.ch-title{font-size:27px;font-weight:700;line-height:1.2;margin-bottom:12px;}
-.ch-summary{font-size:13px;color:var(--text-dim);line-height:1.8;padding:14px 16px;background:rgba(0,212,255,0.05);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;}
-.section{margin-bottom:34px;}
-.section-title{font-size:16px;font-weight:600;margin-bottom:13px;display:flex;align-items:center;gap:9px;}
-.section-title .icon{width:26px;height:26px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-p{font-size:13px;line-height:1.85;color:var(--text-dim);margin-bottom:12px;}
-p strong{color:var(--text);}
-.info-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 17px;margin:13px 0;font-size:12px;line-height:1.75;color:var(--text-dim);}
-.info-box.accent{border-color:rgba(0,212,255,0.3);background:rgba(0,212,255,0.05);}
-.info-box.green{border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05);}
-.info-box.warn{border-color:rgba(245,158,11,0.3);background:rgba(245,158,11,0.05);}
-.info-box.purple{border-color:rgba(124,58,237,0.3);background:rgba(124,58,237,0.05);}
-.info-box.red{border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.05);}
-.info-box-title{font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
-.info-box.accent .info-box-title{color:var(--accent);}
-.info-box.green .info-box-title{color:var(--accent3);}
-.info-box.warn .info-box-title{color:var(--warn);}
-.info-box.purple .info-box-title{color:#a78bfa;}
-.info-box.red .info-box-title{color:var(--danger);}
-.kv-table{width:100%;border-collapse:collapse;margin:13px 0;font-size:12px;}
-.kv-table th{background:var(--surface2);padding:8px 12px;text-align:left;font-weight:600;color:var(--text);border-bottom:2px solid var(--accent);font-size:11px;}
-.kv-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top;}
-.kv-table tr:last-child td{border-bottom:none;}
-.kv-table tr:hover td{background:var(--surface2);color:var(--text);}
-.code-block{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Space Mono',monospace;font-size:11px;line-height:1.7;overflow-x:auto;margin:13px 0;color:#c9d1d9;}
-.code-block .kw{color:#ff7b72;}
-.code-block .fn{color:#d2a8ff;}
-.code-block .cm{color:#8b949e;font-style:italic;}
-.code-block .str{color:#a5d6ff;}
-.code-block .num{color:#f0883e;}
-.add{display:block;background:rgba(16,185,129,0.12);margin:0 -14px;padding:0 14px;border-left:3px solid var(--accent3);}
-.del{display:block;background:rgba(239,68,68,0.1);margin:0 -14px;padding:0 14px;border-left:3px solid var(--danger);}
-.formula{background:#0d1117;border:1px solid rgba(124,58,237,0.4);border-radius:8px;padding:13px 17px;font-family:'Space Mono',monospace;font-size:12px;color:#a78bfa;margin:13px 0;text-align:center;line-height:1.8;}
-.quiz-header{padding:44px 36px 28px;border-bottom:1px solid var(--border);}
-.quiz-header .eyebrow{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--warn);text-transform:uppercase;margin-bottom:10px;}
-.quiz-header h1{font-size:25px;font-weight:700;margin-bottom:9px;}
-.quiz-header p{font-size:13px;color:var(--text-dim);max-width:540px;}
-.quiz-filters{padding:16px 36px;display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border);}
-.filter-btn{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-size:11px;font-family:'Space Grotesk',sans-serif;transition:all 0.2s;}
-.filter-btn:hover{border-color:var(--warn);color:var(--warn);}
-.filter-btn.active{background:var(--warn);color:#000;border-color:var(--warn);font-weight:600;}
-.quiz-grid{padding:20px 36px 80px;display:flex;flex-direction:column;gap:13px;max-width:800px;}
-.q-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-.q-card.hidden{display:none;}
-.q-header{padding:13px 17px;display:flex;align-items:flex-start;gap:11px;cursor:pointer;user-select:none;}
-.q-header:hover{background:var(--surface2);}
-.q-mark{flex-shrink:0;padding:2px 7px;border-radius:5px;font-family:'Space Mono',monospace;font-size:10px;font-weight:700;margin-top:1px;}
-.mark-2{background:rgba(16,185,129,0.2);color:var(--accent3);border:1px solid rgba(16,185,129,0.3);}
-.mark-6{background:rgba(0,212,255,0.15);color:var(--accent);border:1px solid rgba(0,212,255,0.3);}
-.mark-8{background:rgba(124,58,237,0.2);color:#a78bfa;border:1px solid rgba(124,58,237,0.3);}
-.mark-10{background:rgba(245,158,11,0.2);color:var(--warn);border:1px solid rgba(245,158,11,0.3);}
-.mark-12{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3);}
-.q-type{flex-shrink:0;padding:2px 7px;border-radius:5px;font-size:9px;font-family:'Space Mono',monospace;background:var(--surface2);color:var(--text-muted);border:1px solid var(--border);margin-top:1px;}
-.q-text{flex:1;font-size:13px;line-height:1.6;color:var(--text);}
-.q-toggle{flex-shrink:0;width:22px;height:22px;background:var(--surface2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-muted);transition:transform 0.2s;margin-top:2px;}
-.q-card.open .q-toggle{transform:rotate(180deg);color:var(--accent);}
-.q-answer{display:none;padding:0 17px 17px;border-top:1px solid var(--border);}
-.q-card.open .q-answer{display:block;padding-top:13px;}
-.answer-title{font-size:9px;font-family:'Space Mono',monospace;letter-spacing:2px;color:var(--accent3);text-transform:uppercase;margin-bottom:8px;}
-.q-answer p{font-size:12px;}
-.q-answer ul{padding-left:17px;margin:6px 0;}
-.q-answer li{font-size:12px;color:var(--text-dim);margin-bottom:5px;line-height:1.6;}
-.q-answer strong{color:var(--text);}
-.ch-nav{display:flex;gap:10px;margin-top:40px;padding-top:20px;border-top:1px solid var(--border);}
-.ch-nav-btn{padding:8px 17px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);cursor:pointer;font-size:12px;font-family:'Space Grotesk',sans-serif;transition:all 0.2s;}
-.ch-nav-btn:hover{border-color:var(--accent);color:var(--accent);}
-.ch-nav-btn.next{background:var(--accent);color:#000;border-color:var(--accent);font-weight:600;margin-left:auto;}
-.ch-nav-btn.next:hover{background:#00b8e0;}
-.wait-box{background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:13px 17px;margin-top:30px;font-size:12px;color:var(--warn);display:flex;align-items:center;gap:10px;}
-::-webkit-scrollbar{width:5px;height:5px;}
-::-webkit-scrollbar-track{background:var(--bg);}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+  :root {
+    --bg:       #140D19;
+    --surface:  #1c1226;
+    --card:     #241830;
+    --border:   #36284C;
+    --accent:   #9D6E90;
+    --accent2:  #6A2E3D;
+    --accent3:  #C4A0BD;
+    --lavender: #E7D3E6;
+    --warn:     #c97c5a;
+    --danger:   #6A2E3D;
+    --text:     #E7D3E6;
+    --muted:    #6b5470;
+    --soft:     #9D6E90;
+    --font-head: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-body: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; min-height: 100vh; overflow-x: hidden; }
+
+  .header { background: linear-gradient(135deg, #140D19 0%, #241830 50%, #140D19 100%); border-bottom: 1px solid var(--border); padding: calc(var(--safe-top) + 20px) 20px 24px; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); }
+  .header-inner { max-width: 900px; margin: 0 auto; }
+  .header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+  .badge { background: linear-gradient(135deg, #6A2E3D, #9D6E90); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 100px; text-transform: uppercase; }
+  .header h1 { font-family: var(--font-head); font-size: clamp(20px, 5vw, 28px); font-weight: 700; background: linear-gradient(135deg, #E7D3E6 0%, #9D6E90 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; }
+  .header-sub { color: var(--soft); font-size: 13px; margin-top: 2px; }
+
+  .nav-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-top: 14px; }
+  .nav-wrap::-webkit-scrollbar { display: none; }
+  .nav-tabs { display: flex; gap: 6px; white-space: nowrap; }
+  .nav-tab { background: var(--card); border: 1px solid var(--border); color: var(--soft); font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 100px; cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent; user-select: none; }
+  .nav-tab.active { background: linear-gradient(135deg, #6A2E3D, #9D6E90); border-color: transparent; color: #fff; }
+  .nav-tab:hover:not(.active) { border-color: #9D6E90; color: #9D6E90; }
+
+  .main { max-width: 900px; margin: 0 auto; padding: 24px 16px calc(var(--safe-bottom) + 80px); }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+  .card-title { font-family: var(--font-head); font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+
+  .chapter-grid { display: grid; gap: 12px; }
+  .chapter-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; cursor: pointer; transition: all 0.25s; -webkit-tap-highlight-color: transparent; position: relative; overflow: hidden; }
+  .chapter-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent-color, var(--accent)); border-radius: 0 4px 4px 0; }
+  .chapter-card:hover { border-color: var(--accent-color, #9D6E90); transform: translateY(-1px); }
+  .chapter-card:active { transform: scale(0.98); }
+  .chapter-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .chapter-name { font-family: var(--font-head); font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .chapter-desc { font-size: 13px; color: var(--soft); line-height: 1.5; }
+  .chapter-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .topic-tag { background: rgba(255,255,255,0.06); border: 1px solid rgba(54,40,76,0.5); color: var(--soft); font-size: 11px; padding: 3px 8px; border-radius: 100px; }
+  .chapter-arrow { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; }
+
+  .learn-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .learn-back { background: var(--card); border: 1px solid var(--border); color: var(--soft); font-size: 14px; font-weight: 600; padding: 8px 16px; border-radius: 100px; cursor: pointer; display: flex; align-items: center; gap: 6px; -webkit-tap-highlight-color: transparent; transition: all 0.2s; }
+  .learn-back:hover { border-color: #9D6E90; color: #9D6E90; }
+  .learn-chapter-title { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: #fff; }
+  .learn-chapter-sub { font-size: 13px; color: var(--soft); margin-top: 2px; }
+
+  .concept-block { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 14px; }
+  .concept-title { font-size: 15px; font-weight: 700; color: #9D6E90; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .concept-body { font-size: 14px; color: var(--soft); line-height: 1.7; }
+  .concept-body strong { color: var(--text); }
+  .concept-body em { color: var(--accent3); font-style: normal; font-weight: 600; }
+
+  .highlight-box { background: rgba(157,110,144,0.09); border: 1px solid rgba(157,110,144,0.35); border-radius: var(--radius-sm); padding: 14px; margin: 12px 0; font-size: 13px; color: var(--text); }
+  .highlight-box.warn { background: rgba(201,124,90,0.09); border-color: rgba(201,124,90,0.35); }
+  .highlight-box.success { background: rgba(196,160,189,0.09); border-color: rgba(196,160,189,0.35); }
+  .highlight-box.purple { background: rgba(106,46,61,0.12); border-color: rgba(106,46,61,0.4); }
+
+  code, .code-block { font-family: var(--font-mono); background: rgba(20,13,25,0.7); border: 1px solid rgba(54,40,76,0.6); border-radius: 6px; padding: 2px 7px; font-size: 12px; color: #C4A0BD; }
+  .code-block { display: block; padding: 14px; margin: 10px 0; line-height: 1.6; overflow-x: auto; white-space: pre; }
+
+  .next-btn { background: linear-gradient(135deg, #6A2E3D, #9D6E90); color: #fff; font-size: 15px; font-weight: 700; padding: 16px 28px; border-radius: 100px; border: none; cursor: pointer; width: 100%; margin-top: 20px; -webkit-tap-highlight-color: transparent; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .next-btn:hover { opacity: 0.9; }
+
+  .progress-bar { background: #241830; border-radius: 100px; height: 4px; margin-bottom: 20px; overflow: hidden; }
+  .progress-fill { background: linear-gradient(90deg, #6A2E3D, #9D6E90); height: 100%; border-radius: 100px; transition: width 0.4s; }
+  .progress-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; text-align: right; }
+
+  .exam-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .filter-btn { background: var(--card); border: 1px solid var(--border); color: var(--soft); font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: 100px; cursor: pointer; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+  .filter-btn.active { background: #9D6E90; border-color: transparent; color: #140D19; }
+  .exam-q { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 14px; display: none; }
+  .exam-q.visible { display: block; }
+  .q-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .q-marks { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 100px; text-transform: uppercase; }
+  .marks-2  { background: rgba(196,160,189,0.15); color: #C4A0BD; border: 1px solid rgba(196,160,189,0.35); }
+  .marks-6  { background: rgba(157,110,144,0.15); color: #9D6E90; border: 1px solid rgba(157,110,144,0.35); }
+  .marks-8  { background: rgba(201,124,90,0.12);  color: #d4967a; border: 1px solid rgba(201,124,90,0.3); }
+  .marks-10 { background: rgba(106,46,61,0.15);   color: #c27080; border: 1px solid rgba(106,46,61,0.4); }
+  .marks-12 { background: rgba(54,40,76,0.4);     color: #E7D3E6; border: 1px solid rgba(54,40,76,0.6); }
+  .q-type { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .q-text { font-size: 15px; font-weight: 600; color: #fff; line-height: 1.5; margin-bottom: 12px; }
+  .q-subpoints { list-style: none; }
+  .q-subpoints li { font-size: 14px; color: var(--soft); padding: 4px 0 4px 18px; position: relative; line-height: 1.5; }
+  .q-subpoints li::before { content: '→'; position: absolute; left: 0; color: #9D6E90; font-size: 12px; top: 5px; }
+  .answer-toggle { background: rgba(54,40,76,0.3); border: 1px solid rgba(54,40,76,0.5); color: var(--soft); font-size: 13px; font-weight: 600; padding: 10px 16px; border-radius: var(--radius-sm); cursor: pointer; width: 100%; text-align: left; display: flex; align-items: center; justify-content: space-between; margin-top: 12px; transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+  .answer-toggle:hover { border-color: #9D6E90; color: #9D6E90; }
+  .answer-content { display: none; background: rgba(157,110,144,0.06); border: 1px solid rgba(157,110,144,0.25); border-radius: var(--radius-sm); padding: 14px; margin-top: 10px; font-size: 13px; color: var(--text); line-height: 1.7; }
+  .answer-content.open { display: block; }
+  .answer-content code { color: #C4A0BD; }
+
+  .formula-box { background: rgba(106,46,61,0.12); border: 1px solid rgba(106,46,61,0.35); border-radius: var(--radius-sm); padding: 14px; margin: 10px 0; font-family: var(--font-mono); font-size: 13px; color: #E7D3E6; text-align: center; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+  th { background: rgba(106,46,61,0.15); color: #E7D3E6; font-weight: 700; padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  td { padding: 9px 12px; border-bottom: 1px solid rgba(54,40,76,0.5); color: var(--soft); }
+  td strong { color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(157,110,144,0.06); }
+
+  .step-list { list-style: none; }
+  .step-list li { display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid rgba(54,40,76,0.5); }
+  .step-list li:last-child { border-bottom: none; }
+  .step-num { width: 26px; height: 26px; background: linear-gradient(135deg, #6A2E3D, #9D6E90); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0; margin-top: 2px; }
+  .step-body { font-size: 14px; color: var(--soft); line-height: 1.6; }
+  .step-body strong { color: #fff; }
+
+  .fab { position: fixed; bottom: calc(var(--safe-bottom) + 24px); right: 20px; width: 48px; height: 48px; background: linear-gradient(135deg, #6A2E3D, #9D6E90); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; box-shadow: 0 4px 20px rgba(157,110,144,0.4); z-index: 50; -webkit-tap-highlight-color: transparent; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .fab.visible { opacity: 1; pointer-events: all; }
+
+  .complete-banner { background: linear-gradient(135deg, rgba(106,46,61,0.2), rgba(157,110,144,0.12)); border: 1px solid rgba(157,110,144,0.3); border-radius: var(--radius); padding: 24px; text-align: center; margin-top: 24px; }
+  .complete-banner .big { font-size: 48px; margin-bottom: 8px; }
+  .complete-banner h3 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+  .complete-banner p { font-size: 14px; color: var(--soft); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .fade-in { animation: fadeIn 0.3s ease; }
+
+  @media (min-width: 600px) { .chapter-grid { grid-template-columns: 1fr 1fr; } .main { padding: 32px 24px; } }
 </style>
 </head>
 <body>
-<div id="sidebar">
-  <div class="sidebar-logo">
-    <div class="tag">UCA / IUT / BUT R&amp;T</div>
-    <h2>SaE <span>22</span><br>Guide de Révision</h2>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-top"><span class="badge">R201 · S2</span></div>
+    <h1>Routage &amp; Sécurité</h1>
+    <p class="header-sub">Technologies de l'Internet · IUT Nice Sophia Antipolis · Dépt. RT</p>
+    <div class="nav-wrap">
+      <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showSection('overview')">📚 Chapitres</button>
+        <button class="nav-tab" onclick="showSection('learn')">🎓 Apprendre</button>
+        <button class="nav-tab" onclick="showSection('exam')">📝 Révisions Examen</button>
+      </div>
+    </div>
   </div>
-  <div class="sidebar-nav">
-    <div class="nav-section">Accueil</div>
-    <div class="nav-item active" onclick="showPage('home')"><span class="num">🏠</span>Accueil</div>
-    <div class="nav-section">Chapitres</div>
-    <div class="nav-item" onclick="showPage('ch1')"><span class="num">01</span>Chaîne de transmission numérique</div>
-    <div class="nav-item" onclick="showPage('ch2')"><span class="num">02</span>Spectre des fréquences &amp; ISM</div>
-    <div class="nav-item" onclick="showPage('ch3')"><span class="num">03</span>LoRa &amp; Cartes UCA</div>
-    <div class="nav-item" onclick="showPage('ch4')"><span class="num">04</span>Codes Arduino TP1 ✨</div>
-    <div class="nav-item" onclick="showPage('ch5')"><span class="num">05</span>Paramètres LoRa en détail</div>
-    <div class="nav-item" onclick="showPage('ch6')"><span class="num">06</span>Portée LoRa &amp; Bilan de liaison</div>
-    <div class="nav-item" onclick="showPage('ch7')"><span class="num">07</span>Mesures LoRa &amp; SDRangel</div>
-    <div class="nav-item" onclick="showPage('ch8')"><span class="num">08</span>Mesure signal TNT</div>
-    <div class="nav-item" onclick="showPage('ch9')"><span class="num">09</span>Mesure TV Satellite</div>
-    <div class="nav-section">Révision</div>
-    <div class="nav-item" onclick="showPage('quiz')"><span class="num">📝</span>Questions d'examen</div>
-  </div>
-  <div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="progress-label" id="progressLabel">0 / 9 chapitres</div>
-  </div>
+</header>
+
+<div class="main">
+  <section id="overview" class="section active">
+    <div style="margin-bottom:20px;">
+      <p style="font-size:14px; color:var(--soft); line-height:1.6;">
+        Ce cours couvre <strong style="color:#fff">7 chapitres majeurs</strong> sur 24h CM + 9h TD + 30h TP.
+        Appuyez sur un chapitre pour commencer — ou accédez directement aux <strong style="color:#fff">Révisions Examen</strong>.
+      </p>
+    </div>
+    <div class="chapter-grid" id="chapterGrid"></div>
+  </section>
+
+  <section id="learn" class="section">
+    <div class="learn-header">
+      <button class="learn-back" onclick="goBackToOverview()">← Retour</button>
+      <div>
+        <div id="learnTitle" class="learn-chapter-title"></div>
+        <div id="learnSub" class="learn-chapter-sub"></div>
+      </div>
+    </div>
+    <div class="progress-label" id="progressLabel"></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div id="learnContent"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextSlide()">
+      <span id="nextLabel">Continuer</span> <span>→</span>
+    </button>
+  </section>
+
+  <section id="exam" class="section">
+    <div style="margin-bottom:16px;">
+      <p style="font-size:14px;color:var(--soft);">Filtrez par points ou par chapitre. Appuyez sur <strong style="color:var(--accent3)">Voir la Réponse</strong> pour afficher la correction type.</p>
+    </div>
+    <div class="exam-filters">
+      <button class="filter-btn active" onclick="filterExam('all', this)">Tous</button>
+      <button class="filter-btn" onclick="filterExam('2', this)">2 pts</button>
+      <button class="filter-btn" onclick="filterExam('6', this)">6 pts</button>
+      <button class="filter-btn" onclick="filterExam('8', this)">8 pts</button>
+      <button class="filter-btn" onclick="filterExam('10', this)">10 pts</button>
+      <button class="filter-btn" onclick="filterExam('12', this)">12 pts</button>
+    </div>
+    <div id="examList"></div>
+  </section>
 </div>
 
-<div id="main">
-  <div class="topbar">
-    <div class="topbar-title">SaE 22 — <span id="topbarTitle">Bienvenue</span></div>
-    <div class="topbar-btns">
-      <button class="btn-mode active" onclick="setView('learn')">📖 Cours</button>
-      <button class="btn-mode" onclick="setView('quiz')">📝 Examen</button>
-    </div>
-  </div>
-
-  <!-- HOME -->
-  <div class="page active" id="page-home">
-    <div class="hero">
-      <div class="eyebrow">BUT R&amp;T · 1ère Année · 2021–2022</div>
-      <h1>Mesurer &amp; Caractériser<br>un <span class="hl">Signal</span> ou un Système</h1>
-      <p class="sub">Ton guide de révision interactif pour SaE 22. Chaque chapitre explique la théorie, montre les formules et prépare à l'examen. Tape <strong>"next"</strong> dans le chat pour que je t'explique chaque chapitre un par un.</p>
-    </div>
-    <div class="chapter-grid">
-      <div class="chapter-card" onclick="showPage('ch1')"><div class="card-num">CHAPITRE 01</div><div class="card-title">Chaîne de transmission numérique</div><div class="card-desc">De la voix au haut-parleur : CAN, modulateur, canal, démodulateur, CNA.</div><div class="card-badge">Théorie</div></div>
-      <div class="chapter-card" onclick="showPage('ch2')"><div class="card-num">CHAPITRE 02</div><div class="card-title">Spectre des fréquences &amp; ISM</div><div class="card-desc">Fréquences licenciées vs libres, bandes ISM, duty cycle, comparatif technologies.</div><div class="card-badge">Théorie</div></div>
-      <div class="chapter-card" onclick="showPage('ch3')"><div class="card-num">CHAPITRE 03</div><div class="card-title">LoRa &amp; Cartes UCA</div><div class="card-desc">Technologie LoRaWAN, module RFM95W, plateforme UCA IoT, installation Arduino IDE.</div><div class="card-badge">Technique</div></div>
-      <div class="chapter-card" onclick="showPage('ch4')"><div class="card-num">CHAPITRE 04 ✨</div><div class="card-title">Codes Arduino TP1 — Émission &amp; Réception</div><div class="card-desc">Les deux codes complets TP1 annotés ligne par ligne. Différences critiques émetteur/récepteur.</div><div class="card-badge new">NOUVEAU</div></div>
-      <div class="chapter-card" onclick="showPage('ch5')"><div class="card-num">CHAPITRE 05</div><div class="card-title">Paramètres LoRa en détail</div><div class="card-desc">SF, BW, Coding Rate, Préambule, Puissance TX : impact sur portée, débit et énergie.</div><div class="card-badge">Technique</div></div>
-      <div class="chapter-card" onclick="showPage('ch6')"><div class="card-num">CHAPITRE 06</div><div class="card-title">Portée LoRa &amp; Bilan de liaison</div><div class="card-desc">Sensibilité récepteur, bilan de liaison, Okumura-Hata, formule de Friis, extrapolation.</div><div class="card-badge">Calcul</div></div>
-      <div class="chapter-card" onclick="showPage('ch7')"><div class="card-num">CHAPITRE 07</div><div class="card-title">Mesures LoRa &amp; SDRangel</div><div class="card-desc">Mesures RSSI indoor/outdoor, duty cycle, consommation énergie, spectrogramme waterfall.</div><div class="card-badge">Pratique</div></div>
-      <div class="chapter-card" onclick="showPage('ch8')"><div class="card-num">CHAPITRE 08</div><div class="card-title">Mesure signal TNT</div><div class="card-desc">DVB-T en bande UHF, multiplex 8 MHz, niveaux dBµV, mesureur Televes H30FLEX.</div><div class="card-badge">Pratique</div></div>
-      <div class="chapter-card" onclick="showPage('ch9')"><div class="card-num">CHAPITRE 09</div><div class="card-title">Mesure TV Satellite</div><div class="card-desc">Satellites géostationnaires, LNB, fréquence intermédiaire, transpondeurs, UNAOHM AP01.</div><div class="card-badge">Pratique</div></div>
-    </div>
-  </div>
-
-  <!-- CH1 -->
-  <div class="page" id="page-ch1">
-    <div class="chapter-content">
-      <div class="ch-header"><div class="ch-eyebrow">Chapitre 01 · Théorie</div><h1 class="ch-title">Chaîne de Transmission Numérique</h1><div class="ch-summary">Une chaîne de transmission numérique convertit un signal réel (son) en données numériques, les envoie à travers un canal, puis les reconstruit à l'autre bout. C'est un pipeline où chaque étape transforme le signal d'une façon précise.</div></div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📡</div>La chaîne complète</div>
-        <p>La chaîne se divise en <strong>émission</strong> et <strong>réception</strong>, reliés par un <strong>support de transmission</strong>. En SaE 22, le canal est l'espace libre (air) pour LoRa, un câble coaxial pour la TNT.</p>
-        <div class="info-box accent"><div class="info-box-title">📤 Côté Émission</div><strong>Microphone</strong> → Convertit les ondes sonores en signal électrique analogique.<br><br><strong>Échantillonneur-Bloqueur</strong> → Prend des échantillons à intervalles réguliers. Signal en "escalier" (temps discret).<br><br><strong>CAN (ADC)</strong> → Convertit les échantillons analogiques en valeurs binaires (0 et 1).<br><br><strong>Émetteur Numérique</strong> → Applique le codage canal (protection erreurs) et la modulation (encode les bits sur une porteuse radio).</div>
-        <div class="info-box green"><div class="info-box-title">📥 Côté Réception</div><strong>Récepteur Numérique</strong> → Démodulation (extrait les données de la porteuse) + décodage (corrige les erreurs).<br><br><strong>CNA (DAC)</strong> → Reconvertit les données binaires en signal analogique.<br><br><strong>Haut-Parleur</strong> → Convertit le signal électrique en ondes acoustiques (son).</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">🔗</div>Les supports de transmission</div>
-        <table class="kv-table"><tr><th>Support</th><th>Exemple</th><th>Signal</th></tr><tr><td><strong>Espace libre (air)</strong></td><td>LoRa, WiFi, 4G, satellite</td><td>Ondes électromagnétiques</td></tr><tr><td><strong>Fibre optique</strong></td><td>Internet, FTTx</td><td>Impulsions lumineuses</td></tr><tr><td><strong>Câble coaxial / paires torsadées</strong></td><td>TNT, Ethernet</td><td>Signaux électriques</td></tr></table>
-      </div>
-      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> dans le chat pour passer au Chapitre 02 : Spectre des fréquences &amp; ISM.</span></div>
-      <div class="ch-nav"><button class="ch-nav-btn next" onclick="showPage('ch2')">Chapitre 02 : Spectre &amp; ISM →</button></div>
-    </div>
-  </div>
-
-  <!-- CH2 -->
-  <div class="page" id="page-ch2">
-    <div class="chapter-content">
-      <div class="ch-header"><div class="ch-eyebrow">Chapitre 02 · Théorie</div><h1 class="ch-title">Spectre des Fréquences &amp; Bandes ISM</h1><div class="ch-summary">Toutes les fréquences ne se valent pas. Les basses fréquences portent loin mais ont de faibles débits. Les bandes ISM sont libres d'utilisation. LoRa utilise la bande ISM 868 MHz en Europe.</div></div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📻</div>Compromis fréquence / portée / antenne</div>
-        <div class="info-box accent"><div class="info-box-title">⬅️ Basse fréquence (ex. 868 MHz – LoRa)</div>✅ Longue portée — propagation loin, pénétration murs.<br>❌ Grandes antennes — taille ≈ λ/4.<br>❌ Bande passante limitée — faibles débits.</div>
-        <div class="info-box warn"><div class="info-box-title">➡️ Haute fréquence (ex. 2,4 GHz – WiFi)</div>✅ Petites antennes — appareils compacts.<br>✅ Large bande passante — débits élevés (100 Mb/s).<br>❌ Courte portée — forte atténuation.</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">🔓</div>Fréquences licenciées vs ISM</div>
-        <p>La plupart du spectre est <strong>licenciée</strong> (opérateurs mobiles, TV). Les bandes <strong>ISM</strong> sont <strong>libres sans licence</strong> mais avec des règles de puissance et de duty cycle.</p>
-        <div class="info-box green"><div class="info-box-title">✅ ISM vs Non-ISM (selon le cours)</div>ISM : WiFi · Bluetooth · LoRa · ZigBee · Fours à micro-ondes<br>NON ISM : TV Satellite · GSM/4G · TNT (toutes licenciées)</div>
-        <div class="info-box purple"><div class="info-box-title">🌍 Fréquences ISM par région</div>Europe : 433 MHz et <strong>868 MHz</strong> (LoRa)<br>USA : 315 MHz et 915 MHz<br>Mondial : 2,4 GHz (WiFi, Bluetooth)<br><br>⚠️ Fréquences non uniformisées sous 1 GHz dans le monde — un module LoRa 868 MHz européen ne fonctionne pas aux USA (915 MHz) sans modification.</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">⏱️</div>Règle du Duty Cycle</div>
-        <div class="info-box warn"><div class="info-box-title">⚠️ Duty Cycle LoRaWAN 868 MHz Europe</div>Le duty cycle peut être <strong>0,1%, 1%, ou 10%</strong> selon la sous-bande.<br><br>Exemple (1%) : Si une trame dure 100 ms → silence obligatoire ≥ 9 900 ms (≈ 10 s)<br><br><strong>Formule :</strong> Temps silence ≥ Durée trame × (100/Duty% − 1)</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">⚖️</div>Comparatif des technologies sans fil</div>
-        <table class="kv-table"><tr><th>Techno</th><th>Fréquence</th><th>Portée</th><th>Débit</th><th>Puissance</th></tr><tr><td><strong>WiFi</strong></td><td>2,4–5 GHz</td><td>100 m</td><td>100 Mb/s</td><td>1 W</td></tr><tr><td><strong>Bluetooth LE</strong></td><td>2,4 GHz</td><td>100 m</td><td>1 Mb/s</td><td>10 mW</td></tr><tr><td><strong>SigFox</strong></td><td>900 MHz</td><td>15 km</td><td>100 b/s</td><td>25 mW</td></tr><tr><td><strong>LoRa</strong></td><td>900 MHz</td><td>15 km</td><td>290 b/s–5 kb/s</td><td>25 mW</td></tr><tr><td><strong>LTE (4G)</strong></td><td>700 MHz</td><td>10 km</td><td>100 Mb/s</td><td>2 W</td></tr></table>
-        <p>LoRa = <strong>LPWAN</strong> (Low Power Wide Area Network) : longue portée + faible consommation + faible débit. Idéal pour l'IoT.</p>
-      </div>
-      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 03 : LoRa &amp; Cartes UCA.</span></div>
-      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch1')">← Ch.01</button><button class="ch-nav-btn next" onclick="showPage('ch3')">Chapitre 03 : LoRa &amp; UCA →</button></div>
-    </div>
-  </div>
-
-  <!-- CH3 -->
-  <div class="page" id="page-ch3">
-    <div class="chapter-content">
-      <div class="ch-header"><div class="ch-eyebrow">Chapitre 03 · Technique</div><h1 class="ch-title">LoRa &amp; Cartes UCA</h1><div class="ch-summary">LoRa (Long Range) est une modulation propriétaire de Semtech basée sur le Chirp Spread Spectrum (CSS). La carte UCA est une plateforme IoT complète construite autour du module RFM95W, utilisée dans tous les TPs.</div></div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📶</div>Qu'est-ce que LoRa ?</div>
-        <div class="info-box accent"><div class="info-box-title">🎯 Avantages et Inconvénients LoRa</div>✅ Longue portée : jusqu'à 15 km en milieu rural<br>✅ Faible consommation : des années sur batterie<br>✅ Bonne pénétration des murs<br>✅ Bande ISM gratuite (868 MHz Europe)<br>❌ Faible débit : 290 b/s à 5 kb/s seulement<br>❌ Duty cycle restrictif</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">🔧</div>Matériel de la carte UCA</div>
-        <table class="kv-table"><tr><th>Composant</th><th>Référence</th><th>Rôle</th></tr><tr><td><strong>Microcontrôleur</strong></td><td>ATMEGA 328P</td><td>Exécute le code Arduino</td></tr><tr><td><strong>Programmeur USB</strong></td><td>CH340C</td><td>Connexion PC → carte pour uploader le code</td></tr><tr><td><strong>Module LoRa</strong></td><td>RFM95W</td><td>Radio : modulation LoRa à 868 MHz</td></tr><tr><td><strong>Antenne</strong></td><td>Imprimée intégrée</td><td>Émet/reçoit les ondes 868 MHz</td></tr><tr><td><strong>Capteurs</strong></td><td>Luminosité, T°/Humidité, Accéléromètre, LEDs RGB</td><td>Capteurs IoT intégrés</td></tr></table>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">💻</div>Installation Arduino IDE</div>
-        <div class="info-box warn"><div class="info-box-title">⚙️ Étapes d'installation (avant la séance)</div>1. Installer le <strong>driver CH340C</strong><br>2. Arduino IDE → Préférences → ajouter URL gestionnaire cartes RFThings<br>3. Installer <strong>"RFThings AVR Boards by RFThings Vietnam"</strong><br>4. Sélectionner carte : <strong>"RFThings UCA"</strong> / version <strong>"3.9 and newer: AT328PB"</strong><br>5. Si erreur bibliothèque → Outils → Gérer bibliothèques → <strong>LoRa by Sandeep Mistry</strong><br><br>⚠️ <strong>DEUX PC par groupe obligatoires</strong> : un pour l'émetteur, un pour le récepteur.</div>
-      </div>
-      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 04 : Codes Arduino TP1 annotés (NOUVEAU).</span></div>
-      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch2')">← Ch.02</button><button class="ch-nav-btn next" onclick="showPage('ch4')">Chapitre 04 : Codes Arduino TP1 →</button></div>
-    </div>
-  </div>
-
-  <!-- CH4 NEW -->
-  <div class="page" id="page-ch4">
-    <div class="chapter-content">
-      <div class="ch-header"><div class="ch-eyebrow">Chapitre 04 · Pratique ✨ NOUVEAU</div><h1 class="ch-title">Codes Arduino TP1 — Émission &amp; Réception</h1><div class="ch-summary">Ces deux fichiers sont les programmes Arduino utilisés lors du TP1. L'un programme la carte <strong>émettrice</strong>, l'autre la carte <strong>réceptrice</strong>. Tu dois être capable de lire, annoter, expliquer les deux et identifier leurs différences critiques.</div></div>
-
-      <div class="section">
-        <div class="section-title"><div class="icon">📤</div>Code d'Émission TP1 — Annoté ligne par ligne</div>
-        <p>Ce programme envoie en boucle le payload <strong>"hello"</strong> toutes les 100 ms via LoRa à 865 MHz.</p>
-        <div class="code-block"><span class="cm">// Bibliothèque SPI — interface série pour communiquer avec le module RFM95W via SPI</span>
-<span class="kw">#include</span> &lt;SPI.h&gt;
-<span class="kw">#include</span> &lt;LoRa.h&gt;    <span class="cm">// Bibliothèque LoRa de Sandeep Mistry</span>
-
-<span class="kw">int</span> counter = <span class="num">0</span>;     <span class="cm">// Compteur de trames envoyées (affiché dans le moniteur série)</span>
-
-<span class="cm">// ===== PARAMÈTRES MODIFIABLES =====</span>
-<span class="kw">int</span> txPower = <span class="num">14</span>;              <span class="cm">// Puissance TX en dBm (0 à 20, max ISM = 14)</span>
-<span class="kw">int</span> spreadingFactor = <span class="num">12</span>;     <span class="cm">// Facteur d'étalement SF (7 à 12, défaut 12)</span>
-<span class="kw">long</span> signalBandwidth = <span class="num">125E3</span>; <span class="cm">// Bande passante : 125 kHz</span>
-<span class="kw">int</span> codingRateDenominator = <span class="num">5</span>;<span class="cm">// Taux de codage CR = 4/5 (dénominateur 5 à 8)</span>
-<span class="kw">int</span> preambleLength = <span class="num">8</span>;       <span class="cm">// Longueur préambule : 8 symboles (2 à 20)</span>
-<span class="kw">String</span> payload = <span class="str">"hello"</span>;     <span class="cm">// Contenu du paquet à envoyer (modifiable)</span>
-
-<span class="cm">// ===== BROCHES MATÉRIELLES (carte UCA émetteur) =====</span>
-<span class="kw">#define</span> SS   <span class="num">10</span>    <span class="cm">// Broche Slave Select SPI</span>
-<span class="kw">#define</span> RST  <span class="num">8</span>     <span class="cm">// Broche Reset du module RFM95W</span>
-<span class="del"><span class="kw">#define</span> DI0  <span class="num">3</span>     <span class="cm">// ⚠️ Broche interruption PIN 3 — DIFFÉRENTE du récepteur (PIN 6)</span></span>
-<span class="kw">#define</span> BAND <span class="num">865E6</span> <span class="cm">// Fréquence porteuse : 865 MHz (allouée par l'enseignant)</span>
-
-<span class="kw">void</span> <span class="fn">setup</span>() {
-<span class="del">  Serial.<span class="fn">begin</span>(<span class="num">9600</span>);          <span class="cm">// ⚠️ Port série à 9600 bauds — DIFFÉRENT du récepteur (115200)</span></span>
-  <span class="kw">while</span> (!Serial);              <span class="cm">// Attendre l'ouverture du moniteur série</span>
-  Serial.<span class="fn">println</span>(<span class="str">"LoRa Sender"</span>);<span class="cm">// Affiche le rôle de la carte</span>
-  Serial.<span class="fn">print</span>(<span class="str">"SetFrequency : "</span>);
-  Serial.<span class="fn">print</span>(BAND);
-  Serial.<span class="fn">println</span>(<span class="str">"Hz"</span>);
-  Serial.<span class="fn">print</span>(<span class="str">"SetSpreadingFactor : SF"</span>);
-  Serial.<span class="fn">println</span>(spreadingFactor);
-
-  SPI.<span class="fn">begin</span>();                 <span class="cm">// Initialise le bus SPI</span>
-  LoRa.<span class="fn">setPins</span>(SS, RST, DI0);  <span class="cm">// Assigne les broches au module LoRa</span>
-  <span class="kw">if</span> (!LoRa.<span class="fn">begin</span>(BAND)) {    <span class="cm">// Initialise LoRa à 865 MHz — bloque si erreur</span>
-    Serial.<span class="fn">println</span>(<span class="str">"Starting LoRa failed!"</span>);
-    <span class="kw">while</span> (<span class="num">1</span>);
-  }
-  LoRa.<span class="fn">setTxPower</span>(txPower, <span class="num">1</span>);            <span class="cm">// Puissance TX = 14 dBm</span>
-  LoRa.<span class="fn">setSpreadingFactor</span>(spreadingFactor); <span class="cm">// SF = 12</span>
-  LoRa.<span class="fn">setSignalBandwidth</span>(signalBandwidth);  <span class="cm">// BW = 125 kHz</span>
-  LoRa.<span class="fn">setCodingRate4</span>(codingRateDenominator);<span class="cm">// CR = 4/5</span>
-  LoRa.<span class="fn">setPreambleLength</span>(preambleLength);   <span class="cm">// Préambule = 8 symboles</span>
-}
-
-<span class="kw">void</span> <span class="fn">loop</span>() {
-  LoRa.<span class="fn">beginPacket</span>();   <span class="cm">// Commence à construire un paquet LoRa</span>
-  LoRa.<span class="fn">print</span>(payload);  <span class="cm">// Insère "hello" dans le paquet</span>
-  LoRa.<span class="fn">endPacket</span>();     <span class="cm">// Émet le paquet via l'antenne</span>
-  counter++;             <span class="cm">// Incrémente le compteur</span>
-  Serial.<span class="fn">print</span>(<span class="str">"Sending packet with payload {"</span>);
-  Serial.<span class="fn">print</span>(payload);
-  Serial.<span class="fn">print</span>(<span class="str">"} N°"</span>);
-  Serial.<span class="fn">println</span>(counter); <span class="cm">// Affiche le numéro du paquet envoyé</span>
-  <span class="fn">delay</span>(<span class="num">100</span>);              <span class="cm">// Attendre 100 ms avant le prochain envoi</span>
-}</div>
-        <div class="info-box accent"><div class="info-box-title">📌 Résumé programme émetteur</div>Envoie en boucle le payload <strong>"hello"</strong> toutes les <strong>100 ms</strong> via LoRa à 865 MHz, SF=12, BW=125 kHz, CR=4/5. Chaque envoi incrémente un compteur affiché dans le moniteur série (9600 bauds).</div>
-      </div>
-
-      <div class="section">
-        <div class="section-title"><div class="icon">📥</div>Code de Réception TP1 — Annoté ligne par ligne</div>
-        <p>Ce programme configure la carte en mode <strong>réception</strong>. Il attend un paquet LoRa, lit son contenu et affiche le <strong>RSSI</strong> en dBm dans le moniteur série.</p>
-        <div class="code-block"><span class="kw">#include</span> &lt;SPI.h&gt;
-<span class="kw">#include</span> &lt;LoRa.h&gt;
-
-<span class="kw">int</span> counter = <span class="num">0</span>;
-<span class="kw">int</span> txPower = <span class="num">14</span>;
-<span class="kw">int</span> spreadingFactor = <span class="num">12</span>;     <span class="cm">// ⚠️ IDENTIQUE à l'émetteur — obligatoire</span>
-<span class="kw">long</span> signalBandwidth = <span class="num">125E3</span>; <span class="cm">// ⚠️ IDENTIQUE à l'émetteur — obligatoire</span>
-<span class="kw">int</span> codingRateDenominator = <span class="num">5</span>;<span class="cm">// ⚠️ IDENTIQUE à l'émetteur — obligatoire</span>
-<span class="kw">int</span> preambleLength = <span class="num">8</span>;       <span class="cm">// ⚠️ IDENTIQUE à l'émetteur — obligatoire</span>
-<span class="kw">String</span> payload = <span class="str">"hello"</span>;
-
-<span class="kw">#define</span> SS   <span class="num">10</span>    <span class="cm">// Identique à l'émetteur</span>
-<span class="kw">#define</span> RST  <span class="num">8</span>     <span class="cm">// Identique à l'émetteur</span>
-<span class="add"><span class="kw">#define</span> DI0  <span class="num">6</span>     <span class="cm">// ⚠️ DIFFÉRENT : PIN 6 pour le RÉCEPTEUR (PIN 3 pour émetteur)</span></span>
-<span class="kw">#define</span> BAND <span class="num">865E6</span> <span class="cm">// ⚠️ IDENTIQUE à l'émetteur — obligatoire</span>
-
-<span class="kw">void</span> <span class="fn">setup</span>() {
-<span class="add">  Serial.<span class="fn">begin</span>(<span class="num">115200</span>);        <span class="cm">// ⚠️ DIFFÉRENT : 115200 bauds pour le RÉCEPTEUR (9600 pour émetteur)</span></span>
-  <span class="kw">while</span> (!Serial);
-  Serial.<span class="fn">println</span>(<span class="str">"LoRa Receiver"</span>); <span class="cm">// Affiche "Receiver" (vs "Sender" pour l'émetteur)</span>
-  Serial.<span class="fn">print</span>(<span class="str">"SetFrequency : "</span>);
-  Serial.<span class="fn">print</span>(BAND);
-  Serial.<span class="fn">println</span>(<span class="str">"Hz"</span>);
-  Serial.<span class="fn">print</span>(<span class="str">"SetSpreadingFactor : SF"</span>);
-  Serial.<span class="fn">println</span>(spreadingFactor);
-
-  SPI.<span class="fn">begin</span>();
-  LoRa.<span class="fn">setPins</span>(SS, RST, DI0);
-  <span class="kw">if</span> (!LoRa.<span class="fn">begin</span>(BAND)) {
-    Serial.<span class="fn">println</span>(<span class="str">"Starting LoRa failed!"</span>);
-    <span class="kw">while</span> (<span class="num">1</span>);
-  }
-  LoRa.<span class="fn">setTxPower</span>(txPower, <span class="num">1</span>);
-  LoRa.<span class="fn">setSpreadingFactor</span>(spreadingFactor);
-  LoRa.<span class="fn">setSignalBandwidth</span>(signalBandwidth);
-  LoRa.<span class="fn">setCodingRate4</span>(codingRateDenominator);
-  LoRa.<span class="fn">setPreambleLength</span>(preambleLength);
-}
-
-<span class="kw">void</span> <span class="fn">loop</span>() {
-<span class="add">  <span class="kw">int</span> packetSize = LoRa.<span class="fn">parsePacket</span>(); <span class="cm">// ⚠️ DIFFÉRENT : écoute un paquet entrant (non-bloquant)</span></span>
-  <span class="kw">if</span> (packetSize) {                      <span class="cm">// Si un paquet est reçu (packetSize &gt; 0)...</span>
-    Serial.<span class="fn">print</span>(<span class="str">"Received packet '"</span>);
-    <span class="kw">while</span> (LoRa.<span class="fn">available</span>()) {          <span class="cm">// Tant qu'il reste des octets à lire...</span>
-      Serial.<span class="fn">print</span>((<span class="kw">char</span>)LoRa.<span class="fn">read</span>()); <span class="cm">// Affiche chaque caractère reçu</span>
-    }
-<span class="add">    Serial.<span class="fn">print</span>(<span class="str">"' with RSSI "</span>);
-    Serial.<span class="fn">println</span>(LoRa.<span class="fn">packetRssi</span>()); <span class="cm">// ⚠️ DIFFÉRENT : affiche le RSSI du paquet reçu (dBm)</span></span>
-  }
-}</div>
-      </div>
-
-      <div class="section">
-        <div class="section-title"><div class="icon">🔍</div>Tableau des différences critiques Émetteur vs Récepteur</div>
-        <div class="info-box red">
-          <div class="info-box-title">⚠️ Points critiques à retenir pour l'examen</div>
-          <table class="kv-table" style="margin:8px 0 0"><tr><th>Paramètre</th><th>Émetteur TP1</th><th>Récepteur TP1</th><th>Raison</th></tr><tr><td><strong>DI0</strong></td><td>PIN 3</td><td>PIN 6</td><td>Câblage physique différent sur les deux cartes UCA</td></tr><tr><td><strong>Serial baud rate</strong></td><td>9600</td><td>115200</td><td>Le récepteur affiche le RSSI — vitesse plus élevée pour fluidité</td></tr><tr><td><strong>Fonction loop()</strong></td><td>Envoie "hello" toutes les 100ms</td><td>Écoute et affiche RSSI reçu</td><td>Rôles opposés : émission vs réception</td></tr><tr><td><strong>SF, BW, CR, Préambule, BAND</strong></td><td colspan="2" style="text-align:center">⚠️ IDENTIQUES des deux côtés (obligatoire)</td><td>LoRa ne décode que les signaux au même SF, BW, CR</td></tr></table>
-        </div>
-        <div class="info-box green"><div class="info-box-title">📡 Qu'est-ce que le RSSI ?</div><strong>RSSI (Received Signal Strength Indicator)</strong> = indicateur de la puissance du signal reçu, en <strong>dBm</strong>.<br><br>• RSSI proche de 0 dBm = signal fort (émetteur proche)<br>• RSSI très négatif (ex. −130 dBm) = signal très faible (émetteur loin)<br>• Si RSSI &lt; sensibilité du récepteur → <strong>liaison rompue, aucune réception</strong></div>
-      </div>
-
-      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 05 : Paramètres LoRa en détail.</span></div>
-      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch3')">← Ch.03</button><button class="ch-nav-btn next" onclick="showPage('ch5')">Chapitre 05 : Paramètres LoRa →</button></div>
-    </div>
-  </div>
-
-  <!-- CH5 -->
-  <div class="page" id="page-ch5">
-    <div class="chapter-content">
-      <div class="ch-header"><div class="ch-eyebrow">Chapitre 05 · Technique</div><h1 class="ch-title">Paramètres LoRa en Détail</h1><div class="ch-summary">Chaque paramètre LoRa affecte directement la portée, le débit, la durée de trame et la consommation d'énergie. Comprendre le compromis de chacun est essentiel pour concevoir un système IoT optimal.</div></div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📊</div>Spreading Factor (SF)</div>
-        <div class="info-box accent"><div class="info-box-title">📡 SF : de 7 à 12</div>SF contrôle le nombre de "chips" pour représenter un bit.<br><br><strong>SF élevé (SF12) :</strong> Plus de chips par bit → plus résistant au bruit → plus longue portée → débit faible, trame longue, plus d'énergie.<br><strong>SF faible (SF7) :</strong> Débit plus rapide → portée plus courte.<br><br>⚠️ Chaque pas de SF <strong>double la durée de trame</strong> et double la consommation d'énergie par trame.</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📶</div>Bande Passante (BW)</div>
-        <div class="info-box green"><div class="info-box-title">📶 BW typique : 125, 250, 500 kHz</div><strong>BW large (500 kHz) :</strong> Débit rapide, trame courte, sensibilité moins bonne.<br><strong>BW étroite (125 kHz) :</strong> Meilleure sensibilité → plus longue portée.<br><br>Sensibilité ≈ plancher de bruit. BW étroite → plancher de bruit plus bas → meilleure sensibilité.</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">🔒</div>Taux de Codage (CR)</div>
-        <div class="info-box warn"><div class="info-box-title">🔒 CR = 4/dénominateur (5 à 8)</div><strong>CR = 4/5 :</strong> Minimum de redondance, le plus rapide. Canal propre.<br><strong>CR = 4/8 :</strong> Maximum de redondance (50% bits redondants), le plus robuste mais plus lent.<br><br>Dans TP1 : <code>codingRateDenominator = 5</code> → CR = 4/5 (trame courte, peu de protection).</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">⚡</div>Récapitulatif paramètres TP1</div>
-        <table class="kv-table"><tr><th>Paramètre</th><th>Valeur TP1</th><th>Impact sur la liaison</th></tr><tr><td>BAND</td><td>865 MHz</td><td>Fréquence porteuse — identique des deux côtés</td></tr><tr><td>spreadingFactor</td><td>12</td><td>SF max → portée max, débit min</td></tr><tr><td>signalBandwidth</td><td>125 kHz</td><td>Étroite → meilleure sensibilité</td></tr><tr><td>codingRateDenominator</td><td>5 (CR=4/5)</td><td>Trame courte, protection minimale</td></tr><tr><td>preambleLength</td><td>8 symboles</td><td>Synchronisation standard</td></tr><tr><td>txPower</td><td>14 dBm</td><td>Puissance max autorisée ISM 868 MHz Europe</td></tr></table>
-      </div>
-      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 06 : Portée &amp; Bilan de liaison.</span></div>
-      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch4')">← Ch.04</button><button class="ch-nav-btn next" onclick="showPage('ch6')">Chapitre 06 : Portée &amp; Bilan →</button></div>
-    </div>
-  </div>
-
-  <!-- CH6 -->
-  <div class="page" id="page-ch6">
-    <div class="chapter-content">
-      <div class="ch-header"><div class="ch-eyebrow">Chapitre 06 · Calcul</div><h1 class="ch-title">Portée LoRa — Théorie &amp; Bilan de Liaison</h1><div class="ch-summary">Pour prédire si une liaison LoRa fonctionnera à une distance donnée, on calcule le bilan de liaison — la perte maximale tolérée par le système.</div></div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📤</div>Puissance maximale ISM 868 MHz</div>
-        <p>Dans la bande ISM 868 MHz en Europe, la puissance max autorisée est <strong>+14 dBm</strong> (≈ 25 mW). Valeur utilisée dans le code : <code>txPower = 14</code>.</p>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📡</div>Sensibilité du récepteur (RFM95W)</div>
-        <div class="info-box green"><div class="info-box-title">📊 Valeurs de sensibilité (courbes du cours, BW=125 kHz)</div>SF7 → ≈ −124 dBm | SF9 → ≈ −131 dBm | SF11 → ≈ −139 dBm | SF12 → ≈ −143 dBm<br><br>SF plus élevé + BW plus étroite → meilleure sensibilité → reçoit des signaux plus faibles → portée plus longue.</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">🔋</div>Bilan de liaison</div>
-        <div class="formula">Pertes max (dB) = Puissance TX (dBm) − Sensibilité récepteur (dBm)<br><br>Exemple SF12, BW=125kHz : Pertes max = 14 − (−143) = 157 dB</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📐</div>Modèle d'Okumura-Hata</div>
-        <div class="formula">pertes = 146,4 + 44,9 × log₁₀(R) + C<br><br>C = 0 (urbain) | C = −9,85 (suburbain) | C = −28,35 (rural)<br>R = distance en km</div>
-        <div class="info-box accent"><div class="info-box-title">🔍 Calcul de la portée maximale R</div>1. Calcule le bilan de liaison : Pertes max = TX − Sensibilité<br>2. Pose : Pertes max = 146,4 + 44,9 × log₁₀(R) + C<br>3. Isole R :<br><br><strong>log₁₀(R) = (Pertes max − 146,4 − C) / 44,9</strong><br><strong>R = 10^[(Pertes max − 146,4 − C) / 44,9] km</strong></div>
-        <div class="info-box warn"><div class="info-box-title">👁️ Vue directe : Formule de Friis</div>Si liaison en vue directe (sans obstacle), utiliser la <strong>formule de Friis</strong> (cours R205). Elle prédit moins de pertes → portée plus grande que Okumura-Hata.</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📏</div>Extrapolation au-delà de 100 m</div>
-        <div class="info-box green"><div class="info-box-title">📈 Méthode d'extrapolation</div>1. Mesurer RSSI à plusieurs distances ≤ 100 m<br>2. Tracer RSSI vs log(distance) → droite sur papier semi-log<br>3. Ajuster la droite et extrapoler jusqu'à RSSI = sensibilité<br>4. Ou : appliquer directement Okumura-Hata avec le bilan de liaison<br><br>Clé : 44,9 dB de pertes supplémentaires par <strong>décade de distance</strong> (×10 distance).</div>
-      </div>
-      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 07 : Mesures LoRa &amp; SDRangel.</span></div>
-      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch5')">← Ch.05</button><button class="ch-nav-btn next" onclick="showPage('ch7')">Chapitre 07 : Mesures LoRa →</button></div>
-    </div>
-  </div>
-
-  <!-- CH7 -->
-  <div class="page" id="page-ch7">
-    <div class="chapter-content">
-      <div class="ch-header"><div class="ch-eyebrow">Chapitre 07 · Pratique</div><h1 class="ch-title">Mesures LoRa &amp; SDRangel</h1><div class="ch-summary">Les séances encadrées impliquent des mesures RSSI en extérieur et intérieur, la visualisation des trames avec SDRangel/ADALM-PLUTO, la vérification du duty cycle et le calcul de la consommation d'énergie par trame.</div></div>
-      <div class="section">
-        <div class="section-title"><div class="icon">🌳</div>Mesures extérieures (Outdoor)</div>
-        <div class="info-box accent"><div class="info-box-title">📋 Procédure</div>Paramètres : SF=7, BW=125 kHz, Pow=14 dBm, BAND=866 MHz<br>• Relever RSSI moyen à ≥ 8 distances différentes<br>• Calculer distance exacte émetteur–récepteur pour chaque point<br>• Estimer atténuation causée par un bâtiment<br>• Recommencer avec Pow = 0 dBm<br>• Tracer courbes sur papier semi-logarithmique (RSSI vs log(d))</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">🏢</div>Mesures intérieures (Indoor)</div>
-        <div class="info-box warn"><div class="info-box-title">🧱 Facteurs d'atténuation intérieur</div>Estimer les pertes (dB) causées par : portes · cloisons (murs intérieurs) · dalles (planchers/plafonds)<br>Recommencer avec SF=14 (SF plus élevé) pour voir l'amélioration de sensibilité.</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📺</div>SDRangel — Visualisation waterfall</div>
-        <div class="info-box accent"><div class="info-box-title">🔧 Configuration SDRangel</div>1. Connecter ADALM-PLUTO en USB (LED bleue clignote)<br>2. Ajouter PlutoSDR comme device Rx<br>3. Régler fréquence centrale allouée par l'enseignant<br>4. Activer suppression DC (bouton "DC")<br>5. Filtre Low-Pass (LP) ≈ 2× BW LoRa<br>6. Filtre FIR anti-repliement : 126 kHz minimum<br>7. Vitesse défilement : <strong>2 FPS</strong><br>8. Augmenter taille FFT pour meilleure résolution</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">⚡</div>Duty Cycle &amp; Énergie</div>
-        <div class="formula">Temps de silence ≥ Durée trame × (100/1 − 1) = Durée trame × 99<br>Énergie par trame (mWh) = Puissance TX (mW) × Durée trame (h)</div>
-      </div>
-      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 08 : Mesure signal TNT.</span></div>
-      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch6')">← Ch.06</button><button class="ch-nav-btn next" onclick="showPage('ch8')">Chapitre 08 : TNT →</button></div>
-    </div>
-  </div>
-
-  <!-- CH8 -->
-  <div class="page" id="page-ch8">
-    <div class="chapter-content">
-      <div class="ch-header"><div class="ch-eyebrow">Chapitre 08 · Pratique</div><h1 class="ch-title">Mesure du Signal TNT</h1><div class="ch-summary">La TNT (DVB-T) diffuse la TV numérique en bande UHF. Chaque canal occupe 8 MHz et regroupe plusieurs chaînes (multiplex). On mesure avec le mesureur de champ Televes H30FLEX.</div></div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📺</div>Caractéristiques TNT</div>
-        <div class="info-box accent"><div class="info-box-title">📡 Fiche technique TNT</div>Standard : DVB-T | Bande : UHF <strong>470–694 MHz</strong> | Canal : <strong>8 MHz</strong> par multiplex<br>Pas de conversion de fréquence (signal directement utilisable)<br>Antenne : Yagi / râteau directionnelle, orientée vers l'émetteur terrestre</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📊</div>Niveaux en dBµV</div>
-        <div class="formula">dBµV = 20 × log₁₀(V / 1 µV)</div>
-        <table class="kv-table"><tr><th>Niveau (dBµV)</th><th>Qualité</th><th>Classification</th></tr><tr><td>&lt; 45 dBµV</td><td>Réception difficile</td><td>⚠️ Niveau 3</td></tr><tr><td>45 – 70 dBµV</td><td>Réception correcte</td><td>✅ Niveau 2</td></tr><tr><td>&gt; 75 dBµV</td><td>Niveau élevé</td><td>🟢 Niveau 1</td></tr></table>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">🔧</div>Procédure Televes H30FLEX</div>
-        <div class="info-box green"><div class="info-box-title">📋 Étapes</div>1. Câble coaxial antenne → RF IN du Televes<br>2. Configurer DVB-T, Digital<br>3. Mode SPECTRE → afficher bande UHF (470–694 MHz)<br>4. Compter les multiplex visibles<br>5. Zoomer sur un multiplex → mesurer largeur (≈ 8 MHz)<br>6. Pour 4 canaux valides + 1 invalide : relever fréquence, niveau (dBµV), largeur, qualité (1/2/3)</div>
-      </div>
-      <div class="wait-box"><span>⏳</span><span>Tape <strong>"next"</strong> pour le Chapitre 09 : TV Satellite.</span></div>
-      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch7')">← Ch.07</button><button class="ch-nav-btn next" onclick="showPage('ch9')">Chapitre 09 : TV Satellite →</button></div>
-    </div>
-  </div>
-
-  <!-- CH9 -->
-  <div class="page" id="page-ch9">
-    <div class="chapter-content">
-      <div class="ch-header"><div class="ch-eyebrow">Chapitre 09 · Pratique</div><h1 class="ch-title">Mesure du Signal TV Satellite</h1><div class="ch-summary">La TV satellite utilise des satellites géostationnaires à 36 000 km. Le LNB sur la parabole convertit la fréquence Ku (10,7–12,75 GHz) en fréquence intermédiaire (950–2150 MHz) pour le câble coaxial.</div></div>
-      <div class="section">
-        <div class="section-title"><div class="icon">🛰️</div>Le LNB — Rôle et fonctionnement</div>
-        <div class="info-box green"><div class="info-box-title">🔄 Pourquoi le LNB est indispensable</div>Les signaux Ku (10,7–12,75 GHz) s'atténuent trop fortement dans un câble coaxial. Le LNB :<br><br>1. <strong>Amplifie</strong> le signal satellite (très faible après 36 000 km)<br>2. <strong>Convertit</strong> en FI (950–2 150 MHz) → voyage bien en câble coaxial<br><br><strong>FI = Fréquence satellite − Fréquence OL</strong><br>Exemple : 11 642 MHz − 9 750 MHz = <strong>1 892 MHz</strong><br><br>Le LNB est alimenté <em>via le câble coaxial</em> en DC (+13V ou +18V selon polarisation).</div>
-      </div>
-      <div class="section">
-        <div class="section-title"><div class="icon">📊</div>TNT vs Satellite — Comparatif complet</div>
-        <table class="kv-table"><tr><th>Critère</th><th>TNT</th><th>Satellite</th></tr><tr><td>Fréquence émise</td><td>470–694 MHz (UHF)</td><td>10,7–12,75 GHz (Ku)</td></tr><tr><td>Au mesureur</td><td>Identique (directe)</td><td>950–2150 MHz (FI)</td></tr><tr><td>Conversion ?</td><td>Non</td><td>Oui — par le LNB</td></tr><tr><td>Organisation</td><td>Multiplex (bloc 8 MHz)</td><td>Transpondeur (pic)</td></tr><tr><td>Unité mesure</td><td>dBµV</td><td>dBm</td></tr><tr><td>Niveaux standards ?</td><td>Oui (45/70/75 dBµV)</td><td>Non</td></tr><tr><td>Antenne</td><td>Yagi / râteau</td><td>Parabole</td></tr><tr><td>Distance source</td><td>~50 km</td><td>~36 000 km</td></tr></table>
-      </div>
-      <div class="ch-nav"><button class="ch-nav-btn" onclick="showPage('ch8')">← Ch.08</button><button class="ch-nav-btn next" onclick="showPage('quiz')">📝 Questions d'examen →</button></div>
-    </div>
-  </div>
-
-  <!-- QUIZ -->
-  <div class="page" id="page-quiz">
-    <div class="quiz-header"><div class="eyebrow">Préparation Examen · Strictement basé sur les fichiers du cours</div><h1>Questions d'Examen</h1><p>Questions de 2 à 12 points, théorie et technique. Clique pour révéler la réponse modèle.</p></div>
-    <div class="quiz-filters">
-      <button class="filter-btn active" onclick="filterQ('all')">Toutes</button>
-      <button class="filter-btn" onclick="filterQ('2')">2 pts</button>
-      <button class="filter-btn" onclick="filterQ('6')">6 pts</button>
-      <button class="filter-btn" onclick="filterQ('8')">8 pts</button>
-      <button class="filter-btn" onclick="filterQ('10')">10 pts</button>
-      <button class="filter-btn" onclick="filterQ('12')">12 pts</button>
-      <button class="filter-btn" onclick="filterQ('theory')">Théorie</button>
-      <button class="filter-btn" onclick="filterQ('technical')">Technique</button>
-    </div>
-    <div class="quiz-grid">
-
-      <div class="q-card" data-mark="2" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-2">2 pts</span><span class="q-type">Théorie</span><div class="q-text">Définir ce qu'est une <strong>bande ISM</strong> et donner la fréquence utilisée par LoRa en Europe.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p>Les bandes <strong>ISM (Industrial, Scientific, and Medical)</strong> sont des portions du spectre radio libres d'utilisation sans licence, sous réserve de règles de puissance et de duty cycle. LoRa utilise la bande <strong>868 MHz</strong> en Europe.</p></div></div>
-
-      <div class="q-card" data-mark="2" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-2">2 pts</span><span class="q-type">Technique</span><div class="q-text">Dans le code TP1, quelle est la différence de la broche <strong>DI0</strong> entre l'émetteur et le récepteur ? Pourquoi ?</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p>Émetteur : <code>DI0 = 3</code>. Récepteur : <code>DI0 = 6</code>. Cette différence existe car les deux cartes UCA ont des <strong>connexions physiques différentes</strong> entre l'ATMEGA 328P et le module RFM95W. La broche DI0 est la broche d'interruption signalant la réception ou la fin d'émission d'un paquet.</p></div></div>
-
-      <div class="q-card" data-mark="2" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-2">2 pts</span><span class="q-type">Technique</span><div class="q-text">Quelle est la puissance maximale d'émission autorisée (en dBm) dans la bande ISM 868 MHz en Europe ? Quelle valeur est utilisée dans le code TP1 ?</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p>La puissance maximale autorisée est <strong>+14 dBm</strong> (≈ 25 mW). Dans le code TP1, la valeur <code>txPower = 14</code> correspond à cette limite réglementaire.</p></div></div>
-
-      <div class="q-card" data-mark="2" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-2">2 pts</span><span class="q-type">Théorie</span><div class="q-text">Indiquer la plage de fréquences de la TNT en France et la largeur de bande d'un canal TNT.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p>TNT : bande <strong>UHF, 470–694 MHz</strong>. Largeur d'un canal (multiplex) : <strong>8 MHz</strong>.</p></div></div>
-
-      <div class="q-card" data-mark="6" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-6">6 pts</span><span class="q-type">Théorie</span><div class="q-text">Expliquer le rôle de chaque bloc de la chaîne de transmission numérique : Échantillonneur-Bloqueur, CAN, Émetteur Numérique, Récepteur Numérique, CNA.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><ul><li><strong>Échantillonneur-Bloqueur :</strong> Convertit le signal analogique continu en signal à temps discret (échantillons à intervalles réguliers, forme en "escalier").</li><li><strong>CAN (ADC) :</strong> Convertit les échantillons analogiques en valeurs binaires numériques (0 et 1).</li><li><strong>Émetteur Numérique :</strong> Applique le codage canal (protection erreurs) et la modulation numérique (encode les bits sur une porteuse radio).</li><li><strong>Récepteur Numérique :</strong> Démodulation (extrait les données de la porteuse) et décodage (détecte et corrige les erreurs).</li><li><strong>CNA (DAC) :</strong> Reconvertit les données binaires reçues en signal analogique.</li></ul></div></div>
-
-      <div class="q-card" data-mark="6" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-6">6 pts</span><span class="q-type">Technique</span><div class="q-text">Dans le code de réception TP1, expliquer précisément le fonctionnement de <code>loop()</code>. Quel est le rôle de <code>LoRa.parsePacket()</code>, <code>LoRa.available()</code> et <code>LoRa.packetRssi()</code> ?</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><ul><li><strong><code>LoRa.parsePacket()</code> :</strong> Vérifie si un paquet LoRa a été reçu. Retourne la taille du paquet (octets) si disponible, ou 0 sinon. Fonction <em>non-bloquante</em>.</li><li><strong><code>LoRa.available()</code> :</strong> Retourne vrai tant qu'il reste des octets non lus dans le tampon de réception. Utilisé dans la boucle while pour lire octet par octet.</li><li><strong><code>LoRa.packetRssi()</code> :</strong> Retourne le RSSI du dernier paquet reçu en dBm.</li></ul><p>En résumé : le programme sonde en continu l'arrivée d'un paquet. Quand un paquet arrive, il affiche son contenu caractère par caractère puis le RSSI dans le moniteur série.</p></div></div>
-
-      <div class="q-card" data-mark="6" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-6">6 pts</span><span class="q-type">Théorie</span><div class="q-text">Expliquer le rôle du LNB dans un système de réception TV satellite. Pourquoi la conversion de fréquence est-elle indispensable ?</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p>Le LNB assure deux fonctions : <strong>amplification faible bruit</strong> du signal satellite très affaibli, et <strong>conversion de fréquence</strong> Ku (10,7–12,75 GHz) en FI (950–2 150 MHz).</p><p>La conversion est indispensable car les signaux Ku s'atténuent de façon rédhibitoire dans les câbles coaxiaux, même sur quelques mètres. À 950–2 150 MHz (FI), le signal voyage efficacement en câble coaxial standard jusqu'au téléviseur.</p></div></div>
-
-      <div class="q-card" data-mark="8" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-8">8 pts</span><span class="q-type">Technique</span><div class="q-text">Comparer les codes d'émission et réception TP1 sur : (a) valeur de DI0, (b) vitesse du port série, (c) contenu de loop(), (d) paramètres devant être identiques des deux côtés et justification.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><ul><li><strong>(a) DI0 :</strong> Émetteur = PIN 3 ; Récepteur = PIN 6. Câblage physique différent sur les deux cartes UCA.</li><li><strong>(b) Vitesse série :</strong> Émetteur = 9 600 bauds ; Récepteur = 115 200 bauds. Le récepteur utilise une vitesse plus élevée pour afficher rapidement le RSSI à chaque paquet reçu.</li><li><strong>(c) Fonction loop() :</strong> Émetteur → envoie "hello" toutes les 100 ms via <code>beginPacket()/print()/endPacket()</code>. Récepteur → écoute via <code>parsePacket()</code>, lit contenu et affiche RSSI via <code>packetRssi()</code>.</li><li><strong>(d) Paramètres identiques :</strong> SF, BW, CR, préambule, BAND. En LoRa, le récepteur ne peut décoder que des signaux ayant <em>exactement</em> le même SF, BW et CR. Les signaux à différents SF sont orthogonaux — ils s'ignorent mutuellement. Une seule différence rompt la liaison.</li></ul></div></div>
-
-      <div class="q-card" data-mark="8" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-8">8 pts</span><span class="q-type">Technique</span><div class="q-text">Le duty cycle impose 1% d'occupation maximale du canal. Une trame LoRa SF=9, BW=125 kHz dure 412 ms. (a) Calculer le temps de silence obligatoire. (b) Cette contrainte est-elle problématique pour une transmission toutes les 5 minutes ?</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p><strong>(a)</strong> Temps silence = 412 × (100/1 − 1) = 412 × 99 = <strong>40 788 ms ≈ 40,8 secondes</strong></p><p><strong>(b)</strong> Intervalle de transmission = 5 min = 300 000 ms. Comme 40,8 s ≪ 300 s, la contrainte de duty cycle n'est <strong>pas problématique</strong>. Le canal reste inactif ~299 588 ms entre chaque trame, bien en dessous de la limite réglementaire.</p></div></div>
-
-      <div class="q-card" data-mark="8" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-8">8 pts</span><span class="q-type">Théorie</span><div class="q-text">Comparer les effets d'une augmentation du SF de 7 à 12 sur : (a) sensibilité récepteur, (b) débit, (c) durée de trame, (d) consommation d'énergie par trame. Justifier chaque réponse.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><ul><li><strong>(a) Sensibilité :</strong> S'améliore (plus négative). SF12 ≈ −143 dBm vs SF7 ≈ −124 dBm à BW=125 kHz. Plus de chips/bit = plus grand gain de traitement.</li><li><strong>(b) Débit :</strong> Diminue. Chaque pas de SF divise le débit par 2. SF7 → SF12 = débit ÷ 64.</li><li><strong>(c) Durée de trame :</strong> Augmente. Chaque pas de SF double la durée. SF7 → SF12 : durée × 64.</li><li><strong>(d) Énergie par trame :</strong> Augmente proportionnellement à la durée. Énergie = Puissance × Durée, donc SF7 → SF12 : énergie × 64 pour le même payload.</li></ul></div></div>
-
-      <div class="q-card" data-mark="10" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-10">10 pts</span><span class="q-type">Technique</span><div class="q-text">Lors du TP mesures LoRa outdoor : (a) Pourquoi tracer sur papier semi-logarithmique ? (b) Tu mesures RSSI = −85 dBm à 10 m et −105 dBm à 50 m. Calculer l'exposant d'atténuation empirique. (c) Extrapoler la distance pour RSSI = −143 dBm (limite sensibilité SF12).</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p><strong>(a)</strong> Okumura-Hata prédit une relation linéaire entre pertes et log(distance). Sur papier semi-log, cette relation donne une droite, facilitant l'ajustement et l'extrapolation.</p><p><strong>(b)</strong> Pertes à 10 m : L₁ = 14−(−85) = 99 dB | Pertes à 50 m : L₂ = 14−(−105) = 119 dB<br>B = ΔL / log(d₂/d₁) = 20 / log(5) = 20 / 0,699 = <strong>28,6 dB/décade</strong></p><p><strong>(c)</strong> Pertes max = 14−(−143) = 157 dB<br>157 = 99 + 28,6 × log(d/10) → log(d/10) = 58/28,6 = 2,028<br>d = 10 × 10^2,028 = <strong>≈ 1 067 m ≈ 1,07 km</strong></p></div></div>
-
-      <div class="q-card" data-mark="10" data-type="theory" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-10">10 pts</span><span class="q-type">Théorie</span><div class="q-text">Comparer TNT et TV Satellite sur : (a) bande de fréquence émise, (b) nécessité de conversion de fréquence, (c) unité de mesure du niveau, (d) niveaux standards de réception, (e) type d'antenne. Justifier techniquement chaque différence.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><ul><li><strong>(a)</strong> TNT : UHF 470–694 MHz (bonne propagation terrestre). Satellite : Ku 10,7–12,75 GHz (antennes compactes sur satellite, grande capacité).</li><li><strong>(b)</strong> TNT : aucune conversion (UHF acceptable en câble coaxial). Satellite : LNB indispensable — signal Ku s'atténue trop en câble coaxial → conversion en FI 950–2150 MHz.</li><li><strong>(c)</strong> TNT : dBµV (convention installation TV). Satellite : dBm (pas de convention unique).</li><li><strong>(d)</strong> TNT : seuils définis &lt;45 (difficile), 45–70 (correct), &gt;75 dBµV (élevé). Satellite : aucun seuil standard (niveaux variables selon diamètre parabole, qualité LNB, pointage).</li><li><strong>(e)</strong> TNT : antenne Yagi/râteau (UHF, émetteur terrestre ~50 km). Satellite : parabole (réflecteur pour concentrer signal très faible venant de 36 000 km sur le LNB).</li></ul></div></div>
-
-      <div class="q-card" data-mark="12" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-12">12 pts</span><span class="q-type">Technique</span><div class="q-text">Système IoT pour surveiller l'humidité du sol en vignoble (rural). Transmission toutes les 10 minutes. SF ∈ {9, 11}, BW ∈ {125, 250 kHz}. TX=14 dBm. Portée requise : 3 km. Durées trame : SF9/125k=412ms, SF9/250k=206ms, SF11/125k=1650ms, SF11/250k=825ms. Sensibilités : SF9/125k=−131, SF9/250k=−128, SF11/125k=−139, SF11/250k=−136 dBm. (a) Calculer bilan de liaison et portée pour chaque combinaison. (b) Identifier les combinaisons valides. (c) Choisir la configuration optimale pour la batterie. (d) Vérifier conformité duty cycle 1%.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p><strong>(a) Portées — Rural C=−28,35 :</strong></p><p>SF9/125k : bilan=145 dB → log(R)=26,95/44,9=0,600 → <strong>R=3,98 km ✅</strong></p><p>SF9/250k : bilan=142 dB → log(R)=23,95/44,9=0,533 → <strong>R=3,41 km ✅</strong></p><p>SF11/125k : bilan=153 dB → log(R)=34,95/44,9=0,778 → <strong>R=6,0 km ✅</strong></p><p>SF11/250k : bilan=150 dB → log(R)=31,95/44,9=0,712 → <strong>R=5,14 km ✅</strong></p><p><strong>(b)</strong> Les 4 combinaisons dépassent 3 km. Toutes viables.</p><p><strong>(c)</strong> Énergie min = durée trame min = SF9/250k → 206 ms. Cette config satisfait aussi la portée (3,41 km). → <strong>Choix optimal : SF9 / BW=250 kHz</strong></p><p><strong>(d)</strong> Silence requis = 206 × 99 = 20 394 ms ≈ 20,4 s. Intervalle = 600 000 ms. 20,4 s ≪ 600 s → <strong>Conforme au duty cycle 1%.</strong></p></div></div>
-
-      <div class="q-card" data-mark="12" data-type="technical" onclick="toggleQ(this)"><div class="q-header"><span class="q-mark mark-12">12 pts</span><span class="q-type">Technique</span><div class="q-text">Calculer la portée LoRa maximale dans les 3 milieux (urbain, suburbain, rural) avec TX=14 dBm et sensibilité=−139 dBm (SF11, BW=125 kHz). Montrer tous les calculs. Puis discuter l'impact d'une réduction de la puissance TX à 0 dBm sur chaque portée calculée.</div><div class="q-toggle">▼</div></div><div class="q-answer"><div class="answer-title">✅ Réponse modèle</div><p><strong>Bilan de liaison :</strong> 14−(−139) = <strong>153 dB</strong></p><p><strong>Urbain (C=0) :</strong> log(R)=(153−146,4)/44,9=0,147 → <strong>R=1,40 km</strong></p><p><strong>Suburbain (C=−9,85) :</strong> log(R)=16,45/44,9=0,366 → <strong>R=2,32 km</strong></p><p><strong>Rural (C=−28,35) :</strong> log(R)=34,95/44,9=0,778 → <strong>R=6,0 km</strong></p><p><strong>Impact TX=0 dBm :</strong> Nouveau bilan = 0−(−139) = 139 dB (soit −14 dB). Δlog(R) = −14/44,9 = −0,312 → facteur = 10^(−0,312) ≈ 0,487 (portée ÷ 2 environ).<br>Urbain : 1,40×0,487 ≈ <strong>0,68 km</strong> | Suburbain : 2,32×0,487 ≈ <strong>1,13 km</strong> | Rural : 6,0×0,487 ≈ <strong>2,92 km</strong><br>Conclusion : réduire TX de 14 dBm à 0 dBm divise la portée par environ 2 dans tous les milieux.</p></div></div>
-
-    </div>
-  </div>
-
-</div>
+<div class="fab" id="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
 
 <script>
-let visited=new Set(['home']);
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(item=>{if(item.getAttribute('onclick')&&item.getAttribute('onclick').includes("'"+id+"'"))item.classList.add('active');});
-  if(id.startsWith('ch'))visited.add(id);
-  updateProgress();
-  const t={home:'Bienvenue',ch1:'Ch.01 Chaîne numérique',ch2:'Ch.02 Spectre & ISM',ch3:'Ch.03 LoRa & UCA',ch4:'Ch.04 Codes Arduino TP1',ch5:'Ch.05 Paramètres LoRa',ch6:'Ch.06 Portée & Bilan',ch7:'Ch.07 Mesures & SDRangel',ch8:'Ch.08 TNT',ch9:'Ch.09 Satellite',quiz:"Questions d'examen"};
-  document.getElementById('topbarTitle').textContent=t[id]||id;
-  window.scrollTo(0,0);
+const chapters = [
+  { id:1, name:"Concept du Routage", sub:"Tables, Adresses, VLSM", color:"#9D6E90", icon:"🌐",
+    desc:"Comprendre comment les routeurs acheminent les paquets, construisent leurs tables de routage, et travaillent avec les adresses IPv4 incluant le découpage VLSM.",
+    topics:["Table de routage","Routes statiques","ARP","Classes IPv4","VLSM","Sous-réseaux","Route par défaut"] },
+  { id:2, name:"Translation d'Adresses", sub:"NAT / PAT", color:"#E7D3E6", icon:"🔄",
+    desc:"Comment les adresses IP privées sont traduites en adresses publiques, permettant l'accès Internet à des réseaux entiers via NAT et PAT.",
+    topics:["NAT Statique","NAT Dynamique","PAT (Surcharge)","Adresses privées","ACL avec NAT"] },
+  { id:3, name:"Sécurisation ACL", sub:"Listes de Contrôle d'Accès", color:"#c97c5a", icon:"🛡️",
+    desc:"Filtrer le trafic réseau à l'aide de listes de contrôle d'accès — standard et étendues — pour autoriser ou refuser des paquets selon l'IP, le protocole et les ports.",
+    topics:["ACL Standard","ACL Étendue","Masque générique","ACL nommée","Entrant/Sortant"] },
+  { id:4, name:"Routage Dynamique", sub:"IGP : RIP / OSPF", color:"#C4A0BD", icon:"📡",
+    desc:"Les routeurs apprennent automatiquement les chemins réseau grâce aux protocoles de routage dynamique — RIP pour les petits réseaux, OSPF pour les plus grands.",
+    topics:["RIP v1/v2","Vecteur de distance","OSPF","État de lien","Protocole Hello","DR/BDR","Métrique"] },
+  { id:5, name:"OSPF Multi-Aires", sub:"OSPF à zones multiples", color:"#9D6E90", icon:"🗺️",
+    desc:"Étendre OSPF aux grands réseaux d'entreprise en les divisant en plusieurs aires, réduisant la taille des tables de routage et les inondations LSA.",
+    topics:["Aire 0 Backbone","ABR","ASBR","Types de LSA","Routage inter-aires"] },
+  { id:6, name:"Redondance HSRP", sub:"Hot Standby Router Protocol", color:"#6A2E3D", icon:"🔁",
+    desc:"Assurer la disponibilité du réseau avec HSRP — un protocole Cisco qui fournit une passerelle IP virtuelle : si un routeur tombe, l'autre prend le relais automatiquement.",
+    topics:["IP Virtuelle","Actif/Passif","Priorité","Préemption","Redondance passerelle"] },
+  { id:7, name:"IPv6", sub:"Protocole, Routage, Double Pile", color:"#E7D3E6", icon:"🚀",
+    desc:"Le protocole Internet de nouvelle génération avec des adresses 128 bits, nouvelle notation, types d'adresses (LLA, GUA), double pile, tunnels et OSPFv3.",
+    topics:["Notation IPv6","LLA","GUA","EUI-64","Double Pile","Tunnel 6to4","OSPFv3","RIPng"] },
+];
+
+const slides = {
+  1: [
+    {
+      title: "🌐 Qu'est-ce que le Routage ?",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">📦 Vue d'ensemble</div>
+          <div class="concept-body">
+            Le <strong>routage</strong> est le processus qui permet de trouver le meilleur chemin pour qu'un paquet de données voyage d'une machine source vers une machine destination, à travers un ou plusieurs réseaux.
+            <br><br>
+            Pensez à la Poste : quand vous envoyez une lettre, le bureau de poste lit l'adresse de destination et décide par quel chemin elle doit voyager. Les routeurs font exactement la même chose — mais avec des paquets de données.
+          </div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🔑 Protocole Routé vs Protocole de Routage</div>
+          <div class="concept-body">
+            Ces deux notions sont souvent confondues — elles sont pourtant totalement différentes :<br><br>
+            • <em>Protocole routé</em> = un protocole dont les paquets <strong>PEUVENT ÊTRE routés</strong>. Exemple : <strong>IP</strong> (IPv4, IPv6). Le routeur examine l'adresse IP destination et achemine le paquet.<br><br>
+            • <em>Protocole de routage</em> = un protocole utilisé PAR les routeurs pour <strong>communiquer entre eux</strong> et découvrir les routes. Exemples : <strong>RIP, OSPF, EIGRP, BGP</strong>
+          </div>
+          <div class="highlight-box">💡 Moyen mnémotechnique : IP c'est la <strong>donnée</strong> que vous transportez. OSPF c'est la <strong>carte</strong> que vous utilisez pour décider où aller.</div>
+        </div>
+      `
+    },
+    {
+      title: "🗂️ La Table de Routage",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">📋 Qu'est-ce qu'une table de routage ?</div>
+          <div class="concept-body">
+            Chaque routeur possède une <strong>table de routage</strong> — c'est une base de données qui dit au routeur : <em>« Si tu reçois un paquet allant vers le réseau X, envoie-le par l'interface Y (ou via le routeur suivant Z). »</em>
+          </div>
+          <div class="code-block">Router#show ip route
+C  192.168.0.0/24 is directly connected, Fa0/0
+C  192.168.7.0/24 is directly connected, Fa0/1
+S  192.168.1.0/24 [1/0] via 192.168.7.252</div>
+          <div class="concept-body" style="margin-top:12px;">
+            Que signifient ces lettres ?<br><br>
+            • <strong>C</strong> = Connecté (directement branché — automatique)<br>
+            • <strong>S</strong> = Statique (saisi manuellement par l'administrateur)<br>
+            • <strong>R</strong> = RIP | <strong>O</strong> = OSPF (appris automatiquement)<br><br>
+            Le <code>[1/0]</code> signifie : Distance Administrative = 1, Métrique = 0
+          </div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">➕ Ajouter une Route Statique</div>
+          <div class="concept-body">Syntaxe : <code>ip route &lt;réseau_dest&gt; &lt;masque&gt; &lt;IP_prochain_saut&gt;</code></div>
+          <div class="code-block">Router(config)#ip route 192.168.1.0 255.255.255.0 192.168.7.252</div>
+          <div class="highlight-box warn">⚠️ Attention : si vous définissez une route par défaut pointant vers un routeur qui pointe vers vous, vous créez une BOUCLE de routage !</div>
+        </div>
+      `
+    },
+    {
+      title: "📍 Structure d'une Adresse IPv4",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">🔢 Adresse IP = 32 bits = 4 octets</div>
+          <div class="concept-body">
+            Une adresse IPv4 comporte <strong>32 bits</strong>, écrite en notation décimale pointée : ex. <strong>192.168.1.10</strong><br><br>
+            Chaque nombre est un <strong>octet</strong> (8 bits), allant de 0 à 255.<br><br>
+            Exemple : <code>134.59.136.5 = 10000110.00111011.10001000.00000101</code>
+          </div>
+          <div class="highlight-box">Chaque adresse a DEUX parties : <strong>Partie réseau</strong> (identifie le réseau) + <strong>Partie hôte</strong> (identifie l'équipement sur ce réseau)</div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🎭 Le MASQUE — Séparer Réseau et Hôte</div>
+          <div class="concept-body">
+            Le <strong>masque de sous-réseau</strong> est un nombre de 32 bits où :<br>
+            • bits à <strong>1</strong> → désignent la <em>partie réseau</em><br>
+            • bits à <strong>0</strong> → désignent la <em>partie hôte</em><br><br>
+            Pour trouver l'adresse réseau : effectuez un <strong>ET logique</strong> entre l'IP et le masque.
+          </div>
+          <div class="formula-box">Adresse Réseau = IP ET Masque</div>
+          <div class="code-block">IP :    192.168.12.77 = 11000000.10101000.00001100.01001101
+Masque /29 =          11111111.11111111.11111111.11111000
+Réseau =              11000000.10101000.00001100.01001000
+       =  192.168.12.72</div>
+        </div>
+        <table>
+          <tr><th>CIDR</th><th>Masque</th><th>Hôtes</th><th>Formule</th></tr>
+          <tr><td>/24</td><td>255.255.255.0</td><td><strong>254</strong></td><td>2⁸ − 2</td></tr>
+          <tr><td>/25</td><td>255.255.255.128</td><td><strong>126</strong></td><td>2⁷ − 2</td></tr>
+          <tr><td>/26</td><td>255.255.255.192</td><td><strong>62</strong></td><td>2⁶ − 2</td></tr>
+          <tr><td>/27</td><td>255.255.255.224</td><td><strong>30</strong></td><td>2⁵ − 2</td></tr>
+          <tr><td>/28</td><td>255.255.255.240</td><td><strong>14</strong></td><td>2⁴ − 2</td></tr>
+          <tr><td>/30</td><td>255.255.255.252</td><td><strong>2</strong></td><td>2² − 2</td></tr>
+        </table>
+      `
+    },
+    {
+      title: "🏷️ Classes d'Adresses IPv4",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">📊 Les 5 Classes — RFC 791</div>
+          <div class="concept-body">Les adresses IPv4 sont divisées en classes selon les bits du premier octet :</div>
+          <table style="margin-top:10px">
+            <tr><th>Classe</th><th>1er octet</th><th>Masque</th><th>Réseaux</th><th>Hôtes/Réseau</th></tr>
+            <tr><td><strong>A</strong></td><td>1 – 126</td><td>/8</td><td>2⁷ = 126</td><td>2²⁴−2 = 16,7M</td></tr>
+            <tr><td><strong>B</strong></td><td>128 – 191</td><td>/16</td><td>2¹⁴ = 16 384</td><td>2¹⁶−2 = 65 534</td></tr>
+            <tr><td><strong>C</strong></td><td>192 – 223</td><td>/24</td><td>2²¹ = 2M</td><td>2⁸−2 = 254</td></tr>
+            <tr><td><strong>D</strong></td><td>224 – 239</td><td>/4</td><td>Multicast</td><td>—</td></tr>
+            <tr><td><strong>E</strong></td><td>240 – 255</td><td>/4</td><td>Expérimental</td><td>—</td></tr>
+          </table>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🏠 Adresses Privées (RFC 1918)</div>
+          <div class="concept-body">Ces adresses <strong>NE SONT PAS routables sur Internet</strong> — utilisées uniquement dans les réseaux privés. Le NAT est nécessaire pour accéder à Internet.</div>
+          <table style="margin-top:8px">
+            <tr><th>Classe</th><th>Plage privée</th><th>CIDR</th></tr>
+            <tr><td><strong>A</strong></td><td>10.0.0.0 → 10.255.255.255</td><td>/8</td></tr>
+            <tr><td><strong>B</strong></td><td>172.16.0.0 → 172.31.255.255</td><td>/12</td></tr>
+            <tr><td><strong>C</strong></td><td>192.168.0.0 → 192.168.255.255</td><td>/16</td></tr>
+          </table>
+          <div class="highlight-box warn" style="margin-top:12px">⚠️ IPv4 a été conçu en 1981 (2³² = 4,29 milliards d'adresses). Le <strong>3 février 2011</strong>, l'IANA a officiellement annoncé l'épuisement du stock !</div>
+        </div>
+      `
+    },
+    {
+      title: "✂️ VLSM — Masques de Longueur Variable",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">❓ Pourquoi le VLSM ?</div>
+          <div class="concept-body">
+            Sans VLSM, tous les sous-réseaux ont la même taille — énorme gaspillage. Si vous avez des réseaux nécessitant 100, 56 et 2 hôtes, vous gaspilleriez des milliers d'adresses.<br><br>
+            Le <strong>VLSM</strong> permet de diviser un bloc réseau en <em>sous-réseaux de tailles différentes</em>, chacun parfaitement dimensionné selon le besoin.
+          </div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">📐 Méthode VLSM — Du Plus Grand au Plus Petit !</div>
+          <div class="concept-body">La règle d'or : <em>toujours allouer le PLUS GRAND sous-réseau en premier.</em></div>
+          <ul class="step-list">
+            <li><div class="step-num">1</div><div class="step-body"><strong>Trier par taille</strong> — du plus grand nombre d'hôtes au plus petit</div></li>
+            <li><div class="step-num">2</div><div class="step-body"><strong>Trouver le masque minimal</strong> — 2ⁿ ≥ (hôtes nécessaires + 2). Choisir le plus petit n.</div></li>
+            <li><div class="step-num">3</div><div class="step-body"><strong>Affecter le sous-réseau</strong> — adresse réseau, puis trouver le prochain bloc libre</div></li>
+            <li><div class="step-num">4</div><div class="step-body"><strong>Répéter</strong> pour le suivant, en utilisant l'espace d'adressage restant</div></li>
+          </ul>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">📌 Exemple Classique d'Examen</div>
+          <div class="concept-body">Réseau accordé : <strong>195.234.5.0/24</strong><br>Besoins : BAT.A=100 hôtes, BAT.B=56 hôtes, BAT.C=19 hôtes, 3 liaisons série=2 hôtes</div>
+          <table style="margin-top:8px">
+            <tr><th>Sous-réseau</th><th>Besoin</th><th>Masque</th><th>Adresse</th><th>Hôtes dispo.</th></tr>
+            <tr><td>BAT.A</td><td>100</td><td>/25</td><td>195.234.5.128/25</td><td>126</td></tr>
+            <tr><td>BAT.B</td><td>56</td><td>/26</td><td>195.234.5.64/26</td><td>62</td></tr>
+            <tr><td>BAT.C</td><td>19</td><td>/27</td><td>195.234.5.32/27</td><td>30</td></tr>
+            <tr><td>Liaisons série</td><td>2</td><td>/30</td><td>195.234.5.16/30 etc.</td><td>2</td></tr>
+          </table>
+          <div class="highlight-box success">✅ Avec VLSM : utilisation à <strong>93,75%</strong> des adresses contre 28% sans VLSM !</div>
+        </div>
+      `
+    }
+  ],
+
+  2: [
+    {
+      title: "🔄 Qu'est-ce que le NAT ?",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">🌍 Le Problème que Résout le NAT</div>
+          <div class="concept-body">
+            Les adresses IP privées (ex. 192.168.1.x) <strong>ne peuvent pas être routées sur Internet</strong>. Mais une entreprise peut avoir 500 ordinateurs nécessitant tous un accès Internet.<br><br>
+            Le <strong>NAT (Network Address Translation)</strong> se place au niveau du routeur frontière et <em>traduit</em> les adresses privées en une (ou quelques) adresse(s) publique(s).
+          </div>
+          <div class="highlight-box">NAT = la raison pour laquelle des milliards d'appareils accèdent à Internet en utilisant seulement quelques adresses IP publiques !</div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">📦 3 Types de NAT</div>
+          <table>
+            <tr><th>Type</th><th>Fonctionnement</th><th>Usage</th></tr>
+            <tr><td><strong>NAT Statique</strong></td><td>1 IP privée ↔ 1 IP publique (permanent)</td><td>Serveurs (web, mail)</td></tr>
+            <tr><td><strong>NAT Dynamique</strong></td><td>1 IP privée ↔ 1 IP d'un pool (temporaire)</td><td>IPs publiques limitées</td></tr>
+            <tr><td><strong>PAT (Surcharge)</strong></td><td>Plusieurs IPs privées → 1 IP publique (ports)</td><td>Accès Internet domicile/entreprise</td></tr>
+          </table>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🔌 PAT — Translation d'Adresse de Port (Le Plus Courant)</div>
+          <div class="concept-body">
+            C'est ce qu'utilise votre box Internet. Elle associe plusieurs connexions internes à UNE SEULE IP publique en suivant les <strong>numéros de port</strong>.<br><br>
+            Quand 192.168.1.10:5000 et 192.168.1.20:5000 se connectent tous les deux à google.com, le routeur les distingue en assignant des ports sources différents vers l'extérieur.
+          </div>
+          <div class="code-block">! Pool NAT
+ip nat pool MON_POOL 134.59.137.1 134.59.137.10 netmask 255.255.255.0
+
+! ACL pour définir les hôtes internes
+access-list 1 permit 192.168.1.0 0.0.0.255
+
+! Activer le PAT (surcharge)
+ip nat inside source list 1 interface Fa0/0 overload
+
+! Marquer les interfaces
+interface Fa0/0
+ ip nat outside
+interface Fa0/1
+ ip nat inside</div>
+        </div>
+      `
+    },
+    {
+      title: "🔍 Terminologie NAT et Vérification",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">📝 Les 4 Termes NAT à Connaître Absolument</div>
+          <table>
+            <tr><th>Terme</th><th>Signification</th></tr>
+            <tr><td><strong>Inside Local</strong></td><td>Adresse IP privée de l'hôte interne (ex. 192.168.1.10)</td></tr>
+            <tr><td><strong>Inside Global</strong></td><td>IP publique assignée à l'hôte interne pour Internet (ex. 134.59.136.5)</td></tr>
+            <tr><td><strong>Outside Local</strong></td><td>IP de l'hôte externe telle que vue depuis l'intérieur</td></tr>
+            <tr><td><strong>Outside Global</strong></td><td>Vraie IP de l'hôte externe sur Internet</td></tr>
+          </table>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🔎 Commandes de Vérification</div>
+          <div class="code-block">Router#show ip nat translations
+! Affiche les correspondances NAT actives
+
+Router#show ip nat statistics
+! Affiche le nombre de translations actives
+
+Router#debug ip nat
+! Activité NAT en temps réel (attention en production !)</div>
+        </div>
+        <div class="highlight-box warn">⚠️ Le NAT brise la connectivité de bout en bout — des protocoles comme FTP, SIP et IPsec peuvent avoir des problèmes avec NAT et nécessitent des mécanismes spéciaux (NAT-T, ALG).</div>
+      `
+    }
+  ],
+
+  3: [
+    {
+      title: "🛡️ ACL — Quoi, Pourquoi et Comment",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">🔐 Qu'est-ce qu'une ACL ?</div>
+          <div class="concept-body">
+            Une <strong>Liste de Contrôle d'Accès (ACL)</strong> est une liste de règles qui indique au routeur s'il doit <em>autoriser</em> ou <em>refuser</em> des paquets selon leurs caractéristiques.<br><br>
+            Imaginez un videur de boîte de nuit avec une liste — chaque paquet présente sa « carte d'identité » (IP source, IP destination, protocole, port) et l'ACL décide : <em>tu entres</em> ou <em>tu n'entres pas</em>.
+          </div>
+          <div class="highlight-box warn">⚠️ Règle critique : les instructions ACL sont évaluées <strong>DE HAUT EN BAS</strong>. La PREMIÈRE correspondance gagne. Toute ACL comporte un <strong>« deny all »</strong> implicite à la fin !</div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">📋 Deux Types d'ACL</div>
+          <table>
+            <tr><th>Type</th><th>Plage numéros</th><th>Filtre sur</th><th>Placement</th></tr>
+            <tr><td><strong>Standard</strong></td><td>1 – 99 / 1300–1999</td><td>IP source uniquement</td><td>Près de la destination</td></tr>
+            <tr><td><strong>Étendue</strong></td><td>100 – 199 / 2000–2699</td><td>IP src, IP dst, Protocole, Ports</td><td>Près de la source</td></tr>
+          </table>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🎭 Le Masque Générique — Inverse du Masque de Sous-réseau</div>
+          <div class="concept-body">
+            Les ACL utilisent un <strong>masque générique</strong> (wildccard, PAS un masque de sous-réseau !) :<br>
+            • bit = <strong>0</strong> → ce bit doit CORRESPONDRE<br>
+            • bit = <strong>1</strong> → ce bit est ignoré (joker)<br><br>
+            <code>255.255.255.0</code> masque sous-réseau → <code>0.0.0.255</code> masque générique<br>
+            Spécial : <code>0.0.0.0</code> = correspond exactement à une IP | <code>255.255.255.255</code> = toute IP = <code>any</code>
+          </div>
+          <div class="code-block">! ACL Standard - autoriser un réseau
+access-list 10 permit 192.168.1.0 0.0.0.255
+access-list 10 deny any
+
+! ACL Étendue - autoriser HTTP d'un hôte vers un serveur
+access-list 110 permit tcp 192.168.1.0 0.0.0.255 host 10.0.0.1 eq 80
+access-list 110 deny ip any any
+
+! Appliquer sur une interface
+interface Fa0/0
+ ip access-group 10 in     ! entrant
+ ip access-group 110 out   ! sortant</div>
+        </div>
+      `
+    },
+    {
+      title: "📌 Placement des ACL et ACL Nommées",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">📍 Où Placer les ACL ?</div>
+          <div class="concept-body">
+            La règle de placement est critique pour l'efficacité :<br><br>
+            • <strong>ACL Standard</strong> → placer le plus PRÈS possible de la DESTINATION (car elle ne filtre que l'IP source — on ne veut pas bloquer accidentellement du trafic légitime vers d'autres destinations)<br><br>
+            • <strong>ACL Étendue</strong> → placer le plus PRÈS possible de la SOURCE (ainsi le trafic indésirable est éliminé tôt, économisant de la bande passante)
+          </div>
+          <div class="highlight-box">À retenir : <strong>In</strong> = trafic ENTRANT dans l'interface (avant routage) | <strong>Out</strong> = trafic SORTANT de l'interface (après routage)</div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🏷️ ACL Nommées (Plus Lisibles)</div>
+          <div class="code-block">ip access-list extended BLOQUER_TELNET
+ deny tcp any any eq 23
+ permit ip any any
+
+interface Fa0/0
+ ip access-group BLOQUER_TELNET in</div>
+          <div class="concept-body" style="margin-top:10px;">
+            Les ACL nommées permettent de <strong>supprimer des lignes individuelles</strong> (les ACL numérotées nécessitent la suppression et la re-saisie de la liste entière).
+          </div>
+        </div>
+      `
+    }
+  ],
+
+  4: [
+    {
+      title: "📡 Routage Dynamique — Pourquoi et Comment",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">⚡ Routage Statique vs Dynamique</div>
+          <div class="concept-body">
+            <strong>Routage statique</strong> : l'administrateur saisit manuellement chaque route. Fonctionne bien sur les petits réseaux. Problème : si une liaison tombe, le routeur continue d'essayer la route morte.<br><br>
+            <strong>Routage dynamique</strong> : les routeurs <em>partagent automatiquement les informations de routes</em> avec leurs voisins. Ils s'adaptent aux pannes, trouvent de nouveaux chemins et se mettent à jour automatiquement.
+          </div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🗂️ Deux Types de Protocoles de Routage Dynamique</div>
+          <table>
+            <tr><th>Type</th><th>Exemples</th><th>Fonctionnement</th></tr>
+            <tr><td><strong>Vecteur de Distance</strong></td><td>RIP, IGRP</td><td>Chaque routeur communique sa table de routage complète à ses voisins (« routage par rumeur »)</td></tr>
+            <tr><td><strong>État de Lien</strong></td><td>OSPF, IS-IS</td><td>Chaque routeur connaît la CARTE COMPLÈTE du réseau (algorithme SPF de Dijkstra)</td></tr>
+          </table>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🔁 RIP — Routing Information Protocol</div>
+          <div class="concept-body">
+            <strong>Métrique</strong> : nombre de sauts (max 15 sauts — 16 = inatteignable)<br>
+            <strong>Mises à jour</strong> : envoie la table complète toutes les 30 secondes<br>
+            <strong>RIPv1</strong> : avec classes (n'envoie pas le masque) | <strong>RIPv2</strong> : sans classes (envoie le masque, supporte VLSM)
+          </div>
+          <div class="code-block">router rip
+ version 2
+ network 192.168.1.0
+ network 192.168.2.0
+ no auto-summary          ! CRITIQUE avec VLSM !</div>
+        </div>
+      `
+    },
+    {
+      title: "🔵 OSPF — Open Shortest Path First",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">🌍 Pourquoi OSPF plutôt que RIP ?</div>
+          <div class="concept-body">
+            RIP a une limite de 15 sauts et converge lentement. OSPF n'a <strong>pas de limite de sauts</strong>, converge rapidement et utilise la bande passante comme métrique (pas les sauts).
+          </div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🤝 Découverte des Voisins OSPF — Protocole Hello</div>
+          <div class="concept-body">
+            Les routeurs OSPF envoient des <strong>paquets Hello</strong> toutes les 10 secondes sur LAN, 30 sur WAN. Les routeurs deviennent voisins s'ils s'accordent sur : même réseau, même aire, mêmes minuteries, même authentification.
+          </div>
+          <div class="highlight-box">Sur les réseaux multi-accès (Ethernet), OSPF élit un <strong>DR (Routeur Désigné)</strong> et un <strong>BDR (DR de Secours)</strong> pour réduire les inondations. Élection basée sur la <strong>priorité</strong> la plus haute, puis le <strong>Router ID</strong> le plus élevé.</div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">⚙️ Configuration OSPF de Base</div>
+          <div class="code-block">router ospf 1
+ router-id 1.1.1.1
+ network 192.168.1.0 0.0.0.255 area 0
+ network 192.168.2.0 0.0.0.255 area 0
+
+! Vérification
+show ip ospf neighbor
+show ip ospf database
+show ip route ospf</div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">📊 Distance Administrative (DA)</div>
+          <div class="concept-body">Quand plusieurs protocoles fournissent des routes vers la même destination, le routeur utilise celle ayant la <strong>DA la plus faible</strong> :</div>
+          <table style="margin-top:8px">
+            <tr><th>Protocole</th><th>DA</th></tr>
+            <tr><td>Connecté</td><td><strong>0</strong></td></tr>
+            <tr><td>Statique</td><td><strong>1</strong></td></tr>
+            <tr><td>OSPF</td><td><strong>110</strong></td></tr>
+            <tr><td>RIP</td><td><strong>120</strong></td></tr>
+          </table>
+        </div>
+      `
+    }
+  ],
+
+  5: [
+    {
+      title: "🗺️ OSPF Multi-Aires",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">❓ Pourquoi plusieurs Aires ?</div>
+          <div class="concept-body">
+            Dans un OSPF à aire unique avec 500 routeurs, chaque routeur doit stocker la <em>topologie réseau entière</em> — tables de routage énormes, inondations LSA massives.<br><br>
+            L'OSPF multi-aires résout ce problème en divisant le réseau en <strong>aires</strong>. Les informations de topologie détaillées restent À L'INTÉRIEUR de chaque aire.
+          </div>
+          <div class="highlight-box purple">⚡ Règle fondamentale : l'<strong>Aire 0</strong> (le backbone) est OBLIGATOIRE. Toutes les autres aires DOIVENT se connecter à l'Aire 0 !</div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🔧 Rôles des Routeurs en OSPF Multi-Aires</div>
+          <table>
+            <tr><th>Rôle</th><th>Nom complet</th><th>Fonction</th></tr>
+            <tr><td><strong>ABR</strong></td><td>Area Border Router</td><td>Connecte plusieurs aires, résume les routes entre elles</td></tr>
+            <tr><td><strong>ASBR</strong></td><td>Autonomous System Boundary Router</td><td>Connecte OSPF à d'autres protocoles (RIP, BGP...)</td></tr>
+            <tr><td><strong>Routeur Backbone</strong></td><td>—</td><td>Possède au moins une interface dans l'Aire 0</td></tr>
+          </table>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">📦 Types de LSA à Connaître</div>
+          <table>
+            <tr><th>Type LSA</th><th>Nom</th><th>Généré par</th><th>Portée</th></tr>
+            <tr><td><strong>Type 1</strong></td><td>Router LSA</td><td>Tous les routeurs</td><td>Intra-aire uniquement</td></tr>
+            <tr><td><strong>Type 2</strong></td><td>Network LSA</td><td>DR</td><td>Intra-aire uniquement</td></tr>
+            <tr><td><strong>Type 3</strong></td><td>Summary LSA</td><td>ABR</td><td>Entre les aires</td></tr>
+            <tr><td><strong>Type 4</strong></td><td>ASBR Summary</td><td>ABR</td><td>Entre les aires</td></tr>
+            <tr><td><strong>Type 5</strong></td><td>External LSA</td><td>ASBR</td><td>Domaine OSPF entier</td></tr>
+          </table>
+        </div>
+      `
+    }
+  ],
+
+  6: [
+    {
+      title: "🔁 HSRP — Hot Standby Router Protocol",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">💀 Le Problème du Point de Défaillance Unique</div>
+          <div class="concept-body">
+            Chaque équipement d'un LAN utilise une <strong>passerelle par défaut</strong> (le routeur) pour atteindre d'autres réseaux. Si ce routeur tombe en panne — <em>tout le monde perd l'accès Internet</em>.<br><br>
+            <strong>HSRP</strong> (protocole propriétaire Cisco) résout ce problème en faisant fonctionner DEUX routeurs comme UN seul routeur virtuel. Les clients ne remarquent même pas la panne du routeur principal.
+          </div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🎭 Fonctionnement de HSRP</div>
+          <div class="concept-body">
+            HSRP crée une <strong>adresse IP virtuelle</strong> et une <strong>adresse MAC virtuelle</strong>. Les clients utilisent cette IP virtuelle comme passerelle.<br><br>
+            • <strong>Routeur Actif</strong> : gère actuellement tout le trafic du groupe<br>
+            • <strong>Routeur Passif</strong> : surveille le routeur Actif via des paquets Hello (toutes les 3 sec)<br>
+            • Si l'Actif tombe → le Passif prend le relais en ~10 secondes
+          </div>
+          <div class="code-block">! Routeur 1 (Actif - priorité plus haute)
+interface Fa0/0
+ ip address 192.168.1.1 255.255.255.0
+ standby 1 ip 192.168.1.254     ! IP Virtuelle
+ standby 1 priority 110         ! Par défaut : 100
+ standby 1 preempt              ! Reprendre le rôle actif après rétablissement
+
+! Routeur 2 (Passif)
+interface Fa0/0
+ ip address 192.168.1.2 255.255.255.0
+ standby 1 ip 192.168.1.254
+ standby 1 priority 90</div>
+          <div class="highlight-box warn">⚠️ La commande <strong>preempt</strong> doit être configurée pour que le routeur récupère le statut Actif après une reprise. Sans preempt, le routeur de secours reste Actif même quand le routeur original revient !</div>
+        </div>
+      `
+    }
+  ],
+
+  7: [
+    {
+      title: "🚀 Pourquoi IPv6 ?",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">📉 IPv4 est en voie d'épuisement</div>
+          <div class="concept-body">
+            IPv4 a été défini en <strong>1983</strong> avec 2³² = 4,29 milliards d'adresses. Il a été conçu AVANT l'explosion d'Internet et de l'IoT.<br><br>
+            Le <strong>3 février 2011</strong>, l'IANA a distribué les derniers blocs IPv4 aux 5 Registres Internet Régionaux (RIR). Le stock est officiellement <strong>épuisé</strong>.
+          </div>
+          <div class="highlight-box warn">Le NAT, les adresses privées et le CIDR étaient des solutions temporaires — IPv6 est la solution permanente.</div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">📊 Comparaison IPv6 vs IPv4</div>
+          <table>
+            <tr><th>Caractéristique</th><th>IPv4</th><th>IPv6</th></tr>
+            <tr><td>Taille adresse</td><td>32 bits</td><td><strong>128 bits</strong></td></tr>
+            <tr><td>Adresses</td><td>~4,3 milliards</td><td><strong>340 undécillions (3,4×10³⁸)</strong></td></tr>
+            <tr><td>Notation</td><td>Décimal (points)</td><td><strong>Hexadécimal (deux-points)</strong></td></tr>
+            <tr><td>En-tête</td><td>Variable, complexe</td><td><strong>Fixe 40 octets, plus simple</strong></td></tr>
+            <tr><td>Diffusion</td><td>Oui</td><td><strong>Non (utilise le multicast)</strong></td></tr>
+          </table>
+        </div>
+      `
+    },
+    {
+      title: "📝 Notation et Compression IPv6",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">🔠 Adresse IPv6 complète = 8 groupes de 4 chiffres hex</div>
+          <div class="code-block">2001:0db8:0000:00A1:0000:0000:0000:1E2A</div>
+          <div class="concept-body" style="margin-top:8px;">
+            C'est 128 bits = 16 octets = 32 chiffres hexadécimaux en 8 groupes (hextets) séparés par des <strong>deux-points</strong>.
+          </div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">✂️ Deux Règles de Compression</div>
+          <div class="concept-body">
+            <strong>Règle 1</strong> : Supprimer les zéros non significatifs dans chaque hextet :<br>
+            <code>0db8</code> → <code>db8</code> | <code>00A1</code> → <code>A1</code> | <code>0000</code> → <code>0</code>
+            <br><br>
+            <strong>Règle 2</strong> : Remplacer UNE suite consécutive d'hextets nuls par <code>::</code><br>
+            <code>0000:0000:0000</code> → <code>::</code>
+            <br><br>
+            ⚠️ <code>::</code> ne peut apparaître qu'UNE SEULE FOIS dans une adresse !
+          </div>
+          <div class="code-block">Complet :  2001:0db8:0000:00A1:0000:0000:0000:1E2A
+Étape 1 :  2001:db8:0:A1:0:0:0:1E2A
+Étape 2 :  2001:db8:0:A1::1E2A</div>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">📦 Structure d'une Adresse IPv6 (GUA)</div>
+          <div class="concept-body">
+            Pour une GUA (Adresse Unicast Globale) — le type le plus courant :<br><br>
+            • Premiers <strong>48 bits</strong> : préfixe de routage global (attribué par le FAI)<br>
+            • <strong>16 bits</strong> suivants : ID de sous-réseau (contrôlé par l'entreprise, 65 536 sous-réseaux)<br>
+            • Derniers <strong>64 bits</strong> : identifiant d'interface (unique par équipement)
+          </div>
+          <div class="formula-box">GUA = préfixe /48 + sous-réseau /16 + identifiant-interface /64</div>
+        </div>
+      `
+    },
+    {
+      title: "🏷️ Types d'Adresses IPv6",
+      content: `
+        <div class="concept-block">
+          <div class="concept-title">📋 Trois Types Principaux d'Adresses</div>
+          <table>
+            <tr><th>Type</th><th>Préfixe</th><th>Portée</th><th>Usage</th></tr>
+            <tr><td><strong>GUA</strong></td><td>2000::/3</td><td>Globale</td><td>Routable sur Internet (comme IPv4 public)</td></tr>
+            <tr><td><strong>LLA</strong></td><td>FE80::/10</td><td>Lien local uniquement</td><td>Auto-config, découverte voisins, protocoles de routage</td></tr>
+            <tr><td><strong>ULA</strong></td><td>FC00::/7</td><td>Site local</td><td>Privée (comme 192.168.x.x en IPv4)</td></tr>
+          </table>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🤖 LLA — Adresse Lien-Local</div>
+          <div class="concept-body">
+            Chaque interface IPv6 <strong>génère automatiquement</strong> une adresse Lien-Local commençant par <code>FE80::</code>.<br><br>
+            La partie identifiant d'interface (64 derniers bits) est dérivée via <strong>EUI-64</strong> :
+          </div>
+          <ul class="step-list">
+            <li><div class="step-num">1</div><div class="step-body">Prendre l'adresse MAC : ex. <code>00:0C:29:12:34:56</code></div></li>
+            <li><div class="step-num">2</div><div class="step-body">Couper en deux et insérer <code>FF:FE</code> au milieu : <code>00:0C:29:FF:FE:12:34:56</code></div></li>
+            <li><div class="step-num">3</div><div class="step-body">Inverser le 7ème bit (bit Universel/Local) : <code>02:0C:29:FF:FE:12:34:56</code></div></li>
+            <li><div class="step-num">4</div><div class="step-body">Résultat : <code>FE80::020C:29FF:FE12:3456</code></div></li>
+          </ul>
+        </div>
+        <div class="concept-block">
+          <div class="concept-title">🔄 Double Pile — Dual-Stack (Coexistence)</div>
+          <div class="concept-body">
+            La technique de migration <strong>recommandée</strong>. Les piles IPv4 et IPv6 fonctionnent simultanément sur le même équipement. L'appareil possède UNE adresse IPv4 ET une adresse IPv6, et utilise celle qui convient.
+          </div>
+          <div class="code-block">! Activer le routage IPv6 (obligatoire en premier !)
+ipv6 unicast-routing
+
+interface Fa0/0
+ ip address 192.168.1.1 255.255.255.0       ! IPv4
+ ipv6 address 2001:db8:1::1/64              ! IPv6 GUA
+ ipv6 address FE80::1 link-local            ! IPv6 LLA</div>
+        </div>
+      `
+    }
+  ]
+};
+
+const examQuestions = [
+  // 2 POINTS
+  { marks:2, type:"Théorie", chapter:1,
+    q:"Quelle est la différence entre un « protocole routé » et un « protocole de routage » ? Donnez un exemple de chacun.",
+    answer:"<strong>Protocole routé</strong> : protocole dont les paquets peuvent être acheminés par un routeur grâce à l'adressage de couche 3. Exemple : <em>IP (IPv4/IPv6)</em>.<br><strong>Protocole de routage</strong> : protocole utilisé par les routeurs pour échanger des informations de routage et construire leurs tables. Exemple : <em>OSPF, RIP, EIGRP</em>."
+  },
+  { marks:2, type:"Théorie", chapter:1,
+    q:"Définissez la « Distance Administrative » (DA) et expliquez pourquoi elle est importante lorsque plusieurs protocoles de routage fournissent des routes vers la même destination.",
+    answer:"La Distance Administrative (DA) est une valeur (0–255) représentant la fiabilité/crédibilité d'une source d'information de routage. Quand plusieurs protocoles fournissent une route vers le même réseau, le routeur installe celle ayant la <strong>DA la plus faible</strong>. Exemple : OSPF (DA=110) est préféré à RIP (DA=120)."
+  },
+  { marks:2, type:"Technique", chapter:2,
+    q:"Quelle commande affiche les translations NAT actives sur un routeur Cisco ? Écrivez-la exactement.",
+    answer:"<code>Router# show ip nat translations</code><br>Cette commande affiche la table NAT courante, montrant les adresses Inside Local, Inside Global, Outside Local et Outside Global."
+  },
+  { marks:2, type:"Théorie", chapter:6,
+    q:"Quelle est la valeur de priorité HSRP par défaut et qu'est-ce qui détermine quel routeur devient Actif ?",
+    answer:"La priorité HSRP par défaut est <strong>100</strong>. Le routeur avec la <strong>priorité la plus élevée</strong> devient Actif. En cas d'égalité, c'est le routeur avec l'<strong>adresse IP la plus élevée</strong> qui devient Actif."
+  },
+  { marks:2, type:"Théorie", chapter:7,
+    q:"Énoncez les deux règles de compression d'une adresse IPv6 et indiquez la restriction concernant l'utilisation de « :: ».",
+    answer:"<strong>Règle 1</strong> : Les zéros non significatifs de chaque hextet peuvent être omis (ex. 0db8 → db8).<br><strong>Règle 2</strong> : Une suite consécutive d'hextets tous nuls peut être remplacée par '::' (double deux-points).<br><strong>Restriction</strong> : '::' ne peut apparaître qu'<strong>une seule fois</strong> dans une adresse — sinon l'adresse devient ambiguë."
+  },
+  { marks:2, type:"Technique", chapter:3,
+    q:"Qu'est-ce qu'un masque générique (wildcard) ? Convertissez le masque de sous-réseau 255.255.255.240 en son équivalent générique.",
+    answer:"Un masque générique est l'<strong>inverse bit à bit</strong> d'un masque de sous-réseau. Bits à 0 = doit correspondre ; bits à 1 = ignoré.<br>255.255.255.240 = 11111111.11111111.11111111.11110000<br>Générique = 00000000.00000000.00000000.00001111 = <strong>0.0.0.15</strong>"
+  },
+
+  // 6 POINTS
+  { marks:6, type:"Technique", chapter:1,
+    q:"Une entreprise reçoit le réseau 195.168.12.0/24. En utilisant le VLSM, découpez-le pour satisfaire : Site A = 100 hôtes, Site B = 50 hôtes, Site C = 20 hôtes. Pour chaque sous-réseau, indiquez : adresse réseau, masque, première IP utilisable, dernière IP utilisable, adresse de diffusion.",
+    answer:`<strong>Méthode : Du plus grand au plus petit !</strong><br><br>
+<strong>Site A (100 hôtes → besoin /25, 2⁷=128 > 102) :</strong><br>
+Réseau : 195.168.12.128/25 | Masque : 255.255.255.128<br>
+Première : 195.168.12.129 | Dernière : 195.168.12.254 | Diffusion : 195.168.12.255<br><br>
+<strong>Site B (50 hôtes → besoin /26, 2⁶=64 > 52) :</strong><br>
+Réseau : 195.168.12.64/26 | Masque : 255.255.255.192<br>
+Première : 195.168.12.65 | Dernière : 195.168.12.126 | Diffusion : 195.168.12.127<br><br>
+<strong>Site C (20 hôtes → besoin /27, 2⁵=32 > 22) :</strong><br>
+Réseau : 195.168.12.32/27 | Masque : 255.255.255.224<br>
+Première : 195.168.12.33 | Dernière : 195.168.12.62 | Diffusion : 195.168.12.63`
+  },
+  { marks:6, type:"Théorie", chapter:4,
+    q:"Comparez les protocoles de routage dynamique RIP et OSPF selon les critères suivants : métrique utilisée, taille maximale du réseau, vitesse de convergence, mécanisme de mise à jour, et classification (vecteur de distance / état de lien). Présentez votre réponse sous forme de tableau.",
+    answer:`<table>
+<tr><th>Critère</th><th>RIP</th><th>OSPF</th></tr>
+<tr><td>Métrique</td><td>Nombre de sauts (max 15)</td><td>Bande passante (coût = 10⁸/BW)</td></tr>
+<tr><td>Taille max</td><td>15 sauts (16 = inatteignable)</td><td>Illimitée (aires hiérarchiques)</td></tr>
+<tr><td>Convergence</td><td>Lente (mises à jour 30s + holddown)</td><td>Rapide (LSA déclenchés)</td></tr>
+<tr><td>Mises à jour</td><td>Table complète toutes les 30s</td><td>LSA incrémentiels déclenchés</td></tr>
+<tr><td>Type</td><td>Vecteur de Distance</td><td>État de Lien (SPF Dijkstra)</td></tr>
+<tr><td>DA</td><td>120</td><td>110</td></tr>
+</table>
+<strong>Conclusion</strong> : OSPF est préféré pour les réseaux d'entreprise grâce à sa scalabilité, sa convergence rapide et ses mises à jour efficaces.`
+  },
+  { marks:6, type:"Théorie", chapter:7,
+    q:"Expliquez les trois techniques de coexistence entre IPv4 et IPv6 (double pile, tunnel, traduction). Précisez laquelle est la technique recommandée et pourquoi.",
+    answer:`<strong>1. Double Pile (Dual-Stack)</strong> — RFC 4213 :<br>
+Les équipements exécutent simultanément IPv4 et IPv6. Ils possèdent des adresses dans les deux protocoles et utilisent celui qui convient. <em>C'est la solution RECOMMANDÉE</em> — transparente, sans surcoût d'encapsulation, sans perte de traduction.<br><br>
+<strong>2. Tunnel (6to4) :</strong><br>
+Les paquets IPv6 sont encapsulés dans des paquets IPv4 pour traverser des réseaux ne supportant qu'IPv4. Un point de terminaison de tunnel désencapsule les paquets. Utile pendant la transition, mais ajoute de la complexité.<br><br>
+<strong>3. Traduction (NAT64) :</strong><br>
+Un équipement IPv6 communique avec un équipement IPv4 via une traduction d'adresses. Analogue au NAT en IPv4, mais brise la connectivité de bout en bout et est complexe à mettre en œuvre.<br><br>
+<strong>Recommandée</strong> : Double Pile — car les deux protocoles fonctionnent nativement sans traduction ni surcoût d'encapsulation.`
+  },
+
+  // 8 POINTS
+  { marks:8, type:"Technique", chapter:2,
+    q:"Une entreprise possède le réseau privé 10.0.0.0/8 en interne. Elle dispose d'UNE SEULE adresse IP publique : 203.0.113.1. Configurez le PAT (surcharge) sur un routeur Cisco pour que TOUS les hôtes internes puissent accéder à Internet via cette unique IP publique. Incluez : définition de l'ACL, configuration NAT, assignation des interfaces, et commandes de vérification.",
+    answer:`<code>! Étape 1 : Définir le trafic à traduire
+access-list 1 permit 10.0.0.0 0.255.255.255</code><br><br>
+<code>! Étape 2 : Configurer le PAT (surcharge = PAT)
+ip nat inside source list 1 interface Fa0/0 overload</code><br><br>
+<code>! Alternative : avec un pool
+ip nat pool POOL_INET 203.0.113.1 203.0.113.1 netmask 255.255.255.255
+ip nat inside source list 1 pool POOL_INET overload</code><br><br>
+<code>! Étape 3 : Marquer les interfaces
+interface Fa0/0      ! Interface WAN
+ ip address 203.0.113.1 255.255.255.252
+ ip nat outside
+
+interface Fa0/1      ! Interface LAN
+ ip address 10.0.0.1 255.0.0.0
+ ip nat inside</code><br><br>
+<code>! Vérification
+show ip nat translations    ! Voir les translations actives
+show ip nat statistics      ! Voir les compteurs
+debug ip nat                ! Temps réel (à utiliser avec précaution !)</code>`
+  },
+  { marks:8, type:"Technique", chapter:3,
+    q:"Rédigez une ACL étendue pour : (a) autoriser le trafic HTTP et HTTPS du réseau 192.168.1.0/24 vers n'importe quelle destination, (b) autoriser le DNS (port UDP 53) depuis n'importe quel hôte, (c) refuser tout autre trafic. Appliquez-la en entrée sur l'interface LAN. Expliquez chaque ligne.",
+    answer:`<code>! ACL étendue nommée pour plus de clarté
+ip access-list extended FILTRE_LAN
+
+ ! (a) Autoriser HTTP (port 80) du réseau 192.168.1.0/24 vers n'importe où
+ permit tcp 192.168.1.0 0.0.0.255 any eq 80
+
+ ! (a) Autoriser HTTPS (port 443) du réseau 192.168.1.0/24 vers n'importe où
+ permit tcp 192.168.1.0 0.0.0.255 any eq 443
+
+ ! (b) Autoriser le DNS depuis n'importe quel hôte
+ permit udp any any eq 53
+
+ ! (c) Refuser tout autre trafic (le deny implicite existe,
+ !     mais le rendre explicite est une bonne pratique)
+ deny ip any any log
+
+! Appliquer en entrée sur l'interface LAN
+interface Fa0/1
+ ip access-group FILTRE_LAN in</code><br><br>
+<strong>Points clés</strong> : ACL étendue placée près de la SOURCE (efficace). 'eq 80' = port destination 80. Le mot-clé 'log' journalise les paquets refusés à des fins d'audit sécurité. L'ACL est traitée de haut en bas, première correspondance gagnante.`
+  },
+
+  // 10 POINTS
+  { marks:10, type:"Technique", chapter:4,
+    q:"Configurez OSPF mono-aire sur un réseau de trois routeurs (R1, R2, R3) formant un triangle. R1 est connecté au LAN 192.168.1.0/24 et relie à R2 via 10.0.12.0/30. R2 relie à R3 via 10.0.23.0/30. R3 est connecté au LAN 192.168.3.0/24 et relie à R1 via 10.0.13.0/30. Tout dans l'Aire 0. Incluez : configurations complètes des routeurs, Router-IDs manuels, commandes de vérification, et explication de l'élection DR/BDR sur chaque liaison.",
+    answer:`<strong>Configuration R1 :</strong>
+<code>router ospf 1
+ router-id 1.1.1.1
+ network 192.168.1.0 0.0.0.255 area 0
+ network 10.0.12.0 0.0.0.3 area 0
+ network 10.0.13.0 0.0.0.3 area 0</code><br><br>
+<strong>Configuration R2 :</strong>
+<code>router ospf 1
+ router-id 2.2.2.2
+ network 10.0.12.0 0.0.0.3 area 0
+ network 10.0.23.0 0.0.0.3 area 0</code><br><br>
+<strong>Configuration R3 :</strong>
+<code>router ospf 1
+ router-id 3.3.3.3
+ network 192.168.3.0 0.0.0.255 area 0
+ network 10.0.23.0 0.0.0.3 area 0
+ network 10.0.13.0 0.0.0.3 area 0</code><br><br>
+<strong>Vérification :</strong>
+<code>show ip ospf neighbor       ! Vérifier les adjacences
+show ip ospf database       ! Contenu de la LSDB
+show ip route ospf          ! Routes apprises par OSPF</code><br><br>
+<strong>Élection DR/BDR</strong> : Sur les liaisons point à point (/30 = liaisons série), il n'y a PAS d'élection DR/BDR — uniquement sur les réseaux multi-accès (broadcast) comme Ethernet. Sur les segments LAN (192.168.1.0/24, 192.168.3.0/24), le routeur avec la priorité la plus haute gagne (défaut 1). En cas d'égalité, le Router-ID le plus élevé gagne. R3 avec l'ID 3.3.3.3 serait DR sur son segment LAN.`
+  },
+  { marks:10, type:"Théorie + Technique", chapter:1,
+    q:"Un administrateur réseau doit concevoir un plan d'adressage pour une entreprise avec 3 bâtiments : Bâtiment A (80 postes + 2 imprimantes), Bâtiment B (45 ordinateurs), Bâtiment C (12 appareils), plus 2 liaisons WAN point à point entre routeurs. Réseau accordé : 172.20.0.0/16. (a) Identifier le nombre minimal de sous-réseaux et d'hôtes requis. (b) Appliquer le VLSM pour créer des sous-réseaux optimaux. (c) Pour chaque sous-réseau, indiquer l'adresse réseau, le masque, la plage utilisable, la diffusion. (d) Quel pourcentage de l'espace d'adressage total est utilisé ?",
+    answer:`<strong>(a) Besoins :</strong>
+Bâtiment A : 82 hôtes → besoin /25 (2⁷-2=126) ✓
+Bâtiment B : 45 hôtes → besoin /26 (2⁶-2=62) ✓
+Bâtiment C : 12 hôtes → besoin /28 (2⁴-2=14) ✓
+Liaisons WAN : 2 hôtes chacune → besoin /30 (2²-2=2) ✓<br><br>
+<strong>(b) & (c) Allocation VLSM (du plus grand au plus petit) :</strong><br>
+<strong>Bâtiment A :</strong> 172.20.0.0/25 | Masque : 255.255.255.128 | Plage : .1–.126 | Diffusion : .127<br>
+<strong>Bâtiment B :</strong> 172.20.0.128/26 | Masque : 255.255.255.192 | Plage : .129–.190 | Diffusion : .191<br>
+<strong>Bâtiment C :</strong> 172.20.0.192/28 | Masque : 255.255.255.240 | Plage : .193–.206 | Diffusion : .207<br>
+<strong>Liaison WAN 1 :</strong> 172.20.0.208/30 | Masque : 255.255.255.252 | Plage : .209–.210 | Diffusion : .211<br>
+<strong>Liaison WAN 2 :</strong> 172.20.0.212/30 | Masque : 255.255.255.252 | Plage : .213–.214 | Diffusion : .215<br><br>
+<strong>(d) Utilisation des adresses :</strong>
+Total dans /16 : 65 536 adresses
+Utilisées : 128 + 64 + 16 + 4 + 4 = 216 adresses
+Pourcentage : 216/65536 × 100 = <strong>0,33 %</strong> (allocation très efficace, justifie le VLSM pour maximiser l'utilisation)`
+  },
+
+  // 12 POINTS
+  { marks:12, type:"Théorie + Technique", chapter:7,
+    q:"Vous devez planifier un schéma d'adressage IPv6 pour un réseau double pile. Le FAI fournit le préfixe 2001:db8:abcd::/48. (a) Expliquez en détail la méthode EUI-64 et générez la LLA pour un hôte d'adresse MAC AC:DE:48:00:11:22. (b) Créez un plan de sous-réseaux pour 3 départements en /64. (c) Configurez la double pile sur une interface de routeur Cisco. (d) Expliquez le rôle du NDP (Neighbor Discovery Protocol) et listez 3 types de messages ICMPv6 utilisés. (e) Pourquoi le broadcast est-il supprimé en IPv6 et par quoi est-il remplacé ?",
+    answer:`<strong>(a) EUI-64 — Génération de la LLA depuis l'adresse MAC AC:DE:48:00:11:22 :</strong>
+Étape 1 : Diviser la MAC en deux → AC:DE:48 | 00:11:22
+Étape 2 : Insérer FF:FE → AC:DE:48:FF:FE:00:11:22
+Étape 3 : Inverser le 7ème bit du premier octet : AC = 10101100 → 10101110 = AE
+Étape 4 : Identifiant d'interface = AE:DE:48:FF:FE:00:11:22
+LLA = <strong>FE80::AEDE:48FF:FE00:1122</strong><br><br>
+<strong>(b) Plan de sous-réseaux depuis 2001:db8:abcd::/48 :</strong>
+Le préfixe /48 donne 2¹⁶ = 65 536 sous-réseaux /64 possibles.
+Dept. Commercial :  2001:db8:abcd:0001::/64
+Dept. Finances :    2001:db8:abcd:0002::/64
+Dept. Informatique : 2001:db8:abcd:0003::/64<br><br>
+<strong>(c) Configuration Double Pile sur Routeur Cisco :</strong>
+<code>ipv6 unicast-routing
+interface Fa0/0
+ ip address 192.168.1.1 255.255.255.0
+ ipv6 address 2001:db8:abcd:1::1/64
+ ipv6 address FE80::1 link-local
+ no shutdown</code><br><br>
+<strong>(d) NDP — Neighbor Discovery Protocol :</strong>
+Le NDP remplace ARP en IPv6. Il utilise le multicast ICMPv6 pour :
+• Type 133 — Router Solicitation (RS) : l'hôte demande « y a-t-il des routeurs ? »
+• Type 134 — Router Advertisement (RA) : le routeur annonce le préfixe/passerelle
+• Type 135 — Neighbor Solicitation (NS) : équivalent de la requête ARP
+• Type 136 — Neighbor Advertisement (NA) : équivalent de la réponse ARP<br><br>
+<strong>(e) Suppression du Broadcast en IPv6 :</strong>
+Le broadcast IPv4 (envoyer à TOUS les équipements) est inefficace — chaque équipement doit traiter chaque broadcast, même s'il n'est pas concerné. IPv6 supprime le broadcast et le remplace par le <strong>multicast</strong> (envoyer à un GROUPE SPÉCIFIQUE d'équipements intéressés) et l'<strong>anycast</strong> (envoyer au membre LE PLUS PROCHE d'un groupe). Cela réduit considérablement la charge de traitement inutile sur tous les hôtes.`
+  },
+  { marks:12, type:"Technique", chapter:4,
+    q:"Concevez et configurez un réseau OSPF multi-aires complet. La topologie comporte : Aire 0 (backbone) avec 2 routeurs (R1, R2) et une liaison 10.0.0.0/30. Aire 1 connectée via l'ABR R1 avec LAN 192.168.1.0/24 et LAN 192.168.2.0/24. Aire 2 connectée via l'ABR R2 avec LAN 172.16.0.0/24. (a) Dessinez la topologie par aires et identifiez tous les rôles des routeurs. (b) Écrivez les configurations OSPF complètes de tous les routeurs. (c) Expliquez quels LSA de Type 3 sont générés et par qui. (d) Quels sont les avantages de la résumé de routes sur l'Aire 0 ? (e) Écrivez les commandes de vérification pour confirmer que le routage inter-aires fonctionne.",
+    answer:`<strong>(a) Topologie et Rôles :</strong>
+Aire 1 : R1 (ABR) — également routeur backbone
+Aire 0 : R1 ↔ R2 (tous deux routeurs backbone)
+Aire 2 : R2 (ABR) — également routeur backbone
+R3 dans Aire 1 : routeur interne (aire 1 uniquement)
+R4 dans Aire 2 : routeur interne (aire 2 uniquement)<br><br>
+<strong>(b) Configurations OSPF :</strong>
+<code>! R1 (ABR : Aire 0 + Aire 1)
+router ospf 1
+ router-id 1.1.1.1
+ network 10.0.0.0 0.0.0.3 area 0          ! liaison backbone
+ network 192.168.1.0 0.0.0.255 area 1     ! LAN aire 1
+ network 192.168.2.0 0.0.0.255 area 1     ! LAN aire 1
+
+! R2 (ABR : Aire 0 + Aire 2)
+router ospf 1
+ router-id 2.2.2.2
+ network 10.0.0.0 0.0.0.3 area 0          ! liaison backbone
+ network 172.16.0.0 0.0.0.255 area 2      ! LAN aire 2</code><br><br>
+<strong>(c) LSA de Type 3 (Summary LSA) :</strong>
+Générés par l'ABR (Area Border Router). Quand R1 apprend l'existence de 192.168.1.0/24 dans l'Aire 1, il crée des LSA de Type 3 et les inonde dans l'Aire 0, afin que R2 et les routeurs de l'Aire 2 connaissent les réseaux de l'Aire 1. Cela permet le routage inter-aires sans exposer la topologie interne détaillée.<br><br>
+<strong>(d) Avantages du Résumé de Routes sur l'Aire 0 :</strong>
+• Réduction de la taille des tables de routage sur les routeurs backbone<br>
+• Limitation de la portée des inondations LSA — un changement de topologie en Aire 1 n'affecte pas la LSDB de l'Aire 2<br>
+• Convergence plus rapide (calcul SPF réduit)<br>
+• Scalabilité améliorée<br><br>
+<strong>(e) Commandes de Vérification :</strong>
+<code>show ip ospf neighbor                ! Vérifier les adjacences
+show ip ospf database                ! Voir tous les types de LSA
+show ip ospf database summary        ! Afficher spécifiquement les LSA Type 3
+show ip route ospf                   ! Voir les routes inter-aires (IA)
+ping 172.16.0.1 source 192.168.1.1  ! Tester la connectivité inter-aires</code>`
+  },
+];
+
+let currentChapter = null;
+let currentSlide = 0;
+
+function init() {
+  renderChapterCards();
+  renderExamQuestions();
+  window.addEventListener('scroll', handleScroll);
 }
-function updateProgress(){
-  const total=9,done=[...visited].filter(c=>c.startsWith('ch')).length;
-  document.getElementById('progressFill').style.width=(done/total*100)+'%';
-  document.getElementById('progressLabel').textContent=done+' / '+total+' chapitres';
+
+function handleScroll() {
+  document.getElementById('fab').classList.toggle('visible', window.scrollY > 300);
 }
-function toggleQ(card){card.classList.toggle('open');}
-function filterQ(type){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
-  document.querySelectorAll('.q-card').forEach(card=>{
-    if(type==='all')card.classList.remove('hidden');
-    else if(['2','6','8','10','12'].includes(type)){if(card.dataset.mark===type)card.classList.remove('hidden');else card.classList.add('hidden');}
-    else{if(card.dataset.type===type)card.classList.remove('hidden');else card.classList.add('hidden');}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-tab')[['overview','learn','exam'].indexOf(id)].classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderChapterCards() {
+  document.getElementById('chapterGrid').innerHTML = chapters.map(ch => `
+    <div class="chapter-card fade-in" style="--accent-color:${ch.color}" onclick="openChapter(${ch.id})">
+      <div class="chapter-num" style="color:${ch.color}">Chapitre ${ch.id}</div>
+      <div class="chapter-name">${ch.icon} ${ch.name}</div>
+      <div class="chapter-desc">${ch.desc}</div>
+      <div class="chapter-topics">${ch.topics.map(t => `<span class="topic-tag">${t}</span>`).join('')}</div>
+      <span class="chapter-arrow">›</span>
+    </div>`).join('');
+}
+
+function openChapter(id) {
+  currentChapter = id;
+  currentSlide = 0;
+  const ch = chapters.find(c => c.id === id);
+  document.getElementById('learnTitle').textContent = `${ch.icon} ${ch.name}`;
+  document.getElementById('learnSub').textContent = ch.sub;
+  showSection('learn');
+  renderSlide();
+}
+
+function goBackToOverview() { showSection('overview'); }
+
+function renderSlide() {
+  const chSlides = slides[currentChapter] || [];
+  const total = chSlides.length;
+  const slide = chSlides[currentSlide];
+  document.getElementById('progressLabel').textContent = `Diapositive ${currentSlide + 1} sur ${total}`;
+  document.getElementById('progressFill').style.width = `${((currentSlide + 1) / total) * 100}%`;
+  document.getElementById('nextLabel').textContent = currentSlide === total - 1 ? 'Terminer le Chapitre' : 'Continuer';
+  if (!slide) {
+    document.getElementById('learnContent').innerHTML = `<div class="complete-banner"><div class="big">🎉</div><h3>Chapitre Terminé !</h3><p>Rendez-vous dans <strong>Révisions Examen</strong> pour tester vos connaissances.</p></div>`;
+    document.getElementById('nextBtn').style.display = 'none';
+    return;
+  }
+  document.getElementById('nextBtn').style.display = 'flex';
+  document.getElementById('learnContent').innerHTML = `<div class="card fade-in"><div class="card-title" style="font-size:18px; margin-bottom:16px;">${slide.title}</div><div>${slide.content}</div></div>`;
+}
+
+function nextSlide() {
+  const total = (slides[currentChapter] || []).length;
+  if (currentSlide < total - 1) {
+    currentSlide++;
+    renderSlide();
+    window.scrollTo({top: document.querySelector('.learn-header').offsetTop - 80, behavior: 'smooth'});
+  } else {
+    document.getElementById('learnContent').innerHTML = `
+      <div class="complete-banner fade-in">
+        <div class="big">🎉</div>
+        <h3>Chapitre Terminé !</h3>
+        <p>Bravo ! Testez-vous maintenant dans les <strong>Révisions Examen</strong>, ou choisissez un autre chapitre.</p>
+        <button class="next-btn" style="margin-top:16px; max-width:300px; margin-left:auto; margin-right:auto" onclick="showSection('exam')">
+          📝 Aller aux Révisions
+        </button>
+        <button class="next-btn" style="margin-top:8px; max-width:300px; margin-left:auto; margin-right:auto; background:#241830; border:1px solid #36284C; color:#9D6E90" onclick="goBackToOverview()">
+          ← Retour aux Chapitres
+        </button>
+      </div>`;
+    document.getElementById('nextBtn').style.display = 'none';
+  }
+}
+
+function renderExamQuestions() {
+  document.getElementById('examList').innerHTML = examQuestions.map((q, i) => `
+    <div class="exam-q visible fade-in" data-marks="${q.marks}" id="eq${i}">
+      <div class="q-header">
+        <span class="q-marks marks-${q.marks}">${q.marks} pts</span>
+        <span class="q-type">${q.type}</span>
+      </div>
+      <div class="q-text">${q.q}</div>
+      <button class="answer-toggle" onclick="toggleAnswer(${i})">
+        <span>💡 Voir la Réponse Type</span>
+        <span id="atoggle${i}">▼</span>
+      </button>
+      <div class="answer-content" id="answer${i}">${q.answer}</div>
+    </div>`).join('');
+}
+
+function toggleAnswer(i) {
+  const isOpen = document.getElementById(`answer${i}`).classList.toggle('open');
+  document.getElementById(`atoggle${i}`).textContent = isOpen ? '▲' : '▼';
+}
+
+function filterExam(marks, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.exam-q').forEach(q => {
+    q.classList.toggle('visible', marks === 'all' || q.dataset.marks === marks);
   });
 }
-function setView(mode){
-  document.querySelectorAll('.btn-mode').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
-  if(mode==='quiz')showPage('quiz');else showPage('ch1');
-}
+
+init();
 </script>
 </body>
 </html>
