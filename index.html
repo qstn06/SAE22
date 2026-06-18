@@ -199,6 +199,12 @@
       <button class="filter-btn" onclick="filterExam('8', this)">8 pts</button>
       <button class="filter-btn" onclick="filterExam('10', this)">10 pts</button>
       <button class="filter-btn" onclick="filterExam('12', this)">12 pts</button>
+      <button class="filter-btn" onclick="filterExam('td1', this)">TD n°1</button>
+      <button class="filter-btn" onclick="filterExam('td2', this)">TD n°2</button>
+      <button class="filter-btn" onclick="filterExam('td3', this)">TD n°3</button>
+      <button class="filter-btn" onclick="filterExam('td4', this)">TD n°4</button>
+      <button class="filter-btn" onclick="filterExam('td5', this)">TD n°5</button>
+      <button class="filter-btn" onclick="filterExam('td6', this)">TD n°6</button>
     </div>
     <div id="examList"></div>
   </section>
@@ -1006,6 +1012,548 @@ show ip ospf database summary        ! Afficher spécifiquement les LSA Type 3
 show ip route ospf                   ! Voir les routes inter-aires (IA)
 ping 172.16.0.1 source 192.168.1.1  ! Tester la connectivité inter-aires</code>`
   },
+
+  // ══════════════════════════════════════════════════════
+  // QUESTIONS TD n°1 — Adresses IPv4, Subnetting, VLSM
+  // ══════════════════════════════════════════════════════
+  { marks:2, type:"Théorie · TD n°1", chapter:1,
+    q:"(TD1 – I-b-1) Quels sont les différentes classes d'adresses logiques et comment les reconnaître ?",
+    answer:`Il existe <strong>5 classes</strong> définies par le RFC 791, reconnaissables grâce aux <strong>bits de poids fort du premier octet</strong> :<br><br>
+• <strong>Classe A</strong> : premier bit = 0 → plage 1–126, masque naturel /8 (255.0.0.0), réseaux de grande taille (&gt;16 millions d'hôtes)<br>
+• <strong>Classe B</strong> : premiers bits = 10 → plage 128–191, masque naturel /16 (255.255.0.0), réseaux de taille moyenne (&gt;65 000 hôtes)<br>
+• <strong>Classe C</strong> : premiers bits = 110 → plage 192–223, masque naturel /24 (255.255.255.0), petits réseaux (254 hôtes max)<br>
+• <strong>Classe D</strong> : premiers bits = 1110 → plage 224–239, adresses multicast<br>
+• <strong>Classe E</strong> : premiers bits = 1111 → plage 240–255, adresses expérimentales`
+  },
+  { marks:2, type:"Théorie · TD n°1", chapter:1,
+    q:"(TD1 – I-b-2) Quelles sont les adresses réservées et comment les trouver ?",
+    answer:`Dans tout réseau, deux adresses sont réservées et non utilisables pour des hôtes :<br><br>
+• <strong>Adresse de réseau</strong> : tous les bits de la partie hôte à 0 — c'est l'identifiant du réseau lui-même. Ex : 192.168.1.<strong>0</strong>/24<br>
+• <strong>Adresse de diffusion (broadcast)</strong> : tous les bits de la partie hôte à 1 — utilisée pour envoyer un paquet à tous les hôtes du réseau. Ex : 192.168.1.<strong>255</strong>/24<br><br>
+Pour les trouver : effectuer un <strong>ET logique</strong> entre l'adresse IP et le masque → adresse réseau. Mettre tous les bits de la partie hôte à 1 → adresse de diffusion.<br>
+Formule : nombre d'hôtes utilisables = <strong>2ⁿ − 2</strong> (n = bits de la partie hôte)`
+  },
+  { marks:2, type:"Théorie · TD n°1", chapter:1,
+    q:"(TD1 – I-b-3) Quelles sont les adresses privées et à quoi servent-elles ?",
+    answer:`Les adresses privées (RFC 1918) sont des plages réservées à un usage <strong>uniquement interne</strong> — elles ne sont pas routables sur Internet :<br><br>
+• <strong>Classe A</strong> : 10.0.0.0 à 10.255.255.255 (/8)<br>
+• <strong>Classe B</strong> : 172.16.0.0 à 172.31.255.255 (/12)<br>
+• <strong>Classe C</strong> : 192.168.0.0 à 192.168.255.255 (/16)<br><br>
+<strong>Utilité :</strong> face à l'épuisement des adresses IPv4, elles permettent de connecter un grand nombre d'équipements en réseau local (LAN) sans consommer d'adresses publiques. Le protocole <strong>NAT</strong> est nécessaire pour permettre à ces hôtes privés d'accéder à Internet via une adresse publique.`
+  },
+  { marks:2, type:"Théorie · TD n°1", chapter:1,
+    q:"(TD1 – I-b-4) Qu'est-ce que le subnetting ?",
+    answer:`Le <strong>subnetting</strong> (découpage en sous-réseaux) consiste à diviser un bloc d'adresses réseau en plusieurs sous-réseaux plus petits en <strong>empruntant des bits sur la partie hôte</strong> pour les donner à la partie réseau (masque plus long).<br><br>
+<strong>Pourquoi ?</strong> Pour mieux organiser le réseau, limiter le trafic de diffusion, améliorer la sécurité, et optimiser l'utilisation de l'espace d'adressage.<br><br>
+<strong>Exemple :</strong> le réseau 150.37.0.0/20 peut être divisé en 8 sous-réseaux /23, chacun disposant de 2¹⁰ − 2 = 510 adresses unicast, en empruntant 3 bits supplémentaires sur la partie hôte (2³ = 8 sous-réseaux).`
+  },
+  { marks:2, type:"Théorie · TD n°1", chapter:1,
+    q:"(TD1 – I-b-5) Qu'est-ce que le supernetting ?",
+    answer:`Le <strong>supernetting</strong> (ou agrégation de routes / CIDR) est l'opération <strong>inverse du subnetting</strong> : il consiste à regrouper plusieurs réseaux contigus en un seul bloc plus grand en <strong>réduisant la longueur du masque</strong> (en rendant des bits de la partie réseau à la partie hôte).<br><br>
+<strong>Utilité :</strong> réduire la taille des tables de routage sur Internet en annonçant un seul préfixe agrégé au lieu de multiples routes spécifiques. On parle aussi d'<strong>agrégation de routes</strong> — tous les sous-réseaux englobés sont alors accessibles via une seule entrée dans la table de routage.<br><br>
+<strong>Exemple :</strong> les réseaux 195.168.5.128/25, 195.168.5.64/26, etc., peuvent être agrégés en 195.168.5.0/24.`
+  },
+  { marks:2, type:"Théorie · TD n°1", chapter:1,
+    q:"(TD1 – I-b-6) Quelle particularité doivent présenter les protocoles de routage avec VLSM ?",
+    answer:`Avec le VLSM (masques de longueur variable), les sous-réseaux d'un même réseau ont des masques différents. Il est donc indispensable que le protocole de routage soit <strong>classless</strong> (sans classes), c'est-à-dire qu'il <strong>transporte le masque de sous-réseau dans ses annonces</strong> de routage.<br><br>
+En effet, un protocole classful (comme <strong>RIPv1</strong>) n'inclut pas le masque dans ses mises à jour — il suppose que toutes les adresses d'une même classe partagent le même masque naturel, ce qui rend le VLSM impossible.<br><br>
+Les protocoles compatibles VLSM sont donc : <strong>RIPv2, OSPF, EIGRP, IS-IS, BGP</strong> — tous envoient le masque avec chaque préfixe annoncé. La commande <code>no auto-summary</code> est aussi nécessaire pour désactiver le résumé automatique des routes.`
+  },
+  { marks:2, type:"Théorie · TD n°1", chapter:1,
+    q:"(TD1 – I-b-7) Quel est le préfixe d'une adresse réseau utilisé pour une liaison série ?",
+    answer:`Pour une liaison série point à point (WAN), seules <strong>2 adresses hôtes</strong> sont nécessaires (une à chaque extrémité du lien). On utilise donc le préfixe <strong>/30</strong> (masque 255.255.255.252).<br><br>
+Calcul : 2 bits de partie hôte → 2² − 2 = <strong>2 adresses unicast</strong>, ce qui est exactement le besoin.<br><br>
+Exemple : réseau 195.234.5.20/30<br>
+• Adresse réseau : 195.234.5.20<br>
+• Adresse unicast 1 : 195.234.5.21<br>
+• Adresse unicast 2 : 195.234.5.22<br>
+• Adresse de diffusion : 195.234.5.23<br><br>
+Le /30 est le masque standard pour toutes les liaisons WAN point à point en IPv4.`
+  },
+
+  // ══════════════════════════════════════════════════════
+  // QUESTIONS TD n°2 — NAT / PAT / Masquerading
+  // ══════════════════════════════════════════════════════
+  { marks:2, type:"Théorie · TD n°2", chapter:2,
+    q:"(TD2 – I-b-1) Pourquoi a-t-on développé le protocole NAT ?",
+    answer:`Le NAT a été développé principalement pour faire face à <strong>l'épuisement des adresses IPv4</strong>. IPv4 (2³² ≈ 4,3 milliards d'adresses) a été conçu avant l'explosion d'Internet et n'offre pas suffisamment d'adresses publiques pour tous les équipements.<br><br>
+NAT permet à de <strong>nombreux hôtes d'un réseau privé de partager une ou quelques adresses IP publiques</strong> pour accéder à Internet, en traduisant leurs adresses privées (non routables sur Internet) en adresses publiques au niveau du routeur frontière.<br><br>
+Le cours précise que la notion privée/publique n'est pas « connue » de NAT lui-même — il s'agit techniquement d'une traduction d'adresses qui peut s'appliquer entre toute paire d'adresses.`
+  },
+  { marks:2, type:"Théorie · TD n°2", chapter:2,
+    q:"(TD2 – I-b-2) En quoi consiste l'implémentation du NAT statique (SNAT) ?",
+    answer:`Le <strong>NAT statique (SNAT)</strong> consiste à configurer une association <strong>biunivoque et permanente</strong> entre une adresse locale interne (privée) et une adresse globale interne (publique). Cette association est configurée manuellement par l'administrateur et reste inscrite en permanence dans la table NAT.<br><br>
+La commande Cisco est : <code>ip nat inside source static @IP_locale_interne @IP_globale_interne</code><br><br>
+<strong>Conséquence :</strong> les règles NAT statiques étant permanentes, une connexion peut être initiée <strong>depuis l'extérieur</strong> vers l'hôte interne via son adresse globale interne — ce qui permet l'accès à des serveurs internes depuis Internet, mais représente aussi un risque de sécurité.`
+  },
+  { marks:2, type:"Théorie · TD n°2", chapter:2,
+    q:"(TD2 – I-b-3) Comment doit-on définir sur le routeur les interfaces concernées par la traduction NAT ?",
+    answer:`On doit marquer chaque interface du routeur selon son rôle vis-à-vis de la traduction NAT :<br><br>
+• <code>ip nat inside</code> : interface côté réseau <strong>interne</strong> (réseau de confiance, LAN privé)<br>
+• <code>ip nat outside</code> : interface côté réseau <strong>externe</strong> (Internet, WAN)<br><br>
+Un flux traversant des interfaces <strong>inside → outside</strong> ou <strong>outside → inside</strong> subira la translation configurée. Un flux inside–inside ou outside–outside ne sera <strong>pas</strong> concerné par la translation.<br><br>
+Exemple :<br>
+<code>interface Fa0/0 → ip nat inside</code> (réseau local)<br>
+<code>interface Fa0/1 → ip nat outside</code> (vers Internet)`
+  },
+  { marks:2, type:"Théorie · TD n°2", chapter:2,
+    q:"(TD2 – I-b-4) Quels sont les différents noms d'adresses utilisées dans les tables de traduction NAT ?",
+    answer:`La table de traduction NAT utilise <strong>4 termes</strong> spécifiques à connaître :<br><br>
+• <strong>@IP locale interne</strong> (Inside Local) : adresse IP privée de l'hôte interne (ex. 192.168.3.1)<br>
+• <strong>@IP globale interne</strong> (Inside Global) : adresse IP publique représentant l'hôte interne sur Internet (ex. 201.200.200.17)<br>
+• <strong>@IP locale externe</strong> (Outside Local) : adresse IP de l'hôte externe telle que vue depuis l'intérieur<br>
+• <strong>@IP globale externe</strong> (Outside Global) : vraie adresse IP de l'hôte externe sur Internet (ex. 181.180.180.15)<br><br>
+L'utilisation de ce jargon précis est indispensable car il est possible de modifier aussi bien l'adresse source que l'adresse destination dans un paquet, de manière transparente pour l'émetteur.`
+  },
+  { marks:2, type:"Théorie · TD n°2", chapter:2,
+    q:"(TD2 – I-b-5) Qu'est-ce que PAT, dans quel cas est-il implémenté et quel est son lien avec le « port mapping » ?",
+    answer:`Le <strong>PAT (Port Address Translation)</strong>, aussi appelé NAT avec surcharge (overload) ou NAT masquerading, est une extension du NAT dynamique qui permet à <strong>plusieurs hôtes internes de partager une seule adresse IP publique</strong> en distinguant les flux grâce aux <strong>numéros de port transport</strong>.<br><br>
+<strong>Cas d'implémentation :</strong> lorsqu'on dispose d'une seule adresse IP publique (ex. celle de l'interface de sortie du routeur) pour connecter tout le réseau interne à Internet. C'est le cas typique des box domestiques.<br><br>
+<strong>Lien avec le « port mapping » :</strong> comme tous les flux sortants utilisent la même adresse globale interne, le routeur distingue les connexions en associant à chaque flux un numéro de port source unique (port mapping). Le mot-clé <code>overload</code> est obligatoire dans la configuration Cisco, faute de quoi un seul flux serait autorisé simultanément.`
+  },
+  { marks:2, type:"Théorie · TD n°2", chapter:2,
+    q:"(TD2 – I-b-6) Quels problèmes risquent-ils d'apparaître avec le NAT statique ?",
+    answer:`Plusieurs problèmes sont associés au NAT statique :<br><br>
+• <strong>Gaspillage d'adresses publiques :</strong> chaque hôte interne nécessite une adresse publique dédiée, ce qui consomme des adresses IP routables — même la technique VLSM ne suffit pas à totalement éviter ce gaspillage<br>
+• <strong>Risque de sécurité :</strong> les associations étant permanentes dans la table NAT, les hôtes internes sont accessibles depuis l'extérieur, exposant le réseau à des attaques<br>
+• <strong>Rigidité de configuration :</strong> tout changement d'adresse IP ou d'équipement nécessite une mise à jour manuelle des règles NAT statiques<br>
+• <strong>Problèmes avec les protocoles applicatifs :</strong> NAT brise la connectivité de bout en bout — certains protocoles comme FTP, SIP, IPsec intégrant l'adresse IP dans leur payload peuvent dysfonctionner`
+  },
+  { marks:2, type:"Théorie · TD n°2", chapter:2,
+    q:"(TD2 – I-b-7) En quoi consiste l'implémentation du NAT dynamique ?",
+    answer:`Le <strong>NAT dynamique</strong> utilise un <strong>pool d'adresses publiques</strong> à partir duquel le routeur assigne temporairement une adresse globale interne à chaque hôte interne désirant sortir. L'association n'est pas permanente : elle est créée à la demande lors d'une connexion sortante et libérée à la fin.<br><br>
+Configuration en 3 étapes :<br>
+1. <strong>Définir le pool</strong> d'adresses globales internes : <code>ip nat pool NOM @début @fin netmask masque</code><br>
+2. <strong>Définir les adresses internes autorisées</strong> via une ACL : <code>access-list 1 permit réseau wildcard</code><br>
+3. <strong>Appliquer la translation</strong> : <code>ip nat inside source list 1 pool NOM</code><br><br>
+<strong>Avantage :</strong> empêche les connexions initiées depuis l'extérieur (seules les connexions sortantes créent une entrée dans la table NAT). <strong>Inconvénient :</strong> limité par la taille du pool — si toutes les adresses du pool sont utilisées, les nouvelles connexions sont rejetées.`
+  },
+  { marks:2, type:"Théorie · TD n°2", chapter:2,
+    q:"(TD2 – I-b-8) Pourquoi utilise-t-on le PAT masquerading ?",
+    answer:`Le NAT dynamique nécessite un pool d'adresses publiques, ce qui a un coût et nécessite un dimensionnement adapté. Le <strong>PAT masquerading</strong> résout ce problème en <strong>réduisant le pool à une seule adresse : celle de l'interface de sortie du routeur</strong>, qui est déjà une adresse globale interne obligatoire.<br><br>
+La distinction des flux est assurée par les <strong>numéros de port transport source</strong> qui sont forcément différents pour chaque connexion. Si par hasard deux flux ont le même port source, le routeur en change un automatiquement en choisissant un port non réservé (≥ 1024).<br><br>
+C'est ce type de NAT qui est généralement utilisé dans les <strong>pare-feux et les box des particuliers</strong>. Il est indispensable de configurer le mot-clé <code>overload</code> dans la commande, sinon un seul flux sortant est autorisé simultanément.`
+  },
+  { marks:2, type:"Théorie · TD n°2", chapter:2,
+    q:"(TD2 – I-b-9) Dans quelles circonstances est-on obligé d'implémenter du « port forwarding » ?",
+    answer:`Le <strong>port forwarding</strong> (NAT statique avec numéro de port) est nécessaire lorsqu'on veut <strong>rendre accessible depuis l'extérieur un service hébergé dans un réseau interne protégé par du NAT dynamique</strong>.<br><br>
+Problème : le NAT dynamique n'autorise que les connexions <strong>sortantes</strong> — aucune connexion initiée depuis l'extérieur ne peut atteindre un hôte interne. Or, pour héberger un serveur web, SSH, FTP accessible depuis Internet, il faut permettre ces connexions entrantes.<br><br>
+Solution : déclarer un NAT statique avec précision du port transport :<br>
+<code>ip nat inside source static tcp @IP_interne port_interne @IP_publique port_public</code><br><br>
+Exemple du cours : pour permettre l'accès SSH (port 22) à SW2 et FTP (ports 20/21) à un serveur interne, 5 lignes de NAT statique sont nécessaires, chacune précisant le port cible. Une seule adresse publique peut ainsi rediriger différents services vers différents hôtes internes selon le port utilisé.`
+  },
+
+  // ══════════════════════════════════════════════════════
+  // QUESTIONS TD n°3 — ACL
+  // ══════════════════════════════════════════════════════
+  { marks:2, type:"Théorie · TD n°3", chapter:3,
+    q:"(TD3 – I-b-1) Quelles sont les raisons d'utilisation de listes de contrôle d'accès (ACL) ?",
+    answer:`Les ACL sont utilisées pour plusieurs raisons de sécurité et de gestion du réseau :<br><br>
+• <strong>Filtrage du trafic entrant et sortant</strong> sur les interfaces d'un routeur ou pare-feu<br>
+• <strong>Contrôle des accès</strong> aux ressources réseau (serveurs, équipements actifs)<br>
+• <strong>Restriction des connexions à distance</strong> (SSH, Telnet) uniquement depuis des hôtes autorisés<br>
+• <strong>Protection contre les intrusions</strong> en bloquant des adresses IP ou des protocoles dangereux<br>
+• <strong>Filtrage des adresses privées</strong> à l'entrée d'un réseau public pour éviter le spoofing<br>
+• <strong>Implémentation de politiques de sécurité</strong> d'entreprise (ex. : seuls certains hôtes peuvent accéder au serveur DNS, ou seuls les hôtes à adresse paire/impaire peuvent accéder à tel service)`
+  },
+  { marks:2, type:"Théorie · TD n°3", chapter:3,
+    q:"(TD3 – I-b-2) Quels sont les paramètres pouvant être contrôlés par une instruction ACL ?",
+    answer:`Une instruction ACL peut contrôler les paramètres suivants :<br><br>
+• <strong>Adresse IP source</strong> du paquet (ACL standard et étendue)<br>
+• <strong>Adresse IP destination</strong> du paquet (ACL étendue uniquement)<br>
+• <strong>Protocole</strong> de couche 4 : TCP, UDP, ICMP, IP, etc. (ACL étendue)<br>
+• <strong>Numéro de port source et/ou destination</strong> : avec les opérateurs lt (inférieur), gt (supérieur), eq (égal), neq (non égal), range (plage) (ACL étendue)<br>
+• <strong>Connexion établie</strong> (mot-clé <code>established</code> pour TCP uniquement) — permet d'autoriser uniquement les réponses à des connexions initiées depuis l'intérieur`
+  },
+  { marks:2, type:"Théorie · TD n°3", chapter:3,
+    q:"(TD3 – I-b-3) Quel est le principe de fonctionnement général d'une ACL dans un routeur ?",
+    answer:`Une ACL est une <strong>association de plusieurs instructions évaluées séquentiellement</strong>. Le routeur applique l'ACL sur une interface dans un sens donné (in ou out) :<br><br>
+1. Le routeur lit les instructions <strong>de haut en bas</strong>, dans l'ordre séquentiel<br>
+2. Dès qu'une instruction correspond au paquet (première correspondance), le routeur applique l'action (permit ou deny) et <strong>cesse de lire la suite</strong><br>
+3. Si <strong>aucune instruction ne correspond</strong>, le routeur applique l'instruction implicite <strong>deny any</strong> (deny all invisible), interdisant tous les paquets non explicitement autorisés<br><br>
+Il est donc conseillé d'ajouter explicitement un <code>deny any</code> à la fin de toute ACL pour bien visualiser cette règle implicite. Le sens <code>in</code> filtre les paquets entrants avant le routage, le sens <code>out</code> filtre les paquets sortants après le routage.`
+  },
+  { marks:2, type:"Théorie · TD n°3", chapter:3,
+    q:"(TD3 – I-b-4) À quoi sert le masque générique dans une instruction d'ACL ?",
+    answer:`Le masque générique (<strong>wildcard mask</strong>) est un filtre sur 32 bits utilisé dans les ACL pour définir quels bits de l'adresse IP doivent être vérifiés :<br><br>
+• Bit à <strong>0</strong> → « vérifier la valeur du bit correspondant dans l'adresse » (correspondance obligatoire)<br>
+• Bit à <strong>1</strong> → « ignorer la valeur du bit correspondant » (joker)<br><br>
+<strong>Attention :</strong> le masque générique n'est <strong>pas</strong> simplement l'inverse du masque de sous-réseau — il peut avoir des 0 et 1 n'importe où, ce qui en fait un véritable filtre puissant.<br><br>
+Pour le calcul courant : soustraire le masque de sous-réseau à 255.255.255.255. Ex : 255.255.240.0 → wildcard = 0.0.15.255<br>
+Mots-clés spéciaux : <code>any</code> = 0.0.0.0 255.255.255.255 (tout accepter) | <code>host</code> = adresse 0.0.0.0 (un seul hôte exact)`
+  },
+  { marks:2, type:"Théorie · TD n°3", chapter:3,
+    q:"(TD3 – I-b-5) Que filtrent les ACL standards et où les placer dans un réseau ?",
+    answer:`Les ACL <strong>standards</strong> filtrent le trafic uniquement en fonction de <strong>l'adresse IP source</strong> du paquet — elles ne peuvent pas distinguer le protocole, le port ou la destination.<br><br>
+<strong>Numérotation :</strong> 1 à 99 ou 1300 à 1999.<br><br>
+<strong>Placement :</strong> les ACL standards doivent être placées <strong>le plus près possible de la destination</strong>. Pourquoi ? Parce qu'elles ne filtrent que par IP source — si on les place près de la source, on risque de bloquer du trafic légitime vers d'autres destinations. En les plaçant près de la destination, on s'assure de n'affecter que le trafic vers ce réseau spécifique.<br><br>
+Syntaxe : <code>R(config)#access-list n°ACL {deny|permit|remark} @IPsource wildcard_mask</code>`
+  },
+  { marks:2, type:"Théorie · TD n°3", chapter:3,
+    q:"(TD3 – I-b-6) Quelle est la syntaxe d'une liste numérique standard ?",
+    answer:`La syntaxe complète d'une ACL numérique standard est :<br><br>
+<code>R(config)#access-list n°ACL {deny | permit | remark} @IPsource wildcard_mask</code><br><br>
+Application sur une interface :<br>
+<code>R(config)#interface Ethernet0/0</code><br>
+<code>R(config-if)#ip access-group n°ACL {in | out}</code><br><br>
+Exemples issus du cours :<br>
+<code>access-list 3 permit 192.168.0.0 0.0.0.255</code><br>
+<code>access-list 3 permit 192.168.1.0 0.0.0.255</code><br>
+<code>access-list 3 deny 192.168.0.0 0.0.3.255</code><br>
+<code>access-list 3 permit any</code><br><br>
+Le numéro (entre 1–99 ou 1300–1999) déclenche automatiquement la syntaxe standard. Le mot-clé <code>remark</code> permet d'ajouter un commentaire décrivant l'objectif de la liste.`
+  },
+  { marks:2, type:"Théorie · TD n°3", chapter:3,
+    q:"(TD3 – I-b-7) Que filtrent les ACL étendues et où les placer dans un réseau ?",
+    answer:`Les ACL <strong>étendues</strong> offrent un filtrage plus précis car elles contrôlent : <strong>l'IP source, l'IP destination, le protocole (TCP, UDP, ICMP, IP…) et les numéros de port source/destination</strong>.<br><br>
+<strong>Numérotation :</strong> 100 à 199 ou 2000 à 2699.<br><br>
+<strong>Placement :</strong> les ACL étendues doivent être placées <strong>le plus près possible de la source</strong>. Pourquoi ? Parce qu'elles permettent d'identifier précisément quel trafic est interdit — en les plaçant près de la source, on évite que le trafic indésirable traverse inutilement le réseau avant d'être bloqué, économisant ainsi de la bande passante.`
+  },
+  { marks:2, type:"Théorie · TD n°3", chapter:3,
+    q:"(TD3 – I-b-8) Quelle est la syntaxe d'une liste numérique étendue ?",
+    answer:`La syntaxe d'une ACL numérique étendue est :<br><br>
+<code>R(config)#access-list n°ACL {deny|permit|remark} {protocole} @IPsource wildcard_mask {opérateur} {port} @IPdestination wildcard_mask {opérateur} {port} {established}</code><br><br>
+Opérateurs disponibles : <code>lt</code> (inférieur), <code>gt</code> (supérieur), <code>eq</code> (égal), <code>neq</code> (non égal), <code>range</code> (plage)<br><br>
+Exemple :<br>
+<code>access-list 110 permit tcp 192.168.1.0 0.0.0.255 host 10.0.0.1 eq 80</code><br>
+→ autorise le trafic TCP depuis le réseau 192.168.1.0/24 vers l'hôte 10.0.0.1 sur le port 80 (HTTP)<br><br>
+Le mot-clé <code>established</code> (TCP uniquement) autorise uniquement les réponses à des connexions déjà établies depuis l'intérieur.`
+  },
+  { marks:2, type:"Théorie · TD n°3", chapter:3,
+    q:"(TD3 – I-b-9) Quels sont les avantages des ACL nommées ?",
+    answer:`Les ACL nommées présentent plusieurs avantages par rapport aux ACL numérotées :<br><br>
+• <strong>Identification claire :</strong> un nom descriptif rend la liste plus lisible et compréhensible (ex. FILTRE_RESEAUX, BLOQUER_TELNET)<br>
+• <strong>Modification facilitée :</strong> possibilité de <strong>supprimer une règle individuelle</strong> sans avoir à effacer et recréer toute la liste — avec une ACL numérotée, toute modification oblige à supprimer et ressaisir l'ensemble<br>
+• <strong>Insertion de règles :</strong> possibilité d'insérer une règle à un numéro de séquence précis (<code>&lt;n°_Règle&gt; {permit|deny|remark}…</code>)<br>
+• <strong>Compatibilité :</strong> disponibles avec IOS Cisco version ≥ 11.2<br>
+• <strong>Le nom est unique</strong> et les listes peuvent être standards ou étendues`
+  },
+  { marks:2, type:"Technique · TD n°3", chapter:3,
+    q:"(TD3 – I-b-10) Comment ajouter ou modifier des règles au sein d'une liste nommée étendue ?",
+    answer:`Pour modifier une ACL nommée étendue, on entre dans son contexte de configuration puis on utilise les numéros de séquence :<br><br>
+<strong>Supprimer l'ACL entière :</strong><br>
+<code>R(config)#no ip access-list {standard|extended} nomACL</code><br><br>
+<strong>Supprimer une règle spécifique :</strong><br>
+<code>R(config-std-nacl)#no &lt;n°_Règle&gt;</code><br><br>
+<strong>Insérer une règle à un numéro précis :</strong><br>
+<code>R(config-std-nacl)#&lt;n°_Règle&gt; {permit|deny|remark} …</code><br><br>
+Exemple : pour insérer une règle entre les règles 10 et 20, on la numérote 15 :<br>
+<code>R(config-ext-nacl)#15 permit tcp host 192.168.1.5 any eq 80</code><br><br>
+La commande <code>show access-lists nomACL</code> affiche les règles avec leurs numéros de séquence, permettant de savoir où insérer la nouvelle règle.`
+  },
+
+  // ══════════════════════════════════════════════════════
+  // QUESTIONS TD n°4 — Routage Dynamique
+  // ══════════════════════════════════════════════════════
+  { marks:2, type:"Théorie · TD n°4", chapter:4,
+    q:"(TD4 – I-b-1) Quelle est la différence entre un protocole routé et un protocole de routage ?",
+    answer:`• <strong>Protocole routé</strong> (ou protocole routable) : protocole qui définit un format de paquet incluant une adresse logique permettant au routeur de l'acheminer. Le routeur lit l'adresse destination et forward le paquet. Exemples : <strong>IP (IPv4, IPv6)</strong>, IPX (Novell), AppleTalk, XNS (Xerox)<br><br>
+• <strong>Protocole de routage</strong> : protocole utilisé <strong>par les routeurs entre eux</strong> pour échanger des informations sur la topologie du réseau et construire leurs tables de routage. Il est utilisé en routage dynamique. Exemples : <strong>RIP, OSPF, EIGRP, BGP, IS-IS</strong><br><br>
+La distinction fondamentale est que le protocole routé transporte les <strong>données utilisateur</strong>, tandis que le protocole de routage transporte les <strong>informations de routage</strong> entre les routeurs.`
+  },
+  { marks:2, type:"Théorie · TD n°4", chapter:4,
+    q:"(TD4 – I-b-2) De quoi se sert un routeur afin de pouvoir effectuer le routage ?",
+    answer:`Un routeur se sert principalement de sa <strong>table de routage</strong> pour effectuer le routage. Cette table est une base de données qui associe chaque réseau destination à l'interface de sortie (ou à l'adresse du prochain saut) à utiliser pour l'atteindre.<br><br>
+La table de routage contient des entrées de différentes origines :<br>
+• <strong>C</strong> (Connected) : réseaux directement connectés aux interfaces du routeur — automatiques<br>
+• <strong>S</strong> (Static) : routes saisies manuellement par l'administrateur<br>
+• <strong>R</strong> (RIP), <strong>O</strong> (OSPF), etc. : routes apprises dynamiquement via des protocoles de routage<br><br>
+Le routeur consulte aussi le <strong>cache ARP</strong> pour la résolution d'adresses MAC à chaque saut. La commande <code>show ip route</code> affiche la table de routage.`
+  },
+  { marks:2, type:"Théorie · TD n°4", chapter:4,
+    q:"(TD4 – I-b-3) En quoi consiste le routage statique et dans quels cas l'utiliser ?",
+    answer:`Le <strong>routage statique</strong> consiste pour l'administrateur à <strong>saisir manuellement</strong> les routes dans la table de routage du routeur. La syntaxe Cisco est :<br>
+<code>ip route @réseau_dest masque @IP_prochain_saut</code><br><br>
+<strong>Cas d'utilisation :</strong><br>
+• Petits réseaux simples avec peu de routeurs et peu de changements topologiques<br>
+• Routes de secours (backup) en complément du routage dynamique<br>
+• Route par défaut vers Internet pour les routeurs en bordure de réseau<br>
+• Réseaux stub (une seule voie de sortie)<br><br>
+<strong>Limites :</strong> si une liaison tombe, le routeur continue d'envoyer du trafic sur la route morte — pas d'adaptation automatique. C'est pour cela que le routage statique est souvent le <strong>complément naturel du routage dynamique</strong>.`
+  },
+  { marks:2, type:"Théorie · TD n°4", chapter:4,
+    q:"(TD4 – I-b-4) Pourquoi doit-on définir un chemin par défaut sur les routeurs ?",
+    answer:`La <strong>route par défaut</strong> (default route) est une entrée spéciale dans la table de routage qui s'applique à <strong>toute destination pour laquelle aucune route spécifique n'est connue</strong>. Elle correspond à l'adresse 0.0.0.0/0.<br><br>
+Syntaxe : <code>ip route 0.0.0.0 0.0.0.0 @IP_prochain_saut</code><br><br>
+<strong>Pourquoi c'est nécessaire :</strong><br>
+• Évite que le routeur envoie un message d'erreur pour toute destination inconnue<br>
+• Permet aux routeurs internes d'atteindre Internet sans avoir à connaître toutes les routes du monde<br>
+• Simplifie les tables de routage — un seul routeur de bordure (avec NAT) connaît la route vers Internet et les autres s'y réfèrent via cette route par défaut<br><br>
+⚠️ Attention à ne pas créer de <strong>boucle de routage</strong> : si deux routeurs se renvoient réciproquement la route par défaut, les paquets tournent indéfiniment.`
+  },
+  { marks:2, type:"Théorie · TD n°4", chapter:4,
+    q:"(TD4 – I-b-5) Qu'appelle-t-on un système autonome et pourquoi fait-on appel à cela ?",
+    answer:`Un <strong>système autonome (AS)</strong> est un ensemble de routeurs et de réseaux <strong>sous une même autorité administrative</strong>, partageant une politique de routage commune et identifié par un numéro unique (ASN).<br><br>
+Les protocoles de routage se divisent en deux familles selon le contexte :<br>
+• <strong>IGP (Interior Gateway Protocol)</strong> : utilisé <strong>à l'intérieur</strong> d'un système autonome. Exemples : RIP, OSPF, EIGRP, IS-IS<br>
+• <strong>EGP (Exterior Gateway Protocol)</strong> : utilisé <strong>entre</strong> systèmes autonomes. Exemple principal : BGP<br><br>
+<strong>Pourquoi fait-on appel à cela ?</strong> La taille d'Internet rend impossible la gestion centralisée du routage. La division en systèmes autonomes permet à chaque organisation (FAI, université, entreprise) de gérer son propre routage interne indépendamment, tout en échangeant avec les autres AS via BGP.`
+  },
+  { marks:2, type:"Théorie · TD n°4", chapter:4,
+    q:"(TD4 – I-b-6) Quels sont les deux grandes familles de protocoles de routage ?",
+    answer:`Les protocoles de routage dynamique se divisent en deux grandes familles selon leur algorithme :<br><br>
+<strong>1. Vecteur de distance (Distance Vector)</strong> :<br>
+• Chaque routeur envoie périodiquement <strong>sa table de routage complète</strong> à ses voisins directs<br>
+• La direction et la distance vers chaque réseau sont connues<br>
+• Algorithme de Bellman-Ford<br>
+• Exemples : <strong>RIP (classful), RIPv2 (classless), IGRP, EIGRP</strong><br><br>
+<strong>2. État des liens (Link-State)</strong> :<br>
+• Chaque routeur construit une <strong>carte complète de la topologie</strong> du réseau (LSDB)<br>
+• Chaque routeur calcule localement l'arbre des chemins les plus courts (SPF/Dijkstra)<br>
+• Mises à jour incrémentielles déclenchées uniquement en cas de changement<br>
+• Exemples : <strong>OSPF, IS-IS</strong>`
+  },
+  { marks:2, type:"Théorie · TD n°4", chapter:4,
+    q:"(TD4 – I-b-7) Quelles sont les principales métriques utilisées dans les algorithmes de routage ?",
+    answer:`La métrique est la valeur qui conditionne le choix de la <strong>meilleure route</strong> vers une destination. Les principales métriques sont :<br><br>
+• <strong>Nombre de sauts</strong> : nombre de routeurs traversés — utilisé par <strong>RIP</strong> (max 15, 16 = infini/inatteignable)<br>
+• <strong>Délai</strong> : temps nécessaire pour aller de la source à la destination — utilisé par <strong>IGRP</strong><br>
+• <strong>Bande passante</strong> : débit disponible sur le chemin — utilisé par <strong>OSPF</strong> (coût = 10⁸/bande passante) et EIGRP<br>
+• <strong>Fiabilité</strong> : taux d'erreur sur la liaison<br>
+• <strong>Charge</strong> : utilisation actuelle de la liaison<br>
+• <strong>MTU</strong> : taille maximale des paquets acceptés<br><br>
+OSPF et EIGRP utilisent des métriques <strong>multicritères</strong>. RIP n'utilise que le nombre de sauts, ce qui est sa principale faiblesse (une liaison lente à 1 hop peut être préférée à une liaison rapide à 2 hops).`
+  },
+  { marks:6, type:"Théorie · TD n°4", chapter:4,
+    q:"(TD4 – I-b-8) Quelles sont les différences entre Vecteur de distance et État des liens ?",
+    answer:`<table>
+<tr><th>Critère</th><th>Vecteur de Distance</th><th>État des Liens</th></tr>
+<tr><td>Connaissance du réseau</td><td>Vision partielle : connaît ses voisins et les distances annoncées</td><td>Vision complète : carte topologique de tout le réseau (LSDB)</td></tr>
+<tr><td>Algorithme</td><td>Bellman-Ford (distribué)</td><td>SPF / Dijkstra (local sur chaque routeur)</td></tr>
+<tr><td>Mises à jour</td><td>Table complète envoyée périodiquement à tous les voisins (toutes les 30s pour RIP)</td><td>LSA incrémentiels envoyés uniquement en cas de changement topologique</td></tr>
+<tr><td>Boucles</td><td>Possible — mécanismes palliatifs nécessaires (split horizon, poison reverse, holddown)</td><td>Impossible par conception de l'algorithme SPF</td></tr>
+<tr><td>Convergence</td><td>Lente (plusieurs cycles de mise à jour)</td><td>Rapide (recalcul local immédiat après LSA)</td></tr>
+<tr><td>Charge réseau</td><td>Élevée périodiquement (table complète)</td><td>Faible — seulement les changements</td></tr>
+<tr><td>Exemples</td><td>RIP, IGRP, EIGRP</td><td>OSPF, IS-IS</td></tr>
+</table>`
+  },
+  { marks:2, type:"Théorie · TD n°4", chapter:4,
+    q:"(TD4 – I-b-9) Quels sont les principaux protocoles de routage dynamiques utilisés ?",
+    answer:`<strong>IGP (intra-système autonome) :</strong><br>
+• <strong>RIPv1</strong> : vecteur de distance, classful, métrique = sauts (max 15), RFC 1058<br>
+• <strong>RIPv2</strong> : vecteur de distance, classless (supporte VLSM), multicast 224.0.0.9, RFC 1388<br>
+• <strong>RIPng</strong> : version de RIP pour IPv6<br>
+• <strong>IGRP</strong> : vecteur de distance Cisco propriétaire, métrique multicritère (délai, bande passante)<br>
+• <strong>EIGRP</strong> : vecteur de distance avancé Cisco, max 224 sauts, convergence rapide<br>
+• <strong>OSPF v2</strong> : état des liens, classless, RFC 1583, métrique = bande passante<br>
+• <strong>OSPFv3</strong> : version de OSPF pour IPv6<br>
+• <strong>IS-IS</strong> : état des liens, supporte IPv4 et IPv6<br><br>
+<strong>EGP (inter-systèmes autonomes) :</strong><br>
+• <strong>BGP v4</strong> : protocole de routage inter-domaine d'Internet, vecteur de chemin`
+  },
+  { marks:6, type:"Théorie · TD n°4", chapter:4,
+    q:"(TD4 – I-b-10) Comment fonctionne l'algorithme du plus court chemin SPF ?",
+    answer:`L'algorithme <strong>SPF (Shortest Path First)</strong>, ou algorithme de Dijkstra, est utilisé par OSPF. Il fonctionne en 3 phases sur chaque routeur :<br><br>
+<strong>1. Construction de la LSDB (Link-State DataBase) :</strong><br>
+Chaque routeur inonde le réseau avec ses <strong>LSA (Link-State Advertisements)</strong> décrivant ses liaisons et leurs coûts. Tous les routeurs d'une même aire partagent une LSDB identique.<br><br>
+<strong>2. Calcul de l'arbre SPF :</strong><br>
+Chaque routeur se considère comme la <strong>racine d'un arbre</strong> et calcule le chemin de moindre coût vers chaque destination. Le coût se cumule sur les interfaces émettrices. Deux chemins de coût identique sont conservés (load balancing).<br><br>
+<strong>3. Construction de la table de routage :</strong><br>
+Les meilleures routes issues de l'arbre SPF sont installées dans la table de routage.<br><br>
+<strong>Avantages :</strong> supprime par conception la possibilité de boucle de routage (contrairement au vecteur de distance), convergence rapide suite à un changement topologique, mises à jour uniquement incrémentielles.`
+  },
+
+  // ══════════════════════════════════════════════════════
+  // QUESTIONS TD n°5 — Système d'adressage IPv6
+  // ══════════════════════════════════════════════════════
+  { marks:2, type:"Théorie · TD n°5", chapter:7,
+    q:"(TD5 – I-b-2) Quelles alternatives ont été mises en place afin de ralentir la date de pénurie des adresses IPv4 ?",
+    answer:`Plusieurs mécanismes ont été déployés pour retarder l'épuisement des adresses IPv4 :<br><br>
+• <strong>CIDR (Classless Inter-Domain Routing)</strong> : utilisation de masques non naturels (suppression des classes fixes), permettant une allocation plus précise des blocs d'adresses et l'agrégation des routes pour réduire les tables de routage<br>
+• <strong>Adresses privées (RFC 1918)</strong> : réutilisation des mêmes plages d'adresses privées dans des milliers de réseaux différents, sans consommer d'adresses publiques<br>
+• <strong>NAT (Network Address Translation)</strong> : permet à un grand nombre d'hôtes privés de partager quelques adresses publiques pour accéder à Internet<br>
+• <strong>VLSM</strong> : découpage en sous-réseaux de tailles adaptées aux besoins réels, évitant le gaspillage lié aux classes fixes<br>
+• <strong>Récupération de blocs</strong> : récupération d'adresses allouées volontairement ou non annoncées sur Internet (34% des adresses en janvier 2011)`
+  },
+  { marks:2, type:"Théorie · TD n°5", chapter:7,
+    q:"(TD5 – I-b-3) Quelles sont les moyens mis en place afin de faire cohabiter les deux mondes IPv6 et IPv4 ?",
+    answer:`Trois techniques principales de coexistence sont définies dans le cours :<br><br>
+<strong>1. Double pile (Dual-Stack) — RFC 4213 :</strong><br>
+Les équipements exécutent simultanément les deux protocoles. C'est la <strong>solution recommandée</strong> — les adresses IPv4 et IPv6 sont utilisées sur le même réseau, les équipements actifs et terminaux disposant des deux piles de protocole en même temps.<br><br>
+<strong>2. Tunnel (6to4 / MCT) :</strong><br>
+Un paquet IPv6 est encapsulé dans un paquet IPv4 pour traverser un réseau n'utilisant que IPv4. Les routeurs aux extrémités du tunnel doivent implémenter la double pile.<br><br>
+<strong>3. Traduction (NAT v6v4 / NAT64) :</strong><br>
+Les équipements IPv6 communiquent avec des équipements IPv4 via une traduction d'adresses analogue au NAT — un paquet IPv6 est traduit en paquet IPv4 et inversement.`
+  },
+  { marks:2, type:"Théorie · TD n°5", chapter:7,
+    q:"(TD5 – I-b-4) Quelles sont les règles d'écriture et de simplification d'une adresse IPv6 ?",
+    answer:`Une adresse IPv6 complète est écrite en <strong>hexadécimal sur 128 bits</strong>, soit 8 groupes de 4 chiffres hexadécimaux (hextets) séparés par des deux-points (:). Exemple : 2001:0db8:0000:1111:0000:0000:0000:0200<br><br>
+<strong>Règle 1 — Suppression des zéros non significatifs :</strong><br>
+Dans chaque hextet, les zéros en tête peuvent être supprimés. Ex : 0db8 → db8 | 0000 → 0<br><br>
+<strong>Règle 2 — Compression des hextets nuls consécutifs :</strong><br>
+Une seule suite consécutive d'hextets entièrement nuls peut être remplacée par <code>::</code>.<br>
+Exemple : 2001:db8:0:1111:0:0:0:200 → 2001:db8:0:1111::200<br><br>
+<strong>⚠️ Restriction :</strong> <code>::</code> ne peut apparaître qu'<strong>une seule fois</strong> dans une adresse — sinon il serait impossible de déterminer le nombre de groupes nuls remplacés.`
+  },
+  { marks:2, type:"Théorie · TD n°5", chapter:7,
+    q:"(TD5 – I-b-5) Quels sont les trois types d'adresses en IPv6 ?",
+    answer:`IPv6 définit <strong>trois types d'adresses</strong> (le broadcast n'existe plus — trop gourmand en ressources) :<br><br>
+• <strong>Unicast (monodiffusion)</strong> : identifie une seule interface — le paquet est délivré à cette interface unique. Les adresses unicast peuvent être de portée globale (routables sur Internet) ou locale (non routables).<br><br>
+• <strong>Multicast (multidiffusion)</strong> : identifie un groupe d'interfaces — le paquet est délivré à toutes les interfaces du groupe. Remplace le broadcast d'IPv4 qui est supprimé en IPv6.<br><br>
+• <strong>Anycast</strong> : identifie un groupe d'interfaces, mais le paquet est envoyé uniquement à <strong>l'interface la plus proche</strong> (selon la métrique de routage) ayant cette adresse. Possibilité de découvrir l'environnement réseau automatiquement (Neighbors Discovery).`
+  },
+  { marks:2, type:"Théorie · TD n°5", chapter:7,
+    q:"(TD5 – I-b-6) Dans quel contexte est utilisée l'adresse IPv6 de lien local (LLA) ?",
+    answer:`L'adresse <strong>Link-Local (LLA)</strong> commence par <code>FE80::/10</code> et est <strong>non routable entre réseaux</strong>. Elle est générée automatiquement sur toute interface IPv6 activée (plug-and-play), même sans configuration manuelle.<br><br>
+Contextes d'utilisation :<br>
+• <strong>Communication entre équipements sur un même sous-réseau</strong> (lien local uniquement)<br>
+• <strong>Avant l'obtention d'une adresse IPv6 routable</strong> : permet une connectivité immédiate sur le lien local<br>
+• <strong>Identifier la passerelle par défaut</strong> : le Link-local du routeur est utilisé comme passerelle par défaut par les hôtes<br>
+• <strong>Échange d'informations de routage dynamique</strong> entre routeurs (RIPng utilise les LLA comme adresse de prochain saut)<br>
+• <strong>Protocole NDP</strong> (Neighbor Discovery Protocol) — remplace ARP en IPv6<br><br>
+Le routeur recevant un paquet Link-local le traite s'il lui est destiné, sinon il le détruit.`
+  },
+  { marks:2, type:"Théorie · TD n°5", chapter:7,
+    q:"(TD5 – I-b-7) Comment s'exprime une adresse IPv6, en particulier afin de prévoir le découpage en sous-réseaux ?",
+    answer:`Une adresse IPv6 GUA (Unicast Globale) est structurée en <strong>3 parties</strong> sur 128 bits :<br><br>
+• <strong>Préfixe de routage global (48 bits)</strong> : attribué par le FAI, identifie l'organisation. Exemple : 2001:0660::/48 pour RENATER<br>
+• <strong>ID de sous-réseau (16 bits)</strong> : sous contrôle de l'entreprise, permet 2¹⁶ = 65 536 sous-réseaux /64<br>
+• <strong>Identifiant d'interface (64 bits)</strong> : identifiant unique de l'équipement dans le sous-réseau, souvent dérivé de l'adresse MAC via EUI-64<br><br>
+<strong>Pour le découpage en sous-réseaux :</strong> on exploite les 16 bits de l'ID sous-réseau. Les sous-réseaux IPv6 recommandés ont une taille fixe de <strong>/64</strong>. L'ID d'interface ne contenant que des 1 est réservée (anycast du routeur local), et celle ne contenant que des 0 est réservée également.`
+  },
+  { marks:6, type:"Technique · TD n°5", chapter:7,
+    q:"(TD5 – I-b-8) Comment se construit une adresse IPv6 selon le format EUI-64 ?",
+    answer:`Le format <strong>EUI-64</strong> permet de dériver automatiquement l'identifiant d'interface (64 bits) d'une adresse IPv6 à partir de l'adresse MAC (48 bits) de la carte réseau.<br><br>
+<strong>Procédure en 3 étapes :</strong><br>
+<ul class="step-list">
+<li><div class="step-num">1</div><div class="step-body"><strong>Couper l'adresse MAC en deux moitiés</strong> de 24 bits (OUI et NIC specific)</div></li>
+<li><div class="step-num">2</div><div class="step-body"><strong>Insérer FF:FE au milieu</strong> → on obtient 64 bits</div></li>
+<li><div class="step-num">3</div><div class="step-body"><strong>Inverser le 7ème bit</strong> (bit U/L = Universal/Local) du premier octet</div></li>
+</ul>
+<strong>Exemple :</strong> MAC = AC:DE:48:00:11:22<br>
+Étape 1 : AC:DE:48 | 00:11:22<br>
+Étape 2 : AC:DE:48:FF:FE:00:11:22<br>
+Étape 3 : AC = 10101100 → inverser bit 7 → 10101110 = AE<br>
+Résultat : AEDE:48FF:FE00:1122<br><br>
+LLA générée : <strong>FE80::AEDE:48FF:FE00:1122</strong><br>
+Microsoft utilise parfois une valeur pseudo-aléatoire pour améliorer la sécurité (%xx).`
+  },
+  { marks:2, type:"Théorie · TD n°5", chapter:7,
+    q:"(TD5 – I-b-9) À quoi correspondent les adresses IPv6 Unique Local Address et dans quel contexte les utilise-t-on ?",
+    answer:`Les adresses <strong>ULA (Unique Local Address)</strong>, préfixe <code>FC00::/7</code> (en pratique <code>FD00::/8</code>), sont l'équivalent IPv6 des adresses privées IPv4 (RFC 1918).<br><br>
+<strong>Caractéristiques :</strong><br>
+• <strong>Non routables sur Internet</strong> — restent internes au site ou à l'organisation<br>
+• Portée : site-local (organisation entière, contrairement aux LLA qui ne dépassent pas un lien)<br>
+• Elles apparaissent sous le nom <strong>Unicast Site-local</strong> dans certaines interfaces Windows<br><br>
+<strong>Contextes d'utilisation :</strong><br>
+• Adressage interne d'entreprise sans accès Internet nécessaire<br>
+• Cas où l'on ne dispose pas encore d'un préfixe GUA attribué par le FAI<br>
+• Communication intra-site entre équipements ne devant pas être accessibles depuis Internet<br><br>
+Elles sont similaires aux GUA dans leur structure (préfixe /48 + sous-réseau /16 + interface /64) mais ne sont pas annoncées sur Internet.`
+  },
+
+  // ══════════════════════════════════════════════════════
+  // QUESTIONS TD n°6 — Configurations IPv6
+  // ══════════════════════════════════════════════════════
+  { marks:2, type:"Technique · TD n°6", chapter:7,
+    q:"(TD6 – I-b-1) Comment configurez-vous une adresse globale unique IPv6 (GUA) sur une interface de routeur Cisco ?",
+    answer:`La configuration d'une adresse GUA sur une interface Cisco nécessite d'abord d'activer le routage IPv6 globalement, puis de configurer l'interface :<br><br>
+<code>! Activation obligatoire du routage IPv6
+Router(config)#ipv6 unicast-routing
+
+! Configuration de l'interface
+Router(config)#interface Fa0/0
+Router(config-if)#ipv6 address 2001:db8:1::1/64
+Router(config-if)#no shutdown</code><br><br>
+Il est aussi possible d'utiliser EUI-64 pour l'identifiant d'interface :<br>
+<code>Router(config-if)#ipv6 address 2001:db8:1::/64 eui-64</code><br><br>
+La vérification s'effectue avec : <code>show interface brief</code> ou <code>show ipv6 interface brief</code>`
+  },
+  { marks:2, type:"Théorie · TD n°6", chapter:7,
+    q:"(TD6 – I-b-2) Peut-on se passer des adresses de lien local IPv6 et dans quel cadre sont-elles utilisées ?",
+    answer:`<strong>Non</strong>, on ne peut pas se passer des adresses LLA — elles sont <strong>obligatoires</strong> sur toute interface IPv6 activée. Le cours précise que « toute interface avec IPv6 activé doit disposer d'au moins une adresse Link-local ».<br><br>
+Les LLA sont utilisées dans les cadres suivants :<br>
+• <strong>Avant l'obtention d'une adresse IPv6 routable</strong> (auto-configuration plug-and-play)<br>
+• <strong>Comme passerelle par défaut</strong> des hôtes — c'est la LLA du routeur qui est annoncée et utilisée comme passerelle<br>
+• <strong>Pour l'échange d'informations de routage</strong> entre routeurs (protocoles dynamiques comme RIPng utilisent les LLA comme adresse de prochain saut)<br>
+• <strong>Pour le protocole NDP</strong> (Neighbor Discovery Protocol) — découverte de voisins, sollicitation/annonce de routeurs<br><br>
+Une LLA est générée automatiquement dès qu'une interface est activée en IPv6 (via <code>ipv6 enable</code> ou dès qu'une adresse GUA est configurée).`
+  },
+  { marks:2, type:"Théorie · TD n°6", chapter:7,
+    q:"(TD6 – I-b-3) Afin d'accéder aux réseaux externes, quelle adresse de passerelle doit-on configurer sur un hôte : GUA ou LLA ?",
+    answer:`C'est l'adresse <strong>LLA (Link-Local Address)</strong> du routeur qui est configurée comme passerelle par défaut sur les hôtes — et non la GUA.<br><br>
+<strong>Pourquoi ?</strong><br>
+En mode SLAAC (Stateless Address AutoConfiguration), lorsque le routage IPv6 est activé sur le routeur (<code>ipv6 unicast-routing</code>), le routeur envoie des <strong>Router Advertisements (RA)</strong> contenant son adresse LLA comme passerelle par défaut. Les hôtes reçoivent automatiquement cette LLA comme passerelle.<br><br>
+Le cours précise : « le Link-local du routeur est utilisé comme passerelle par défaut ». La LLA est non routable, donc elle ne peut servir que pour joindre la passerelle directement sur le lien local — ce qui est précisément son rôle. La GUA sert à identifier l'équipement à l'échelle globale.`
+  },
+  { marks:2, type:"Théorie · TD n°6", chapter:7,
+    q:"(TD6 – I-b-4) Quel type d'adresse de prochain saut est utilisée dans les annonces RIPng ?",
+    answer:`Dans les annonces <strong>RIPng</strong> (RIP pour IPv6), c'est l'adresse <strong>LLA (Link-Local Address)</strong> du routeur voisin qui est utilisée comme adresse de prochain saut.<br><br>
+Le cours TP précise : « l'échange des tables fonctionne malgré l'absence d'@IPv6GUA sur les liens séries » et « quelle est l'adresse de prochain saut utilisée pour spécifier les routes ? » — la réponse est la LLA.<br><br>
+<strong>Pourquoi les LLA ?</strong> Les interfaces série entre routeurs peuvent ne pas avoir d'adresse GUA configurée — seule la LLA (générée automatiquement) est présente. RIPng utilise donc cette LLA disponible sur tout lien IPv6 activé pour communiquer avec les voisins et annoncer les routes.<br><br>
+Cette même logique s'applique en routage statique : <code>Ra(conf)#ipv6 route ::/0 s0/0/0</code> (interface de sortie) car on ne peut pas spécifier une LLA comme prochain saut dans une route statique.`
+  },
+  { marks:6, type:"Théorie · TD n°6", chapter:7,
+    q:"(TD6 – I-b-5) Quels changements notez-vous dans la manière de configurer le routage OSPFv2 et le routage OSPFv3 ?",
+    answer:`<table>
+<tr><th>Aspect</th><th>OSPFv2 (IPv4)</th><th>OSPFv3 (IPv6)</th></tr>
+<tr><td>Activation routage</td><td><code>ip routing</code> (actif par défaut)</td><td><code>ipv6 unicast-routing</code> (obligatoire)</td></tr>
+<tr><td>Déclaration des réseaux</td><td><code>network @IP wildcard area X</code> (dans le processus OSPF)</td><td>Directement sur l'interface : <code>ipv6 ospf 1 area 0</code></td></tr>
+<tr><td>Adresse de prochain saut</td><td>Adresse IPv4 de l'interface</td><td>Adresse LLA de l'interface voisine</td></tr>
+<tr><td>Interfaces sans GUA</td><td>N/A</td><td>OSPFv3 fonctionne même sans GUA sur les interfaces séries (utilise LLA)</td></tr>
+<tr><td>Router-ID</td><td>Adresse IPv4 la plus haute ou loopback</td><td>Idem (format IPv4 même en IPv6 !)</td></tr>
+<tr><td>Protocole</td><td>IPv4 uniquement</td><td>IPv6 uniquement</td></tr>
+</table>
+Exemple OSPFv3 sur interface :<br>
+<code>interface Fa0/0</code><br>
+<code>  ipv6 ospf 1 area 0</code><br>
+<code>  ipv6 ospf passive-interface</code> (pour éviter les annonces sur les réseaux locaux)`
+  },
+  { marks:2, type:"Théorie · TD n°6", chapter:7,
+    q:"(TD6 – I-b-6) Quelles méthodes permettent de faire cohabiter les deux mondes IPv4 et IPv6 ?",
+    answer:`Le cours identifie trois méthodes de coexistence :<br><br>
+<strong>1. Double pile (Dual-Stack) — solution recommandée :</strong><br>
+Les équipements implémentent simultanément IPv4 et IPv6. Ils disposent d'adresses dans les deux protocoles et utilisent celui qui convient. Cette technique est définie dans le RFC 4213 et est encore appelée « IPv6 natif ».<br><br>
+<strong>2. Tunnel (6to4 / MCT) :</strong><br>
+Un paquet IPv6 est encapsulé dans un paquet IPv4 (ajout d'un en-tête IPv4 de 20 octets) pour traverser un réseau uniquement IPv4. Les routeurs aux extrémités sont « dual-stack ». Types : tunnel 6to4 (automatique), tunnel MCT (manuel), ISATAP, Teredo, 6PE-MPLS.<br><br>
+<strong>3. Traduction d'adresses (NAT64 / NAT v6v4) :</strong><br>
+Un paquet IPv6 est traduit en paquet IPv4 et inversement au niveau d'un routeur de traduction. Analogue au NAT en IPv4 — permet à des équipements IPv6 de communiquer avec des équipements IPv4.`
+  },
+  { marks:6, type:"Technique · TD n°6", chapter:7,
+    q:"(TD6 – I-b-7) Quelles sont les différences de configuration entre un tunnel MCT et un tunnel 6to4 ?",
+    answer:`<table>
+<tr><th>Aspect</th><th>Tunnel MCT (Manuel)</th><th>Tunnel 6to4 (Automatique)</th></tr>
+<tr><td>Type</td><td>Manually Configured Tunnel</td><td>Tunnel automatique 6to4</td></tr>
+<tr><td>Configuration</td><td>Points d'extrémité configurés manuellement des deux côtés</td><td>Adresse IPv4 encodée dans le préfixe IPv6</td></tr>
+<tr><td>Adresses</td><td>Adresses IPv4 ET IPv6 configurées à chaque extrémité</td><td>Le préfixe IPv6 contient l'@IPv4 (format 2002::/16)</td></tr>
+<tr><td>Extrémités</td><td>Nécessite des routeurs « double pile » aux deux bouts</td><td>Idem</td></tr>
+<tr><td>Commandes Cisco (MCT)</td><td><code>interface Tunnel0</code><br><code>ipv6 address .../64</code><br><code>tunnel source Fa1/0</code><br><code>tunnel destination @IPv4_distant</code><br><code>tunnel mode ipv6ip</code></td><td>Différent (automatique)</td></tr>
+</table>
+Le cours indique que l'adresse du tunnel IPv6 MCT peut être privée car le tunnel est encapsulé dans IPv4. Des routes statiques IPv6 et IPv4 sont nécessaires des deux côtés pour assurer la connectivité complète.`
+  },
+  { marks:6, type:"Technique · TD n°6", chapter:7,
+    q:"(TD6 – I-b-8) Comment configurer le service DHCPv6 sur un routeur ?",
+    answer:`La configuration DHCPv6 avec état sur un routeur Cisco nécessite plusieurs étapes :<br><br>
+<strong>1. Activer le routage IPv6 :</strong><br>
+<code>ipv6 unicast-routing</code><br><br>
+<strong>2. Créer le pool DHCPv6 :</strong><br>
+<code>ipv6 dhcp pool NOM_POOL</code><br>
+<code> address prefix 2003:DB8:ACDC:1::/64 lifetime infinite infinite</code><br>
+<code> dns-server 2001:4860:4860::8888</code><br><br>
+<strong>3. Appliquer le pool sur l'interface :</strong><br>
+<code>interface Fa0/0</code><br>
+<code> ipv6 dhcp server NOM_POOL</code><br>
+<code> ipv6 nd managed-config-flag</code><br><br>
+<strong>4. Pour un réseau distant (relais DHCP sur Rb) :</strong><br>
+<code>interface Fa0/0</code><br>
+<code> ipv6 nd managed-config-flag</code><br>
+<code> ipv6 dhcp relay destination @IPv6_serveur_DHCP</code><br><br>
+Les échanges entre hôte et serveur DHCP s'effectuent en multicast <code>FF02::1:2</code> limité au lien local.`
+  },
+  { marks:2, type:"Théorie · TD n°6", chapter:7,
+    q:"(TD6 – I-b-9) Quelle est la principale différence dans la conception d'un filtre IPv6 par rapport aux ACL pour IPv4 ?",
+    answer:`La principale différence est que les ACLv6 sont obligatoirement des <strong>listes nommées</strong> — il n'existe pas d'ACL numérotées en IPv6.<br><br>
+<strong>Syntaxe ACLv6 nommée :</strong><br>
+<code>ipv6 access-list NOM_ACL</code><br>
+<code> {permit | deny} {protocole} @source préfixe {opérateurs} @destination préfixe</code><br><br>
+<strong>Application sur interface :</strong><br>
+<code>interface Fa0/0</code><br>
+<code> ipv6 traffic-filter NOM_ACL {in | out}</code><br><br>
+<strong>Application sur les lignes VTY (SSH/Telnet) :</strong><br>
+<code>line vty 0 15</code><br>
+<code> ipv6 access-class NOM_ACL in</code><br><br>
+Le cours TP donne l'exemple d'une ACL nommée TELNET autorisant l'accès SSH depuis un seul routeur. Les adresses IPv6 sont longues mais les principes de filtrage (séquentiel, premier match, deny implicite) restent identiques aux ACL IPv4.`
+  },
 ];
 
 let currentChapter = null;
@@ -1091,9 +1639,16 @@ function nextSlide() {
   }
 }
 
+function getTdTag(type) {
+  const m = type.match(/TD n°(\d+)/);
+  return m ? 'td' + m[1] : '';
+}
+
 function renderExamQuestions() {
-  document.getElementById('examList').innerHTML = examQuestions.map((q, i) => `
-    <div class="exam-q visible fade-in" data-marks="${q.marks}" id="eq${i}">
+  document.getElementById('examList').innerHTML = examQuestions.map((q, i) => {
+    const tdTag = getTdTag(q.type);
+    return `
+    <div class="exam-q visible fade-in" data-marks="${q.marks}" data-td="${tdTag}" id="eq${i}">
       <div class="q-header">
         <span class="q-marks marks-${q.marks}">${q.marks} pts</span>
         <span class="q-type">${q.type}</span>
@@ -1104,7 +1659,8 @@ function renderExamQuestions() {
         <span id="atoggle${i}">▼</span>
       </button>
       <div class="answer-content" id="answer${i}">${q.answer}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function toggleAnswer(i) {
@@ -1112,11 +1668,17 @@ function toggleAnswer(i) {
   document.getElementById(`atoggle${i}`).textContent = isOpen ? '▲' : '▼';
 }
 
-function filterExam(marks, btn) {
+function filterExam(filter, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.exam-q').forEach(q => {
-    q.classList.toggle('visible', marks === 'all' || q.dataset.marks === marks);
+    if (filter === 'all') {
+      q.classList.add('visible');
+    } else if (filter.startsWith('td')) {
+      q.classList.toggle('visible', q.dataset.td === filter);
+    } else {
+      q.classList.toggle('visible', q.dataset.marks === filter);
+    }
   });
 }
 
